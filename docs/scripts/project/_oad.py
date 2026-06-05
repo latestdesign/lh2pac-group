@@ -43,6 +43,32 @@ def savefig(fig, filename: str) -> None:
     os.makedirs(FIG_DIR, exist_ok=True)
     fig.savefig(os.path.join(FIG_DIR, filename), bbox_inches="tight", dpi=130)
 
+
+def cached(file_path: str, compute):
+    """Load a pickled artifact if it exists, else compute it and pickle it.
+
+    Load-or-compute caching shared by the heavy scripts: re-running a script
+    reuses the artifacts it has already produced, so a re-run (or a docs rebuild)
+    is cheap and the reported numbers stay fixed. To force a fresh computation,
+    simply delete the corresponding pickle and run again.
+
+    Args:
+        file_path: Where the artifact is (or will be) pickled.
+        compute: Zero-argument callable that produces the artifact when it is
+            missing. Only called on a cache miss.
+
+    Returns:
+        The loaded or freshly computed artifact.
+    """
+    from gemseo import from_pickle, to_pickle
+
+    if os.path.exists(file_path):
+        return from_pickle(file_path)
+    artifact = compute()
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    to_pickle(artifact, file_path)
+    return artifact
+
 # --------------------------------------------------------------------------- #
 # Use cases (only UC1 and UC2 are required by the project, see docs/index.md)
 # --------------------------------------------------------------------------- #
@@ -219,16 +245,25 @@ def add_constraints(scenario) -> None:
 # Surrogate selection & validation (Linear vs RBF, keep the simplest adequate)
 # --------------------------------------------------------------------------- #
 def train_and_select(train_dataset, test_dataset, output_names,
-                     regressors=("LinearRegressor", "RBFRegressor")):
+                     regressors=("LinearRegressor", "RBFRegressor", "GaussianProcessRegressor"),
+                     prefer=None):
     """Train several regressors, validate them and keep the best on the test set.
 
-    The selection follows the project rule "start simple": among the candidate
-    regressors we keep the one with the highest mean test R2 over the outputs.
-    The full table is returned so the report can justify the choice.
+    By default the selection follows the project rule "start simple": among the
+    candidate regressors we keep the one with the highest mean test R2 over the
+    outputs. The full table is returned so the report can justify the choice.
+
+    Args:
+        prefer: If given and among ``regressors``, force that regressor as the
+            selected surrogate (the others are still trained for the comparison
+            table). Used by Problem 3, which deliberately picks the Kriging
+            (Gaussian-Process) model: it is better calibrated than the RBF in the
+            data-sparse *corners* of the joint space where the optimum sits, which
+            reduces the systematic over-prediction of MTOM at the optimum.
 
     Returns:
-        ``(best_name, best_surrogate, results)`` where ``results`` maps each
-        regressor name to ``{"R2": {out: value}, "RMSE": {out: value}}`` (test set).
+        ``(selected_name, selected_surrogate, results)`` where ``results`` maps
+        each regressor name to ``{"R2": {out: value}, "RMSE": {out: value}}``.
     """
     from gemseo.disciplines.surrogate import SurrogateDiscipline
 
@@ -278,22 +313,37 @@ def train_and_select(train_dataset, test_dataset, output_names,
         return sum(results[name]["R2"].values()) / len(output_names)
 
     best_name = max(regressors, key=mean_r2)
-    return best_name, surrogates[best_name], results
+    selected = prefer if prefer in surrogates else best_name
+    return selected, surrogates[selected], results
 
 
-def plot_validation_bars(results, output_names, filename, title):
-    """Bar chart comparing test R2 of each regressor for each output, and save it."""
+def plot_validation_bars(results, output_names, filename, title, cv=None, cv_label=None):
+    """Bar chart comparing test R2 of each regressor for each output, and save it.
+
+    Args:
+        cv: Optional mapping ``output -> cross-validation R2`` for the selected
+            surrogate. When given, an extra bar series is overlaid so the figure
+            shows that the cross-validation R2 tracks the single-split test R2
+            (evidence of no over-fitting on the small DoE).
+        cv_label: Legend label for that extra series (defaults to "cross-val.").
+    """
     import numpy as np
     from matplotlib import pyplot as plt
 
-    regressors = list(results)
+    # The optional cross-validation series counts as one extra group of bars.
+    series = list(results) + (["__cv__"] if cv is not None else [])
     x = np.arange(len(output_names))
-    width = 0.8 / len(regressors)
+    width = 0.8 / len(series)
     fig, ax = plt.subplots(figsize=(9, 4.5))
-    for i, name in enumerate(regressors):
-        values = [results[name]["R2"][o] for o in output_names]
-        ax.bar(x + i * width, values, width, label=name)
-    ax.set_xticks(x + width * (len(regressors) - 1) / 2)
+    for i, name in enumerate(series):
+        if name == "__cv__":
+            values = [cv[o] for o in output_names]
+            ax.bar(x + i * width, values, width, label=cv_label or "cross-val.",
+                   color="tab:gray", hatch="//")
+        else:
+            values = [results[name]["R2"][o] for o in output_names]
+            ax.bar(x + i * width, values, width, label=name)
+    ax.set_xticks(x + width * (len(series) - 1) / 2)
     ax.set_xticklabels(output_names)
     ax.axhline(1.0, color="grey", lw=0.8, ls="--")
     ax.set_ylabel("Test $R^2$ (1 = perfect)")

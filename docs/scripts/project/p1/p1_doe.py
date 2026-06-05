@@ -1,8 +1,15 @@
-"""
-UC1 P1 — Design of Experiments
-==============================
+"""Problem 1 — Design of Experiments (full draft pipeline, to be split).
 
-Placeholder script (implementation omitted in this public skeleton).
+NOTE for the Problem-1 contributor: this file currently holds the **complete
+Problem-1 draft** for Use Case 1 (kerosene). It builds the coupled disciplines and
+the 4-parameter design space, runs the deterministic MDF optimization on the true
+model, fits and validates an RBF surrogate of ``f̂(x)``, re-optimizes on the
+surrogate, verifies the optimum and sketches the aircraft.
+
+It is kept here as a single block on purpose: the surrogate-building/validation
+part is meant to move into ``p1_surrogate.py`` and the optimization part into
+``p1_optimization.py`` (three parts, like Problem 3), and both use cases (UC1 and
+UC2) still need to be wired in. Until then this draft lives in the DoE slot.
 """
 
 
@@ -86,7 +93,7 @@ scenario.post_process(post_name="OptHistoryView", save=False, show=True)
 
 
 
-#Surrogate 
+#Surrogate
 
 # ### 2. Generate training and test datasets
 training_dataset = sample_disciplines(
