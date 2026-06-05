@@ -1,0 +1,15 @@
+pages:
+  image: python:3.11
+  before_script:
+    - pip install --cache-dir .pip-cache .
+  script:
+    - properdocs build
+    - mv site public
+  cache:
+    paths:
+      - .pip-cache/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "modia2026"
