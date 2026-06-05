@@ -1,10 +1,4 @@
-# --- AI assistant artifacts (kept local, never pushed) ---
-CLAUDE.md
-.claude/
-.cursor/
-.aider*
-
-# --- Generated datasets / surrogates (kept local, never pushed) ---
+# --- Generated files ---
 *.pkl
 
 # --- Python ---
@@ -16,16 +10,14 @@ CLAUDE.md
 *.egg-info/
 .pytest_cache/
 
-# --- Editors ---
-.idea
-
-# --- Docs build / generated ---
-docs/generated/
-site/
-
-# --- Misc build outputs ---
+# --- Build outputs ---
 presentation/out
 *presentation/out/main.pdf
 project/build
 project/source/examples
 project/source/results
+
+# --- Misc ---
+CLAUDE.md
+.claude/
+.cursor/
