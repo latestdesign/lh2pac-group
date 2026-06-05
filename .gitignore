@@ -10,12 +10,9 @@
 *.egg-info/
 .pytest_cache/
 
-# --- Build outputs ---
-presentation/out
-*presentation/out/main.pdf
-project/build
-project/source/examples
-project/source/results
+# --- Doc outputs ---
+docs/generated/
+site/
 
 # --- Misc ---
 CLAUDE.md
