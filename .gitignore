@@ -15,6 +15,7 @@ docs/generated/
 site/
 
 # --- Misc ---
+lh2pac_summary.md
 CLAUDE.md
 .claude/
 .cursor/
