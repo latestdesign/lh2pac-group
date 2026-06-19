@@ -1,11 +1,11 @@
-"""Problème 1 — Surrogate déterministe f̂(x) et sa validation.
+"""Problème 1 — Surrogate déterministe f_hat(x) et sa validation.
 
 Entraîne et valide le surrogate déterministe sur lequel l'optimisation du
 problème 1 tournera. Les modèles **linéaire**, **RBF** et **krigeage** (processus
-gaussien) sont comparés sur un jeu de test mis de côté, et le meilleur (R² moyen
+gaussien) sont comparés sur un jeu de test mis de côté, et le meilleur (R2 moyen
 le plus élevé sur les sorties) est conservé, conformément à la règle « commencer
 simple ». Comme le plan d'expériences reste petit, le surrogate retenu est recoupé
-par une **validation croisée K-fold** : un R² de validation croisée proche du R²
+par une **validation croisée K-fold** : un R2 de validation croisée proche du R2
 de test atteste l'absence de sur-apprentissage. Les deux sont superposés sur le
 graphe de validation.
 
@@ -53,15 +53,15 @@ def run(uc):
             print(f"  {name:16s} {r2s}")
         print(f"  -> selected: {best_name}")
 
-        # Validation croisée K-fold du surrogate sélectionné (proche du R² de test
+        # Validation croisée K-fold du surrogate sélectionné (proche du R2 de test
         # => pas de sur-apprentissage malgré le petit plan d'expériences).
         cv_r2 = surrogate.get_error_measure("R2Measure").compute_cross_validation_measure(as_dict=True)
         print(f"[{uc}] cross-validation R2 ({best_name}):")
         for o in _oad.OUTPUT_NAMES:
             print(f"  {o:7s} {float(cv_r2[o][0]):.3f}")
 
-        # Superpose le R² de validation croisée sur le graphe de validation pour
-        # qu'on le voie suivre le R² de test (découpage unique), sortie par sortie.
+        # Superpose le R2 de validation croisée sur le graphe de validation pour
+        # qu'on le voie suivre le R2 de test (découpage unique), sortie par sortie.
         cv = {o: float(cv_r2[o][0]) for o in _oad.OUTPUT_NAMES}
         _oad.plot_validation_bars(
             results, _oad.OUTPUT_NAMES, f"{uc.lower()}_p1_validation.png",

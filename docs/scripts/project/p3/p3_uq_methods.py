@@ -4,7 +4,7 @@
 d'estimer l'espérance ``E`` et l'écart-type ``S`` propagés à chaque itération de
 l'optimiseur :
 
-* ``surrogate`` : un krigeage de ``f̂(x, u)`` est construit puis ré-échantillonné
+* ``surrogate`` : un krigeage de ``f_hat(x, u)`` est construit puis ré-échantillonné
   (``Surrogate_Settings``) — peu coûteux par itération ;
 * ``sampling`` : Monte-Carlo direct sur le modèle multidisciplinaire
   (``Sampling_Settings``) — N réalisations i.i.d. de u, MDA résolue pour chacune ;
@@ -103,7 +103,7 @@ def run(uc, method):
         disciplines, "mtom", _design_space(), _uncertain_space(), "Mean",
         formulation_name="MDF", statistic_estimation_settings=_SETTINGS[method](),
     )
-    # Contraintes en marge (mean ± 2·std).
+    # Contraintes en marge (mean +/- 2*std).
     scenario.add_constraint("tofl", "Margin", factor=2.0, value=convert_from("m", 1900))
     scenario.add_constraint("vapp", "Margin", factor=2.0, value=convert_from("kt", 135))
     scenario.add_constraint("vz", "Margin", positive=True, factor=2.0, value=convert_from("ft/min", 300))

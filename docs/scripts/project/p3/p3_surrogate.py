@@ -1,15 +1,15 @@
-"""Problème 3 — Surrogate robuste ``f̂(x, u)`` et sa validation.
+"""Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
 
 Entraîne et valide le surrogate sur lequel l'optimisation robuste tournera. Les
 modèles **linéaire**, **RBF** et **krigeage** (processus gaussien) sont comparés
 sur un jeu de test mis de côté. On conserve délibérément le modèle de
-**krigeage** : bien que les trois aient des R² globaux proches, le processus
+**krigeage** : bien que les trois aient des R2 globaux proches, le processus
 gaussien est mieux calibré dans les *coins* peu denses de l'espace conjoint où se
 trouve l'optimum, ce qui réduit la sur-estimation systématique du MTOM à
 l'optimum (quantifiée, puis corrigée, par la vérification sur le vrai modèle dans
 ``p3_optimization``). Comme le plan d'expériences conjoint reste petit, un unique
 découpage train/test peut être optimiste ; le surrogate est donc recoupé par une
-**validation croisée K-fold** : un R² de validation croisée proche du R² de test
+**validation croisée K-fold** : un R2 de validation croisée proche du R2 de test
 est la preuve qu'il n'y a pas de sur-apprentissage. Les deux sont superposés sur
 le graphe de validation.
 
@@ -61,15 +61,15 @@ def run(uc):
             print(f"  {name:16s} {r2s}")
         print(f"  -> selected: {best_name}")
 
-        # Validation croisée K-fold du surrogate sélectionné (proche du R² de test
+        # Validation croisée K-fold du surrogate sélectionné (proche du R2 de test
         # => pas de sur-apprentissage malgré le petit plan d'expériences).
         cv_r2 = surrogate.get_error_measure("R2Measure").compute_cross_validation_measure(as_dict=True)
         print(f"[{uc}] cross-validation R2 ({best_name}):")
         for o in _oad.OUTPUT_NAMES:
             print(f"  {o:7s} {float(cv_r2[o][0]):.3f}")
 
-        # Superpose le R² de validation croisée sur le graphe de validation pour
-        # qu'on le voie suivre le R² de test (découpage unique), sortie par sortie.
+        # Superpose le R2 de validation croisée sur le graphe de validation pour
+        # qu'on le voie suivre le R2 de test (découpage unique), sortie par sortie.
         cv = {o: float(cv_r2[o][0]) for o in _oad.OUTPUT_NAMES}
         _oad.plot_validation_bars(
             results, _oad.OUTPUT_NAMES, f"{uc.lower()}_p3_validation.png",

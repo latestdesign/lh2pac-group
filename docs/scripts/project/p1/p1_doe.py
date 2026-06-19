@@ -3,7 +3,7 @@
 Le problème 1 fige les incertitudes technologiques à leurs valeurs nominales et
 n'étudie que les 4 paramètres de conception x = (slst, n_pax, area, ar). Cette
 étape échantillonne le vrai modèle OAD couplé sur le seul espace de conception
-(u gelé au nominal) afin d'entraîner le surrogate déterministe f̂(x) ≈ f(x, u_nom)
+(u gelé au nominal) afin d'entraîner le surrogate déterministe f_hat(x) ~ f(x, u_nom)
 des étapes suivantes. La boucle de rétroaction sur la masse au décollage est
 résolue par une analyse multidisciplinaire (MDA) à chaque échantillon ; le graphe
 de couplage condensé est exporté pour documentation.
@@ -44,7 +44,7 @@ def run(uc):
     """Échantillonne le vrai modèle couplé sur l'espace de conception (u au nominal)."""
     design_space = _oad.get_design_space()
     dim = len(design_space.variable_names)  # 4 paramètres de conception
-    # Petit plan space-filling : on reste sobre (≈ 10x la dimension), conforme à la
+    # Petit plan space-filling : on reste sobre (~ 10x la dimension), conforme à la
     # règle "3 à 5 fois la dimension d'entrée" élargie pour des sorties non
     # linéaires (tofl notamment). La qualité est vérifiée dans p1_surrogate.
     n_train = 10 * dim

@@ -1,7 +1,7 @@
 """Problème 3 — Plan d'expériences conjoint (conception + incertain).
 
 Cette étape construit les données d'entraînement du surrogate **robuste**
-``f̂(x, u) = f(x, u)``. Contrairement aux problèmes 1 et 2 (qui figent soit les
+``f_hat(x, u) = f(x, u)``. Contrairement aux problèmes 1 et 2 (qui figent soit les
 incertitudes, soit la conception), l'optimisation robuste du problème 3 exige un
 surrogate valide sur **les deux** blocs à la fois : un unique plan en hypercube
 latin échantillonne donc le vrai modèle OAD couplé sur l'espace *conjoint* —
@@ -15,7 +15,7 @@ et ``p3_optimization``. Le helper ``run`` est agnostique au cas d'usage ; seul
 UC2 (hydrogène liquide) est produit ici. Les jeux de données sont mis en cache
 dans ``data/`` sous des noms par cas d'usage (supprimer un pickle pour
 ré-échantillonner). Le plan d'expériences est tiré avec une graine fixe pour que
-les R² et les figures d'optimisation robuste en aval soient reproductibles.
+les R2 et les figures d'optimisation robuste en aval soient reproductibles.
 """
 
 from __future__ import annotations

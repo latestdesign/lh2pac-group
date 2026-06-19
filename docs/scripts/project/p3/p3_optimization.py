@@ -1,7 +1,7 @@
-"""Problème 3 — Optimisation robuste sur le surrogate conjoint ``f̂(x, u)``.
+"""Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
 
 Minimise la masse maximale au décollage **espérée** ``E[mtom]`` tout en imposant
-chaque contrainte opérationnelle avec une marge de sécurité ``mean ± k·std`` (ici
+chaque contrainte opérationnelle avec une marge de sécurité ``mean +/- k*std`` (ici
 ``k = 2``), de sorte que la conception reste faisable malgré les incertitudes
 technologiques. L'espérance et les marges sont estimées par un **Monte-Carlo
 interne** sur ``u`` à chaque itération de l'optimiseur (``gemseo-umdo``).

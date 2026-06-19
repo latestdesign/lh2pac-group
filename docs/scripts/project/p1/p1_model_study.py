@@ -1,4 +1,4 @@
-"""Problème 1 — Étude croisée métamodèle × taille du plan d'expériences.
+"""Problème 1 — Étude croisée métamodèle x taille du plan d'expériences.
 
 Étude de faisabilité justifiant le choix du couple (métamodèle, nombre
 d'échantillons) du problème 1. Pour chaque combinaison de régresseur
@@ -59,7 +59,7 @@ def get_fresh_design_space():
 
 
 def run(uc):
-    """Balayage (métamodèle × N) avec vérification de faisabilité sur le vrai modèle."""
+    """Balayage (métamodèle x N) avec vérification de faisabilité sur le vrai modèle."""
     # Disciplines : formulation complète à 11 disciplines (avec operating_cost).
     disciplines = [
         AutoPyDiscipline(aerodynamic),

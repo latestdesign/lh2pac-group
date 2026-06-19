@@ -1,4 +1,4 @@
-"""Problème 1 — Optimisation déterministe sur le surrogate f̂(x).
+"""Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).
 
 Minimise la masse maximale au décollage ``mtom`` sous les six contraintes
 opérationnelles, les incertitudes étant gelées à leurs valeurs nominales. La
