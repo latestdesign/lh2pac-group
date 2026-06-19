@@ -1,3 +1,3 @@
-# Problem 1 — Deterministic MDO
+# Problème 1 — Optimisation déterministe (MDO)
 
-> _Section to be completed._
+> _Section à compléter._

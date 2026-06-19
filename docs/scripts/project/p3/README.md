@@ -1,6 +1,7 @@
-# Problem 3 — Robust MDO under Uncertainty
+# Problème 3 — Optimisation robuste sous incertitudes
 
-Scripts for Problem 3 (robust optimization over the joint design/uncertain
-space) for both use cases (UC1, UC2): joint DoE sampling, surrogate
-training/validation, and robust optimization compared against the deterministic
-Problem 1 design. Generated datasets and surrogates are stored in `data/`.
+Scripts du Problème 3 (optimisation robuste sur l'espace conjoint
+conception/incertitudes) pour les deux cas d'usage (UC1, UC2) : plan
+d'expériences conjoint, entraînement et validation du surrogate, et
+optimisation robuste comparée à la conception déterministe du Problème 1.
+Les jeux de données et surrogates générés sont stockés dans `data/`.

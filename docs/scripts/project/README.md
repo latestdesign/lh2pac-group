@@ -1,3 +1,3 @@
-# Project
+# Projet
 
-> _Section to be completed._
+> _Section à compléter._

@@ -1,3 +1,3 @@
-# Problem 2 — Uncertainty Quantification & Sensitivity
+# Problème 2 — Quantification des incertitudes et sensibilité
 
-> _Section to be completed._
+> _Section à compléter._

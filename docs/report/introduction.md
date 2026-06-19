@@ -4,7 +4,7 @@
 technologiques : optimisation multidisciplinaire, surrogates et quantification des
 incertitudes pour les filières kérosène et hydrogène liquide.
 
-**Auteurs.** _(à compléter : noms des membres du groupe)_
+**Auteurs.** Paul Louka, Driss Chraibi, Yasmine Bennaceur, Sarah Procope
 
 **Mots-clés.** conception avion (OAD) $\cdot$ optimisation multidisciplinaire (MDO) $\cdot$
 modèle surrogate $\cdot$ quantification des incertitudes $\cdot$ indices de Sobol $\cdot$

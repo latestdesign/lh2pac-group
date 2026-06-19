@@ -1,51 +1,51 @@
-﻿# The LH2PAC project
+﻿# Le projet LH2PAC
 
-LH2PAC is a Python-based academic project proposed by Matthias De Lozzo and Thierry Druot
-in the frame of the course **"Metamodels"**
-from the [ModIA program](https://www.math.insa-toulouse.fr/fr/enseignement/apprentissage-modia.html).
+LH2PAC est un projet académique en Python proposé par Matthias De Lozzo et Thierry Druot
+dans le cadre du cours **« Métamodèles »**
+du [programme ModIA](https://www.math.insa-toulouse.fr/fr/enseignement/apprentissage-modia.html).
 
 ## Installation
 
 ### Git
 
-#### Clone (only once)
+#### Cloner le dépôt (une seule fois)
 
-In your favorite working directory,
-e.g. `"my_wd"`,
+Dans votre répertoire de travail préféré,
+par exemple `"my_wd"` :
 
 ```
 git clone git@gitlab.com:MatthiasDeLozzo/lh2pac.git
 ```
 
-This will create a directory `"lh2pac"` in `"my_wd"`.
+Cela créera un répertoire `"lh2pac"` dans `"my_wd"`.
 
-#### Create a working branch (only once)
+#### Créer une branche de travail (une seule fois)
 
-In the directory `"lh2pac"`:
+Dans le répertoire `"lh2pac"` :
 
 ```
 git checkout origin/modia2026 -b my_modia2026  
 ```
 
-#### Rebase your working branch
+#### Rebaser votre branche de travail
 
-From time to time, 
-the _git_ project may be updated with additional information; 
-you will then need to rebase your branch.
+De temps en temps,
+le projet _git_ peut être mis à jour avec des informations supplémentaires ;
+il faudra alors rebaser votre branche.
 
-Make sure you are on `my_modia2026`; 
-otherwise: `git checkout my_modia2026`.
+Assurez-vous d'être sur `my_modia2026` ;
+sinon : `git checkout my_modia2026`.
 
-In the directory `"my_wd/lh2pac"`:
+Dans le répertoire `"my_wd/lh2pac"` :
 
 ```
 git fetch origin
 git rebase origin/modia2026
 ```
 
-### Create a virtual environment (only once)
+### Créer un environnement virtuel (une seule fois)
 
-In the directory `"lh2pac"`:
+Dans le répertoire `"lh2pac"` :
 
 === "Linux"
 
@@ -65,9 +65,9 @@ In the directory `"lh2pac"`:
     .venv\Scripts\deactivate.bat
     ```
 
-### Configure your IDE (only once)
+### Configurer votre IDE (une seule fois)
 
-Select the Python interpreter: 
+Sélectionnez l'interpréteur Python :
 
 === "Linux"
 
@@ -77,9 +77,9 @@ Select the Python interpreter:
 
     `"lh2pac\.venv\Scripts\python.exe"`
 
-### Use your virtual environment in a Python console
+### Utiliser l'environnement virtuel dans une console Python
 
-In the directory `"lh2pac"`:
+Dans le répertoire `"lh2pac"` :
 
 === "Linux"
 
@@ -93,11 +93,11 @@ In the directory `"lh2pac"`:
     .venv\Scripts\activate.bat
     ```
 
-and use Python as usual.
+et utilisez Python normalement.
 
-### Compile the documentation
+### Compiler la documentation
 
-#### Compile each time you save a file (temporary doc)
+#### Compilation à chaque sauvegarde (doc temporaire)
 
 === "Linux"
 
@@ -111,17 +111,17 @@ and use Python as usual.
     properdocs.exe serve
     ```
 
-The documentation is generated and can be accessed at a local domain,
-e.g. [http://127.0.0.1:8000](http://127.0.0.1:8000).
+La documentation est générée et accessible à une adresse locale,
+par exemple [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-Then,
-every time you save a file,
-the documentation will be updated automatically.
+Ensuite,
+à chaque sauvegarde d'un fichier,
+la documentation sera mise à jour automatiquement.
 
-#### Compile (permanent doc)
+#### Compilation définitive (doc permanente)
 
-The previous command does not save the website;
-to do so, use the following command.
+La commande précédente ne sauvegarde pas le site ;
+pour cela, utilisez la commande suivante.
 
 === "Linux"
 
@@ -135,4 +135,4 @@ to do so, use the following command.
     properdocs.exe build
     ```
 
-The LH2PAC adventure starts here!
+L'aventure LH2PAC commence ici !
