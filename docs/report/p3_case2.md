@@ -52,19 +52,19 @@ Avec N le nombre d'échantillonage.
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 40px;">
   <div style="text-align: center;">
-    <img src="images/use_case/surrogate_N_50/opt_history_view_objective.png" alt="Fonction objective pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/surrogate_N_50/opt_history_view_objective.png" alt="Fonction objective pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">a) Fonction objectif ($MTOM$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/surrogate_N_50/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/surrogate_N_50/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">b) Respect des contraintes d'inégalité</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/surrogate_N_50/opt_history_view_variables.png" alt="Évolution des variables pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/surrogate_N_50/opt_history_view_variables.png" alt="Évolution des variables pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">c) Évolution des variables de décision ($x$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/surrogate_N_50/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/surrogate_N_50/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=50" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">d) Norme de l'erreur $||x - x^*||$ (Log)</small>
   </div>
 </div>
@@ -78,19 +78,19 @@ Avec N le nombre d'échantillonage.
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
   <div style="text-align: center;">
-    <img src="images/use_case/P3_case2/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/P3_case2/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">a) Fonction objectif ($MTOM$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/P3_case2/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/P3_case2/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">b) Respect des contraintes d'inégalité</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/P3_case2/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/P3_case2/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">c) Évolution des variables de décision ($x$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/P3_case2/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/P3_case2/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">d) Norme de l'erreur $||x - x^*||$ (Log)</small>
   </div>
 </div>
@@ -140,19 +140,19 @@ L'écart-type $\mathbb{S}$ découle directement directement de la racine carré 
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
   <div style="text-align: center;">
-    <img src="images/use_case/p3_case2_MC/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/p3_case2_MC/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">a) Fonction objectif ($MTOM$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/p3_case2_MC/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/p3_case2_MC/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">b) Respect des contraintes d'inégalité</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/p3_case2_MC/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/p3_case2_MC/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">c) Évolution des variables de décision ($x$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/p3_case2_MC/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/p3_case2_MC/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">d) Norme de l'erreur $||x - x^*||$ (Log)</small>
   </div>
 </div>
@@ -165,19 +165,19 @@ L'écart-type $\mathbb{S}$ découle directement directement de la racine carré 
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
   <div style="text-align: center;">
-    <img src="images/use_case/taylor/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/taylor/opt_history_view_objective.png" alt="Fonction objective pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">a) Fonction objectif ($MTOM$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/taylor/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/taylor/opt_history_view_ineq_constraints.png" alt="Respect des contraintes pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">b) Respect des contraintes d'inégalité</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/taylor/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/taylor/opt_history_view_variables.png" alt="Évolution des variables pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">c) Évolution des variables de décision ($x$)</small>
   </div>
   <div style="text-align: center;">
-    <img src="images/use_case/taylor/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
+    <img src="../images/use_case/taylor/opt_history_view_x_xstar.png" alt="Norme de l'erreur pour N=200" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"/>
     <small style="display: block; margin-top: 5px; color: #555;">d) Norme de l'erreur $||x - x^*||$ (Log)</small>
   </div>
 </div>

@@ -35,11 +35,12 @@ from gemseo_oad_training.unit import convert_from
 from lh2pac.utils import update_default_inputs
 
 # Directory where every script saves its figures (scripts run from this folder).
-FIG_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "report", "figs")
+# All project figures are consolidated under docs/images/use_case/.
+FIG_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "images", "use_case")
 
 
 def savefig(fig, filename: str) -> None:
-    """Save a matplotlib figure into the report figures directory."""
+    """Save a matplotlib figure into the consolidated images directory."""
     os.makedirs(FIG_DIR, exist_ok=True)
     fig.savefig(os.path.join(FIG_DIR, filename), bbox_inches="tight", dpi=130)
 

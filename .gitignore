@@ -15,6 +15,6 @@ docs/generated/
 site/
 
 # --- Misc ---
-CLAUDE.md
+*.md
 .claude/
-.cursor/
+!README.md

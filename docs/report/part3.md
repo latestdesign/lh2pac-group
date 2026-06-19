@@ -35,10 +35,10 @@ a feedback loop on the take-off mass, resolved by a multidisciplinary analysis
 strongly-coupled core, fed by `geometry`, `aerodynamic` and `engine`, and feeding
 the take-off, approach and climb constraints.
 
-![UC2 P3 discipline coupling graph](figs/uc2_p3_coupling.png)
+![UC2 P3 discipline coupling graph](../images/use_case/uc2_p3_coupling.png)
 
-![UC2 P3 joint DoE vs MTOM](figs/uc2_p3_doe.png)
-![UC2 P3 surrogate validation](figs/uc2_p3_validation.png)
+![UC2 P3 joint DoE vs MTOM](../images/use_case/uc2_p3_doe.png)
+![UC2 P3 surrogate validation](../images/use_case/uc2_p3_validation.png)
 
 In the 9-dimensional joint space we keep the **Kriging** (Gaussian-process) model.
 Linear, RBF and Kriging all reach a high global R² for MTOM (≈ 0.98–0.99), but
@@ -58,7 +58,7 @@ on the true model**, and report those values below.
 
 ### Robust optimization
 
-![UC2 P3 robust optimization convergence](figs/uc2_p3_robust_history.png)
+![UC2 P3 robust optimization convergence](../images/use_case/uc2_p3_robust_history.png)
 
 Here robustness is essential. The robust optimum
 (`slst = 100 kN`, `n_pax = 120`, `area = 117.9 m²`, `ar = 9.53`) has a true
@@ -70,7 +70,7 @@ designs: the optimizer wants minimum thrust and the fewest passengers to cut
 mass, so those two variables are set by the design-space floor, not the
 constraints.)
 
-![UC2 P3 constraint reliability: deterministic vs robust](figs/uc2_p3_feasibility.png)
+![UC2 P3 constraint reliability: deterministic vs robust](../images/use_case/uc2_p3_feasibility.png)
 
 This is the key figure of Part 3, and it is computed on the **true model**. The
 deterministic (nominally optimal) design is **probabilistically fragile**: under
@@ -85,4 +85,4 @@ ratio — cutting mission fuel to restore margin — for the very modest mass co
 above. The robust hydrogen design is therefore strongly preferable to the
 deterministic one.
 
-![UC2 P3 deterministic vs robust aircraft](figs/uc2_p3_robust_vs_det.png)
+![UC2 P3 deterministic vs robust aircraft](../images/use_case/uc2_p3_robust_vs_det.png)
