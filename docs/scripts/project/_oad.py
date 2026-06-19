@@ -1,23 +1,25 @@
-"""Shared OAD problem definition for the LH2PAC project.
+"""Définition partagée du problème OAD pour le projet LH2PAC.
 
-This module is the single source of truth for the Overall Aircraft Design (OAD)
-problem. It is imported by every ``uc*`` / ``plot_uc*`` script in this directory.
+Ce module est la source de vérité unique du problème de conception avion globale
+(Overall Aircraft Design, OAD). Il est importé par chaque script ``uc*`` /
+``plot_uc*`` de ce répertoire.
 
-It does NOT carry the ``plot_`` prefix on purpose: the documentation gallery only
-executes ``plot_*.py`` files, so this helper is shown/installed but never run as a
-standalone example.
+Il ne porte volontairement PAS le préfixe ``plot_`` : la galerie de documentation
+n'exécute que les fichiers ``plot_*.py``, si bien que ce helper est affiché /
+installé mais jamais exécuté comme exemple autonome.
 
-The "true" model ``f(x, u)`` is built by wrapping the analytic functions of
-``gemseo_oad_training.models`` as :class:`.AutoPyDiscipline` objects and coupling
-them. There is a feedback loop on the maximum take-off mass ``mtom``
-(``mass`` <-> ``total_mass`` <-> ``mission``), so a multidisciplinary analysis
-(MDA) is required: we always use the ``MDF`` formulation, which builds the MDA
-automatically.
+Le « vrai » modèle ``f(x, u)`` est construit en enveloppant les fonctions
+analytiques de ``gemseo_oad_training.models`` dans des objets
+:class:`.AutoPyDiscipline` puis en les couplant. Il existe une boucle de
+rétroaction sur la masse maximale au décollage ``mtom``
+(``mass`` <-> ``total_mass`` <-> ``mission``), donc une analyse multidisciplinaire
+(MDA) est nécessaire : on utilise toujours la formulation ``MDF``, qui construit
+la MDA automatiquement.
 
-* ``x`` (design parameters): ``slst``, ``n_pax``, ``area``, ``ar``.
-* ``u`` (uncertain parameters): ``aef``, ``cef``, ``sef`` (all use cases) plus
-  ``gi``, ``vi`` for liquid-hydrogen aircraft.
-* Objective: minimise ``mtom``. Constraints: ``tofl``, ``vapp``, ``vz``,
+* ``x`` (paramètres de conception) : ``slst``, ``n_pax``, ``area``, ``ar``.
+* ``u`` (paramètres incertains) : ``aef``, ``cef``, ``sef`` (tous les cas
+  d'usage) plus ``gi``, ``vi`` pour les avions à hydrogène liquide.
+* Objectif : minimiser ``mtom``. Contraintes : ``tofl``, ``vapp``, ``vz``,
   ``span``, ``length``, ``fm``.
 """
 
@@ -34,32 +36,34 @@ from gemseo_oad_training.unit import convert_from
 
 from lh2pac.utils import update_default_inputs
 
-# Directory where every script saves its figures (scripts run from this folder).
-# All project figures are consolidated under docs/images/use_case/.
+# Répertoire où chaque script enregistre ses figures (les scripts s'exécutent
+# depuis ce dossier). Toutes les figures du projet sont regroupées sous
+# docs/images/use_case/.
 FIG_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "images", "use_case")
 
 
 def savefig(fig, filename: str) -> None:
-    """Save a matplotlib figure into the consolidated images directory."""
+    """Enregistre une figure matplotlib dans le répertoire d'images regroupé."""
     os.makedirs(FIG_DIR, exist_ok=True)
     fig.savefig(os.path.join(FIG_DIR, filename), bbox_inches="tight", dpi=130)
 
 
 def cached(file_path: str, compute):
-    """Load a pickled artifact if it exists, else compute it and pickle it.
+    """Charge un artefact picklé s'il existe, sinon le calcule et le pickle.
 
-    Load-or-compute caching shared by the heavy scripts: re-running a script
-    reuses the artifacts it has already produced, so a re-run (or a docs rebuild)
-    is cheap and the reported numbers stay fixed. To force a fresh computation,
-    simply delete the corresponding pickle and run again.
+    Mise en cache « charger-ou-calculer » partagée par les scripts lourds :
+    relancer un script réutilise les artefacts qu'il a déjà produits, si bien
+    qu'une ré-exécution (ou une reconstruction de la doc) est peu coûteuse et que
+    les valeurs rapportées restent figées. Pour forcer un nouveau calcul, il
+    suffit de supprimer le pickle correspondant et de relancer.
 
     Args:
-        file_path: Where the artifact is (or will be) pickled.
-        compute: Zero-argument callable that produces the artifact when it is
-            missing. Only called on a cache miss.
+        file_path: Emplacement où l'artefact est (ou sera) picklé.
+        compute: Fonction sans argument produisant l'artefact lorsqu'il est
+            absent. Appelée uniquement en cas de cache manquant.
 
     Returns:
-        The loaded or freshly computed artifact.
+        L'artefact chargé ou fraîchement calculé.
     """
     from gemseo import from_pickle, to_pickle
 
@@ -71,16 +75,16 @@ def cached(file_path: str, compute):
     return artifact
 
 # --------------------------------------------------------------------------- #
-# Use cases (only UC1 and UC2 are required by the project, see docs/index.md)
+# Cas d'usage (seuls UC1 et UC2 sont requis par le projet, cf. docs/index.md)
 # --------------------------------------------------------------------------- #
 USE_CASES = {
     "UC1": {"fuel_type": "kerosene", "engine_type": "turbofan", "design_range_km": 5500},
     "UC2": {"fuel_type": "liquid_h2", "engine_type": "turbofan", "design_range_km": 5500},
 }
 
-# The 11 disciplines involved in the multidisciplinary process.
-# ``battery`` stays silent (returns zeros) for kerosene/liquid_h2 but is kept so
-# that the chain is identical for every use case.
+# Les 11 disciplines impliquées dans le processus multidisciplinaire.
+# ``battery`` reste silencieuse (renvoie des zéros) pour kerosene/liquid_h2 mais
+# est conservée afin que la chaîne soit identique pour chaque cas d'usage.
 _MODEL_FUNCTIONS = (
     models.geometry,
     models.aerodynamic,
@@ -95,30 +99,31 @@ _MODEL_FUNCTIONS = (
     models.climb,
 )
 
-# Outputs of interest f(x, u): objective + constraints.
+# Sorties d'intérêt f(x, u) : objectif + contraintes.
 OBJECTIVE = "mtom"
 OUTPUT_NAMES = ["mtom", "tofl", "vapp", "vz", "span", "length", "fm"]
 
-# Outputs that actually depend on the uncertain parameters u.
-# ``span`` and ``length`` are purely geometric (deterministic given x), so they
-# have zero variance under u and must be excluded from variance-based sensitivity.
+# Sorties qui dépendent réellement des paramètres incertains u.
+# ``span`` et ``length`` sont purement géométriques (déterministes une fois x
+# fixé), donc leur variance sous u est nulle et elles doivent être exclues de
+# l'analyse de sensibilité basée sur la variance.
 SENSITIVITY_OUTPUTS = ["mtom", "tofl", "vapp", "vz", "fm"]
 
-# Constraints as (output_name, positive, bound) in STANDARD (SI) units.
-# ``positive=False`` means ``output <= bound``; ``positive=True`` means ``output >= bound``.
+# Contraintes sous la forme (nom_sortie, positif, borne) en unités STANDARD (SI).
+# ``positive=False`` signifie ``sortie <= borne`` ; ``positive=True`` signifie ``sortie >= borne``.
 CONSTRAINTS = [
-    ("tofl", False, 1900.0),                       # take-off field length <= 1900 m
-    ("vapp", False, convert_from("kt", 135.0)),    # approach speed <= 135 kt
-    ("vz", True, convert_from("ft/min", 300.0)),   # vertical speed >= 300 ft/min
-    ("span", False, 40.0),                         # wing span <= 40 m
-    ("length", False, 45.0),                       # aircraft length <= 45 m
-    ("fm", True, 0.0),                             # fuel margin >= 0
+    ("tofl", False, 1900.0),                       # longueur de piste au décollage <= 1900 m
+    ("vapp", False, convert_from("kt", 135.0)),    # vitesse d'approche <= 135 kt
+    ("vz", True, convert_from("ft/min", 300.0)),   # vitesse verticale >= 300 ft/min
+    ("span", False, 40.0),                         # envergure <= 40 m
+    ("length", False, 45.0),                       # longueur de l'avion <= 45 m
+    ("fm", True, 0.0),                             # marge de carburant >= 0
 ]
 
-# Nominal (most likely) values of the uncertain parameters, used to freeze u.
+# Valeurs nominales (les plus probables) des paramètres incertains, pour figer u.
 NOMINAL_UNCERTAIN = {"aef": 1.0, "cef": 1.0, "sef": 1.0, "gi": 0.4, "vi": 0.8}
 
-# Initial / nominal design point (default values, see use_cases.md), SI units.
+# Point de conception initial / nominal (valeurs par défaut, cf. use_cases.md), en unités SI.
 INITIAL_DESIGN = {
     "slst": convert_from("kN", 150.0),  # 150 kN
     "n_pax": 150.0,
@@ -128,23 +133,23 @@ INITIAL_DESIGN = {
 
 
 def uc_from_filename(path: str) -> str:
-    """Infer the use-case id (``"UC1"``/``"UC2"``) from a script file name.
+    """Déduit l'identifiant du cas d'usage (``"UC1"``/``"UC2"``) du nom de fichier.
 
-    ``uc1_p1_doe.py`` -> ``"UC1"``; ``plot_uc2_p2_uq.py`` -> ``"UC2"``.
-    This lets the UC1 and UC2 scripts share identical content.
+    ``uc1_p1_doe.py`` -> ``"UC1"`` ; ``plot_uc2_p2_uq.py`` -> ``"UC2"``.
+    Cela permet aux scripts UC1 et UC2 de partager un contenu identique.
     """
     return "UC" + os.path.basename(path).split("uc")[1][0]
 
 
 def make_disciplines(uc: str):
-    """Build the list of coupled disciplines for a given use case.
+    """Construit la liste des disciplines couplées pour un cas d'usage donné.
 
     Args:
-        uc: The use case identifier (``"UC1"`` or ``"UC2"``).
+        uc: L'identifiant du cas d'usage (``"UC1"`` ou ``"UC2"``).
 
     Returns:
-        The list of :class:`.AutoPyDiscipline` objects with the categorical and
-        fixed inputs set to the use-case values.
+        La liste des objets :class:`.AutoPyDiscipline` dont les entrées
+        catégorielles et fixes sont réglées aux valeurs du cas d'usage.
     """
     settings = USE_CASES[uc]
     disciplines = [AutoPyDiscipline(func) for func in _MODEL_FUNCTIONS]
@@ -160,25 +165,28 @@ def make_disciplines(uc: str):
 
 
 def set_design_point(disciplines, design_point) -> None:
-    """Freeze the design parameters of the disciplines at a given point.
+    """Fige les paramètres de conception des disciplines en un point donné.
 
-    Used by Problem 2, where the design ``x`` is fixed and only ``u`` varies.
+    Utilisé par le problème 2, où la conception ``x`` est figée et où seul ``u``
+    varie.
 
     Args:
-        disciplines: The disciplines returned by :func:`make_disciplines`.
-        design_point: Mapping ``name -> value`` in SI units (scalars or arrays).
+        disciplines: Les disciplines renvoyées par :func:`make_disciplines`.
+        design_point: Dictionnaire ``nom -> valeur`` en unités SI (scalaires ou
+            tableaux).
     """
     import numpy as np
 
-    # The discipline grammars validate *default* values strictly as scalar
-    # numbers (execution values may be arrays and are coerced), so freeze the
-    # design parameters as plain floats.
+    # Les grammaires des disciplines valident strictement les valeurs *par défaut*
+    # comme des nombres scalaires (les valeurs d'exécution peuvent être des
+    # tableaux et sont converties), on fige donc les paramètres de conception en
+    # simples flottants.
     scalar_point = {k: float(np.asarray(v).ravel()[0]) for k, v in design_point.items()}
     update_default_inputs(disciplines, scalar_point)
 
 
 def get_design_space() -> DesignSpace:
-    """Return the design space of the 4 design parameters (SI units)."""
+    """Renvoie l'espace de conception des 4 paramètres de conception (unités SI)."""
     design_space = DesignSpace()
     design_space.add_variable(
         "slst", lower_bound=convert_from("kN", 100.0),
@@ -191,9 +199,10 @@ def get_design_space() -> DesignSpace:
 
 
 def get_uncertain_space(uc: str) -> ParameterSpace:
-    """Return the uncertain space of the relevant random variables for a use case.
+    """Renvoie l'espace incertain des variables aléatoires pertinentes pour un cas d'usage.
 
-    ``aef``/``cef``/``sef`` are always relevant; ``gi``/``vi`` only for liquid_h2.
+    ``aef``/``cef``/``sef`` sont toujours pertinentes ; ``gi``/``vi`` seulement
+    pour liquid_h2.
     """
     settings = USE_CASES[uc]
     uncertain_space = ParameterSpace()
@@ -212,11 +221,12 @@ def get_uncertain_space(uc: str) -> ParameterSpace:
 
 
 def get_joint_space(uc: str) -> ParameterSpace:
-    """Return the joint design+uncertain space used in Problem 3.
+    """Renvoie l'espace conjoint conception+incertitudes utilisé au problème 3.
 
-    Design variables are added as uniform random variables on their bounds so
-    that a single DoE explores ``f(x, u)``; the optimization later treats the
-    design part as deterministic.
+    Les variables de conception sont ajoutées comme variables aléatoires
+    uniformes sur leurs bornes afin qu'un unique plan d'expériences explore
+    ``f(x, u)`` ; l'optimisation traite ensuite la partie conception comme
+    déterministe.
     """
     space = ParameterSpace()
     space.add_random_variable("slst", "OTUniformDistribution",
@@ -237,34 +247,36 @@ def get_joint_space(uc: str) -> ParameterSpace:
 
 
 def add_constraints(scenario) -> None:
-    """Add the 6 operational constraints to an MDO/UMDO scenario."""
+    """Ajoute les 6 contraintes opérationnelles à un scénario MDO/UMDO."""
     for name, positive, bound in CONSTRAINTS:
         scenario.add_constraint(name, constraint_type="ineq", positive=positive, value=bound)
 
 
 # --------------------------------------------------------------------------- #
-# Surrogate selection & validation (Linear vs RBF, keep the simplest adequate)
+# Sélection & validation du surrogate (linéaire vs RBF, garder le plus simple adéquat)
 # --------------------------------------------------------------------------- #
 def train_and_select(train_dataset, test_dataset, output_names,
                      regressors=("LinearRegressor", "RBFRegressor", "GaussianProcessRegressor"),
                      prefer=None):
-    """Train several regressors, validate them and keep the best on the test set.
+    """Entraîne plusieurs régresseurs, les valide et garde le meilleur sur le jeu de test.
 
-    By default the selection follows the project rule "start simple": among the
-    candidate regressors we keep the one with the highest mean test R2 over the
-    outputs. The full table is returned so the report can justify the choice.
+    Par défaut, la sélection suit la règle du projet « commencer simple » : parmi
+    les régresseurs candidats, on garde celui dont le R2 de test moyen sur les
+    sorties est le plus élevé. Le tableau complet est renvoyé pour que le rapport
+    justifie le choix.
 
     Args:
-        prefer: If given and among ``regressors``, force that regressor as the
-            selected surrogate (the others are still trained for the comparison
-            table). Used by Problem 3, which deliberately picks the Kriging
-            (Gaussian-Process) model: it is better calibrated than the RBF in the
-            data-sparse *corners* of the joint space where the optimum sits, which
-            reduces the systematic over-prediction of MTOM at the optimum.
+        prefer: Si fourni et présent dans ``regressors``, force ce régresseur
+            comme surrogate sélectionné (les autres sont tout de même entraînés
+            pour le tableau de comparaison). Utilisé par le problème 3, qui choisit
+            délibérément le modèle de krigeage (processus gaussien) : il est mieux
+            calibré que le RBF dans les *coins* de l'espace conjoint pauvres en
+            données, là où se situe l'optimum, ce qui réduit la sur-estimation
+            systématique du MTOM à l'optimum.
 
     Returns:
-        ``(selected_name, selected_surrogate, results)`` where ``results`` maps
-        each regressor name to ``{"R2": {out: value}, "RMSE": {out: value}}``.
+        ``(selected_name, selected_surrogate, results)`` où ``results`` associe
+        chaque nom de régresseur à ``{"R2": {out: value}, "RMSE": {out: value}}``.
     """
     from gemseo.disciplines.surrogate import SurrogateDiscipline
 
@@ -274,16 +286,18 @@ def train_and_select(train_dataset, test_dataset, output_names,
 
     for name in regressors:
         surrogate = SurrogateDiscipline(name, train_dataset)
-        # GEMSEO warns whenever the surrogate is evaluated outside its validity
-        # domain (the box spanned by the training DoE). With small DoEs and
-        # triangular inputs clustered near the mode, downstream Monte-Carlo and
-        # optimization routinely probe just past that box -- still within the
-        # physical ranges -- which floods the logs. We widen the box by
-        # VALIDITY_DOMAIN_MARGIN about each input's centre to absorb that
-        # near-boundary extrapolation while keeping the warning for points that
-        # land genuinely far outside. The widened bounds are pickled with the
-        # surrogate, so the P2/P3 runs that load it inherit the same behaviour.
-        VALIDITY_DOMAIN_MARGIN = 2.0  # 1.0 = original box, 2.0 = doubled about centre
+        # GEMSEO émet un avertissement chaque fois que le surrogate est évalué
+        # hors de son domaine de validité (la boîte couverte par le plan
+        # d'entraînement). Avec de petits plans et des entrées triangulaires
+        # concentrées près du mode, les routines de Monte-Carlo et d'optimisation
+        # en aval sondent régulièrement juste au-delà de cette boîte -- tout en
+        # restant dans les plages physiques -- ce qui sature les journaux. On
+        # élargit la boîte de VALIDITY_DOMAIN_MARGIN autour du centre de chaque
+        # entrée pour absorber cette extrapolation proche du bord, tout en
+        # conservant l'avertissement pour les points réellement très éloignés. Les
+        # bornes élargies sont picklées avec le surrogate, si bien que les
+        # exécutions P2/P3 qui le chargent héritent du même comportement.
+        VALIDITY_DOMAIN_MARGIN = 2.0  # 1.0 = boîte d'origine, 2.0 = doublée autour du centre
         validity_domain = surrogate.regression_model.validity_domain
         for variable_name in tuple(validity_domain):
             lower = validity_domain.get_lower_bound(variable_name)
@@ -313,19 +327,21 @@ def train_and_select(train_dataset, test_dataset, output_names,
 
 
 def plot_validation_bars(results, output_names, filename, title, cv=None, cv_label=None):
-    """Bar chart comparing test R2 of each regressor for each output, and save it.
+    """Diagramme en barres comparant le R2 de test de chaque régresseur par sortie, et l'enregistre.
 
     Args:
-        cv: Optional mapping ``output -> cross-validation R2`` for the selected
-            surrogate. When given, an extra bar series is overlaid so the figure
-            shows that the cross-validation R2 tracks the single-split test R2
-            (evidence of no over-fitting on the small DoE).
-        cv_label: Legend label for that extra series (defaults to "cross-val.").
+        cv: Dictionnaire optionnel ``sortie -> R2 de validation croisée`` pour le
+            surrogate sélectionné. Quand il est fourni, une série de barres
+            supplémentaire est superposée pour que la figure montre que le R2 de
+            validation croisée suit le R2 de test sur un seul découpage (preuve de
+            l'absence de sur-apprentissage sur le petit plan).
+        cv_label: Libellé de légende de cette série supplémentaire (par défaut
+            « cross-val. »).
     """
     import numpy as np
     from matplotlib import pyplot as plt
 
-    # The optional cross-validation series counts as one extra group of bars.
+    # La série optionnelle de validation croisée compte comme un groupe de barres supplémentaire.
     series = list(results) + (["__cv__"] if cv is not None else [])
     x = np.arange(len(output_names))
     width = 0.8 / len(series)
@@ -341,7 +357,7 @@ def plot_validation_bars(results, output_names, filename, title, cv=None, cv_lab
     ax.set_xticks(x + width * (len(series) - 1) / 2)
     ax.set_xticklabels(output_names)
     ax.axhline(1.0, color="grey", lw=0.8, ls="--")
-    ax.set_ylabel("Test $R^2$ (1 = perfect)")
+    ax.set_ylabel("$R^2$ de test (1 = parfait)")
     ax.set_ylim(min(0.0, ax.get_ylim()[0]), 1.05)
     ax.set_title(title)
     ax.legend()

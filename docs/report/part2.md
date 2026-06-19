@@ -114,6 +114,12 @@ Les indices de Sobol (premier ordre S1 et totaux ST) sont calculés via le méta
 
 Les variables de conception optimales issues du Problème 1 (optimisation déterministe sous contraintes) sont :
 
+> **Note de formulation.** L'analyse de la Partie 2 s'appuie sur la formulation
+> étendue à 11 disciplines (incluant `operating_cost`), distincte du pipeline
+> canonique `_oad` de la Partie 1. L'optimum y est donc recalculé sous cette
+> formulation : ses valeurs de `area`/`ar` diffèrent légèrement de l'optimum
+> canonique rapporté en Partie 1, sans changer les conclusions qualitatives.
+
 | Variable de décision | Point initial | Point optimal |
 |:---|:---:|:---:|
 | Poussée maximale moteurs (`slst`) | 150 kN | 100 kN *(borne inf.)* |
@@ -132,6 +138,14 @@ Les variables de conception optimales issues du Problème 1 (optimisation déter
 | `fm` | Marge de carburant | % | 0.74 | 0.02 | 2.72 |
 
 ![Distribution de la MTOM au point optimal](../images/use_case/uc1_p2_distribmtom_opt.png)
+
+Par rapport au point initial, la distribution s'est translatée d'environ 11 t vers
+la gauche (centrée sur $\approx$ 64 002 kg) tout en gardant la même forme unimodale
+légèrement dissymétrique. L'écart-type absolu diminue ($\sigma$ : 449 $\to$ 408 kg),
+mais rapporté à une masse plus faible, la **dispersion relative augmente**
+(CV : 0,60 % $\to$ 0,64 %) : l'optimisation a allégé l'avion sans le rendre plus
+robuste — au contraire, elle l'a rendu marginalement plus sensible aux
+incertitudes, ce que confirme l'analyse de Sobol ci-dessous.
 
 #### Comparaison point initial / point optimal
 
@@ -326,6 +340,11 @@ La MTOM est principalement pilotée par deux paramètres. L'indice gravimétriqu
 ### Analyse au Point Optimal (X_opt)
 
 On utilise ici les variables de conception optimales trouvées par l'optimisation déterministe sous contraintes du Problème 1 (conçues pour minimiser la MTOM sur le modèle réel) :
+
+> **Note de formulation.** Comme pour le UC1, cette analyse utilise la formulation
+> étendue à 11 disciplines (avec `operating_cost`) : l'optimum y est recalculé sous
+> cette formulation, d'où des valeurs de `area`/`ar` légèrement différentes de
+> l'optimum canonique de la Partie 1, sans incidence sur les conclusions.
 
 * Poussée maximale moteurs (`slst`) : 100 kN (borne inférieure)
 * Nombre de passagers (`n_pax`) : 120 (borne inférieure)
