@@ -1,21 +1,23 @@
-"""Problem 3 — Robust optimization on the joint surrogate ``f̂(x, u)``.
+"""Problème 3 — Optimisation robuste sur le surrogate conjoint ``f̂(x, u)``.
 
-Minimizes the **expected** maximum take-off mass ``E[mtom]`` while enforcing every
-operational constraint with a safety margin ``mean ± k·std`` (here ``k = 2``), so
-the design stays feasible despite the technological uncertainties. The expected
-value and the margins are estimated by an **inner Monte-Carlo** over ``u`` at every
-optimizer iteration (``gemseo-umdo``). The robust optimum is then compared to the
-**deterministic** optimum (Problem 1) by propagating the same uncertainties
-through the surrogate at both designs — this quantifies the *price of robustness*
-and the gain in constraint reliability.
+Minimise la masse maximale au décollage **espérée** ``E[mtom]`` tout en imposant
+chaque contrainte opérationnelle avec une marge de sécurité ``mean ± k·std`` (ici
+``k = 2``), de sorte que la conception reste faisable malgré les incertitudes
+technologiques. L'espérance et les marges sont estimées par un **Monte-Carlo
+interne** sur ``u`` à chaque itération de l'optimiseur (``gemseo-umdo``).
+L'optimum robuste est ensuite comparé à l'optimum **déterministe** (problème 1) en
+propageant les mêmes incertitudes à travers le surrogate aux deux conceptions —
+ce qui quantifie le *prix de la robustesse* et le gain en fiabilité des contraintes.
 
-The ``k = 2`` margin is a **moment-based robustness proxy**, not a probabilistic
-guarantee: with non-Gaussian (triangular, nonlinear) outputs it does not certify a
-97.7 % reliability — the actual reliabilities are *measured* by Monte-Carlo below.
+La marge ``k = 2`` est un **proxy de robustesse fondé sur les moments**, pas une
+garantie probabiliste : avec des sorties non gaussiennes (triangulaires, non
+linéaires), elle ne certifie pas une fiabilité de 97,7 % — les fiabilités réelles
+sont *mesurées* par Monte-Carlo ci-dessous.
 
-Heavy script: although it only evaluates the cheap surrogate, the inner
-Monte-Carlo makes each use case minutes-long. Run ``p3_doe`` then ``p3_surrogate``
-first. Results/figures are cached/committed per use case.
+Script lourd : bien qu'il n'évalue que le surrogate (peu coûteux), le Monte-Carlo
+interne rend chaque cas d'usage long de plusieurs minutes. Lancer ``p3_doe`` puis
+``p3_surrogate`` d'abord. Les résultats/figures sont mis en cache/commités par cas
+d'usage.
 """
 
 from __future__ import annotations
@@ -25,8 +27,9 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery execs this file without defining ``__file__`` (cwd is the
-# script directory during execution); define it so the helpers below work.
+# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
+# courant est celui du script pendant l'exécution) ; on le définit pour que les
+# helpers ci-dessous fonctionnent.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_optimization.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -48,23 +51,25 @@ configure_logger(level="WARNING")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-MARGIN_FACTOR = 2.0  # k in "mean +/- k*std" margin constraint. NB: the ~97.7%
-# one-sided reliability only holds if the output is Gaussian; here outputs are
-# triangular-fed and nonlinear, so this is a moment-based proxy (Chebyshev only
-# guarantees >=80% for k=2). Actual reliabilities are measured by MC below.
-N_MC = 150           # inner Monte-Carlo size for statistic estimation.
-MAX_ITER = 60        # optimizer iterations (each runs a full inner sampling).
-N_TRUE = 2000        # Monte-Carlo size for the TRUE-model verification below.
+MARGIN_FACTOR = 2.0  # k dans la marge "mean +/- k*std". NB : la fiabilité
+# unilatérale ~97,7 % ne tient que si la sortie est gaussienne ; ici les sorties
+# sont alimentées par des lois triangulaires et non linéaires, donc c'est un proxy
+# fondé sur les moments (Chebyshev ne garantit que >=80 % pour k=2). Les
+# fiabilités réelles sont mesurées par MC ci-dessous.
+N_MC = 150           # taille du Monte-Carlo interne pour l'estimation des statistiques.
+MAX_ITER = 60        # itérations de l'optimiseur (chacune lance un échantillonnage interne complet).
+N_TRUE = 2000        # taille du Monte-Carlo pour la vérification sur le VRAI modèle ci-dessous.
 
 DES = ("slst", "n_pax", "area", "ar")
 
 
 def _true_nominal(uc, design):
-    """Evaluate the TRUE coupled model at a design point, u frozen at nominal.
+    """Évalue le VRAI modèle couplé en un point de conception, u figé au nominal.
 
-    The surrogate over-predicts MTOM by ~2% in the design-space corners where the
-    optimum sits, so the headline numbers must be read off the true model, not the
-    surrogate. (AutoPyDiscipline grammars want scalar inputs.)
+    Le surrogate sur-estime le MTOM de ~2 % dans les coins de l'espace de
+    conception où se trouve l'optimum ; les chiffres clés doivent donc être lus
+    sur le vrai modèle, pas sur le surrogate. (Les grammaires AutoPyDiscipline
+    veulent des entrées scalaires.)
     """
     disc = _oad.make_disciplines(uc)
     _oad.set_design_point(
@@ -74,11 +79,11 @@ def _true_nominal(uc, design):
 
 
 def _true_propagate(uc, design):
-    """Monte-Carlo propagation of u through the TRUE model at a fixed design.
+    """Propagation Monte-Carlo de u à travers le VRAI modèle à conception fixée.
 
-    Returns the true expected MTOM and the true probability of satisfying each
-    (uncertainty-dependent) constraint -- the honest reliability, not the
-    surrogate's. The design is frozen and the uncertain parameters are sampled.
+    Renvoie le MTOM espéré réel et la probabilité réelle de satisfaire chaque
+    contrainte (dépendante des incertitudes) -- la fiabilité réelle, pas celle du
+    surrogate. La conception est figée et les paramètres incertains sont échantillonnés.
     """
     disc = _oad.make_disciplines(uc)
     _oad.set_design_point(disc, {k: float(design[k]) for k in DES})
@@ -97,25 +102,20 @@ def _true_propagate(uc, design):
 
 
 def _deterministic_optimum(model, uc, start=None):
-    """Min-MTOM optimum on the surrogate with u frozen at nominal.
+    """Optimum min-MTOM sur le surrogate, u figé au nominal.
 
-    The deterministic baseline is, by definition, argmin MTOM(x, u=nominal) under
-    the six constraints; computing that on the same surrogate gives exactly that
-    optimum -- the correct baseline, just computed in-place.
-
-    TODO(once contributions are merged): prefer the real Problem-1 deterministic
-    optimum. CAVEAT to revisit then: a dedicated P1 fits its surrogate on a
-    *design-only* DoE (no u axis), which can be marginally sharper in the design
-    subspace and shift the optimum slightly. Same baseline, same method -- only the
-    surrogate it is read off differs. The load below already prefers the P1 pickle
-    when it exists, so this self-corrects once P1 lands.
+    Référence déterministe : argmin MTOM(x, u=nominal) sous les six contraintes.
+    Cette fonction n'est qu'un repli — ``run`` préfère le pickle d'optimum
+    déterministe du problème 1 quand il existe — et recalcule la référence sur le
+    surrogate conjoint en son absence.
     """
     nominal = {k: np.array([v]) for k, v in _oad.NOMINAL_UNCERTAIN.items()
                if k in _oad.get_uncertain_space(uc).variable_names}
     update_default_inputs([model], nominal)
     design_space = _oad.get_design_space()
-    # Warm-start from a known-good feasible point (the robust optimum): COBYLA is
-    # local and otherwise stalls in a poor basin from the default centre start.
+    # Démarrage à chaud depuis un point faisable connu (l'optimum robuste) : COBYLA
+    # est local et stagnerait sinon dans un mauvais bassin depuis le point central
+    # par défaut.
     if start is not None:
         design_space.set_current_value({k: np.array([float(start[k])]) for k in DES})
     det_scenario = MDOScenario([model], _oad.OBJECTIVE, design_space,
@@ -126,12 +126,13 @@ def _deterministic_optimum(model, uc, start=None):
 
 
 def run(uc):
-    """Robust optimization + deterministic comparison for one use case."""
+    """Optimisation robuste + comparaison déterministe pour un cas d'usage."""
     surrogate = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p3_surrogate.pkl"))
 
-    # Robust scenario: minimise E[mtom] under margin constraints, using the
-    # surrogate. The inner Monte-Carlo makes this the ~minutes-long step, so it is
-    # cached; delete the optimization pickle to redo it (and its history figure).
+    # Scénario robuste : minimiser E[mtom] sous contraintes de marge, en utilisant
+    # le surrogate. Le Monte-Carlo interne en fait l'étape de ~plusieurs minutes,
+    # donc il est mis en cache ; supprimer le pickle d'optimisation pour le refaire
+    # (et sa figure d'historique).
     def run_robust_scenario():
         settings = Sampling_Settings(doe_algo_settings=OT_MONTE_CARLO_Settings(n_samples=N_MC, seed=0))
         scenario = UMDOScenario(
@@ -144,8 +145,8 @@ def run(uc):
             scenario.add_constraint(name, "Margin", value=bound, positive=positive, factor=factor)
         scenario.execute(algo_name="NLOPT_COBYLA", max_iter=MAX_ITER)
 
-        # Convergence history (needs the live scenario database -> drawn here, on a
-        # recompute only).
+        # Historique de convergence (a besoin de la base de données du scénario
+        # vivant -> tracé ici, uniquement lors d'un recalcul).
         problem = scenario.formulation.optimization_problem
         database = problem.database
         obj_history = np.array(database.get_function_history(problem.objective.name)).ravel()
@@ -175,8 +176,8 @@ def run(uc):
     for name in ("slst", "n_pax", "area", "ar"):
         print(f"  {name:6s} = {x_robust[name]:.2f}")
 
-    # Deterministic optimum (Problem 1) for comparison: the real P1 pickle when it
-    # exists, else recompute the baseline in-place on the same surrogate.
+    # Optimum déterministe (problème 1) pour comparaison : le vrai pickle P1 quand
+    # il existe, sinon recalcul de la référence sur place sur le même surrogate.
     det_path = os.path.join(HERE, "..", "p1", "data", f"{uc.lower()}_p1_optimization.pkl")
     if os.path.exists(det_path):
         x_det = {k: float(v[0]) for k, v in from_pickle(det_path).x_opt_as_dict.items()}
@@ -184,10 +185,10 @@ def run(uc):
         x_det = _deterministic_optimum(surrogate, uc, start=x_robust)
     print(f"  deterministic optimum: " + " ".join(f"{k}={x_det[k]:.2f}" for k in DES))
 
-    # ---- TRUE-MODEL VERIFICATION ------------------------------------------ #
-    # The surrogate is only used to *search*; the reported numbers are read off
-    # the true coupled model. First the nominal point (1 MDA each): this is the
-    # headline MTOM, and it exposes the surrogate's optimism at the optimum.
+    # ---- VÉRIFICATION SUR LE VRAI MODÈLE ---------------------------------- #
+    # Le surrogate ne sert qu'à *chercher* ; les chiffres rapportés sont lus sur le
+    # vrai modèle couplé. D'abord le point nominal (1 MDA chacun) : c'est le MTOM
+    # de référence, et il expose l'optimisme du surrogate à l'optimum.
     det_true, rob_true = _true_nominal(uc, x_det), _true_nominal(uc, x_robust)
     nominal_u = {k: np.array([v]) for k, v in _oad.NOMINAL_UNCERTAIN.items()
                  if k in _oad.get_uncertain_space(uc).variable_names}
@@ -200,7 +201,7 @@ def run(uc):
     print(f"    deterministic {surr_nominal_mtom(x_det):.0f} / {det_true['mtom']:.0f} kg")
     print(f"    robust        {surr_nominal_mtom(x_robust):.0f} / {rob_true['mtom']:.0f} kg")
 
-    # ---- Robust vs deterministic aircraft (true-model geometry) ----------- #
+    # ---- Avion robuste vs déterministe (géométrie du vrai modèle) ---------- #
     det_config = AircraftConfiguration(
         name="Deterministic (P1)", area=x_det["area"], n_pax=int(round(x_det["n_pax"])),
         slst=x_det["slst"], span=det_true["span"], length=det_true["length"], color="tab:blue",
@@ -215,9 +216,9 @@ def run(uc):
         save=True, show=False,
     )
 
-    # ---- Robustness check on the TRUE model ------------------------------- #
-    # Propagate u through the true model at each fixed design: the honest expected
-    # MTOM (fair "price of robustness") and the true P(constraint satisfied).
+    # ---- Contrôle de robustesse sur le VRAI modèle ------------------------ #
+    # Propage u à travers le vrai modèle à chaque conception figée : le MTOM espéré
+    # réel (pour un "prix de la robustesse" équitable) et la vraie P(contrainte satisfaite).
     constrained = [(n, p, b) for n, p, b in _oad.CONSTRAINTS if n in _oad.SENSITIVITY_OUTPUTS]
     det_mtom, det_p = _true_propagate(uc, x_det)
     rob_mtom, rob_p = _true_propagate(uc, x_robust)
@@ -246,12 +247,5 @@ def run(uc):
 
 
 # %%
-# ## Use Case 1 — Kerosene / Turbofan
-# Skeleton for the UC1 contributor: the ``run`` helper above is use-case agnostic,
-# so completing UC1 is as simple as calling ``run("UC1")`` here (or implementing a
-# dedicated version).
-pass
-
-# %%
-# ## Use Case 2 — Liquid H₂ / Turbofan
+# ## Cas d'usage 2 — Hydrogène liquide / Turbofan
 run("UC2")

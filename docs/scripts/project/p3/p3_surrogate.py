@@ -1,18 +1,20 @@
-"""Problem 3 — Robust surrogate ``f̂(x, u)`` and its validation.
+"""Problème 3 — Surrogate robuste ``f̂(x, u)`` et sa validation.
 
-Trains and validates the surrogate that the robust optimization will run on.
-**Linear**, **RBF** and **Kriging** (Gaussian-Process) models are compared on a
-held-out test set. Here we deliberately keep the **Kriging** model: although the
-three have similar global R², the Gaussian Process is better calibrated in the
-data-sparse *corners* of the joint space where the optimum lives, which reduces
-the systematic over-prediction of MTOM at the optimum (quantified, and corrected,
-by the true-model verification in ``p3_optimization``). Because the joint DoE is
-still small, a single train/test split can be optimistic, so the surrogate is
-cross-checked by **K-fold cross-validation**: a CV R² close to the test R² is the
-evidence it is not over-fitting. The two are overlaid on the validation chart.
+Entraîne et valide le surrogate sur lequel l'optimisation robuste tournera. Les
+modèles **linéaire**, **RBF** et **krigeage** (processus gaussien) sont comparés
+sur un jeu de test mis de côté. On conserve délibérément le modèle de
+**krigeage** : bien que les trois aient des R² globaux proches, le processus
+gaussien est mieux calibré dans les *coins* peu denses de l'espace conjoint où se
+trouve l'optimum, ce qui réduit la sur-estimation systématique du MTOM à
+l'optimum (quantifiée, puis corrigée, par la vérification sur le vrai modèle dans
+``p3_optimization``). Comme le plan d'expériences conjoint reste petit, un unique
+découpage train/test peut être optimiste ; le surrogate est donc recoupé par une
+**validation croisée K-fold** : un R² de validation croisée proche du R² de test
+est la preuve qu'il n'y a pas de sur-apprentissage. Les deux sont superposés sur
+le graphe de validation.
 
-Heavy script: run ``p3_doe`` first. The selected surrogate is cached in ``data/``
-per use case and consumed by ``p3_optimization``.
+Script lourd : lancer ``p3_doe`` d'abord. Le surrogate sélectionné est mis en
+cache dans ``data/`` par cas d'usage et consommé par ``p3_optimization``.
 """
 
 from __future__ import annotations
@@ -22,8 +24,9 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery execs this file without defining ``__file__`` (cwd is the
-# script directory during execution); define it so the helpers below work.
+# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
+# courant est celui du script pendant l'exécution) ; on le définit pour que les
+# helpers ci-dessous fonctionnent.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_surrogate.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,18 +41,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def run(uc):
-    """Fit Linear vs RBF on the joint DoE, validate, and cache the best surrogate."""
+    """Ajuste linéaire/RBF/krigeage sur le plan conjoint, valide, et met en cache le meilleur surrogate."""
     surrogate_path = os.path.join(HERE, "data", f"{uc.lower()}_p3_surrogate.pkl")
 
     def fit_and_validate():
         train = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p3_train.pkl"))
         test = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p3_test.pkl"))
 
-        # Compare Linear / RBF / Kriging, but deliberately keep the Kriging
-        # (Gaussian-Process) model: it is better calibrated in the data-sparse
-        # corners of the joint space where the optimum lives, which reduces the
-        # over-prediction of MTOM at the optimum (see the true-model verification
-        # in p3_optimization). The full comparison is still plotted to justify it.
+        # Compare linéaire / RBF / krigeage, mais conserve délibérément le krigeage
+        # (processus gaussien) : il est mieux calibré dans les coins peu denses de
+        # l'espace conjoint où se trouve l'optimum, ce qui réduit la sur-estimation
+        # du MTOM à l'optimum (voir la vérification sur le vrai modèle dans
+        # p3_optimization). La comparaison complète reste tracée pour le justifier.
         best_name, surrogate, results = _oad.train_and_select(
             train, test, _oad.OUTPUT_NAMES, prefer="GaussianProcessRegressor")
         print(f"\n[{uc}] Problem 3 surrogate validation (test set R2):")
@@ -58,15 +61,15 @@ def run(uc):
             print(f"  {name:16s} {r2s}")
         print(f"  -> selected: {best_name}")
 
-        # K-fold cross-validation of the selected surrogate (close to the test R2
-        # => no over-fitting despite the small DoE).
+        # Validation croisée K-fold du surrogate sélectionné (proche du R² de test
+        # => pas de sur-apprentissage malgré le petit plan d'expériences).
         cv_r2 = surrogate.get_error_measure("R2Measure").compute_cross_validation_measure(as_dict=True)
         print(f"[{uc}] cross-validation R2 ({best_name}):")
         for o in _oad.OUTPUT_NAMES:
             print(f"  {o:7s} {float(cv_r2[o][0]):.3f}")
 
-        # Overlay the CV R2 on the validation chart so it can be seen tracking the
-        # single-split test R2 output by output.
+        # Superpose le R² de validation croisée sur le graphe de validation pour
+        # qu'on le voie suivre le R² de test (découpage unique), sortie par sortie.
         cv = {o: float(cv_r2[o][0]) for o in _oad.OUTPUT_NAMES}
         _oad.plot_validation_bars(
             results, _oad.OUTPUT_NAMES, f"{uc.lower()}_p3_validation.png",
@@ -76,17 +79,11 @@ def run(uc):
         print(f"[{uc}] P3 surrogate fitted and validated ({best_name}).")
         return surrogate
 
-    # Load-or-compute: reuse the pickled surrogate if present, else fit + validate.
+    # Charger-ou-calculer : réutiliser le surrogate picklé s'il existe, sinon
+    # l'ajuster + le valider.
     _oad.cached(surrogate_path, fit_and_validate)
 
 
 # %%
-# ## Use Case 1 — Kerosene / Turbofan
-# Skeleton for the UC1 contributor: the ``run`` helper above is use-case agnostic,
-# so completing UC1 is as simple as calling ``run("UC1")`` here (or implementing a
-# dedicated version).
-pass
-
-# %%
-# ## Use Case 2 — Liquid H₂ / Turbofan
+# ## Cas d'usage 2 — Hydrogène liquide / Turbofan
 run("UC2")

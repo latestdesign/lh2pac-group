@@ -1,17 +1,21 @@
-"""Problem 3 — Joint design + uncertain Design of Experiments.
+"""Problème 3 — Plan d'expériences conjoint (conception + incertain).
 
-This step builds the training data for the **robust** surrogate ``f̂(x, u) = f(x, u)``.
-Unlike Problems 1 and 2 (which fix either the uncertainties or the design), the
-robust optimization of Problem 3 needs a surrogate valid over **both** blocks at
-once, so a single Latin-Hypercube design samples the true coupled OAD model over
-the *joint* space — 4 design parameters plus 3 (kerosene) or 5 (liquid H₂)
-uncertain parameters. The multidisciplinary analysis, whose mass feedback loop is
-made explicit by the exported coupling graph, is solved at every sample.
+Cette étape construit les données d'entraînement du surrogate **robuste**
+``f̂(x, u) = f(x, u)``. Contrairement aux problèmes 1 et 2 (qui figent soit les
+incertitudes, soit la conception), l'optimisation robuste du problème 3 exige un
+surrogate valide sur **les deux** blocs à la fois : un unique plan en hypercube
+latin échantillonne donc le vrai modèle OAD couplé sur l'espace *conjoint* —
+4 paramètres de conception plus 3 (kérosène) ou 5 (hydrogène liquide) paramètres
+incertains. L'analyse multidisciplinaire, dont la boucle de rétroaction sur la
+masse est rendue explicite par le graphe de couplage exporté, est résolue à
+chaque échantillon.
 
-Heavy script (true-model sampling): run this before ``p3_surrogate`` and
-``p3_optimization``. Both use cases are produced below; the datasets are cached
-in ``data/`` under per-use-case names (delete a pickle to resample). The DoE is
-seeded so the downstream R² and robust-optimization figures are reproducible.
+Script lourd (échantillonnage du vrai modèle) : à lancer avant ``p3_surrogate``
+et ``p3_optimization``. Le helper ``run`` est agnostique au cas d'usage ; seul
+UC2 (hydrogène liquide) est produit ici. Les jeux de données sont mis en cache
+dans ``data/`` sous des noms par cas d'usage (supprimer un pickle pour
+ré-échantillonner). Le plan d'expériences est tiré avec une graine fixe pour que
+les R² et les figures d'optimisation robuste en aval soient reproductibles.
 """
 
 from __future__ import annotations
@@ -21,8 +25,9 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery execs this file without defining ``__file__`` (cwd is the
-# script directory during execution); define it so the helpers below work.
+# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
+# courant est celui du script pendant l'exécution) ; on le définit pour que les
+# helpers ci-dessous fonctionnent.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_doe.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,31 +44,33 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def run(uc):
-    """Sample the true coupled model over the joint (design + uncertain) space."""
+    """Échantillonne le vrai modèle couplé sur l'espace conjoint (conception + incertain)."""
     joint_space = _oad.get_joint_space(uc)
     dim = len(joint_space.variable_names)
-    # The joint space is high-dimensional (7-9 D) and the optimum sits in a
-    # *corner* (slst, n_pax on their lower bounds). A 5x-dim space-filling DoE
-    # leaves those corners too sparse, so the surrogate over-predicts MTOM there;
-    # a true-vs-surrogate study showed 10x-dim roughly halves that bias. We
-    # therefore use 10x dimension here (still small for a 9-D problem), and verify
-    # the final optimum on the true model in p3_optimization.
+    # L'espace conjoint est de grande dimension (7-9 D) et l'optimum se situe dans
+    # un *coin* (slst, n_pax sur leurs bornes inférieures). Un plan space-filling à
+    # 5x-dim laisse ces coins trop clairsemés, si bien que le surrogate y
+    # sur-estime le MTOM ; une étude vrai-vs-surrogate a montré que 10x-dim divise
+    # à peu près par deux ce biais. On utilise donc 10x la dimension ici (encore
+    # modeste pour un problème 9-D), et on vérifie l'optimum final sur le vrai
+    # modèle dans p3_optimization.
     n_train = 10 * dim
     n_test = 12 * dim
 
     disciplines = _oad.make_disciplines(uc)
 
-    # Coupling graph (condensed): documents the MDA solved at every DoE sample,
-    # i.e. the feedback loop on the take-off mass mtom (mass <-> total_mass <->
-    # mission).
+    # Graphe de couplage (condensé) : documente la MDA résolue à chaque échantillon
+    # du plan d'expériences, c.-à-d. la boucle de rétroaction sur la masse au
+    # décollage mtom (mass <-> total_mass <-> mission).
     generate_coupling_graph(
         disciplines,
         file_path=os.path.join(_oad.FIG_DIR, f"{uc.lower()}_p3_coupling.png"),
         full=False,
     )
 
-    # Load-or-compute: reuse the pickled datasets if present, else sample (LHS,
-    # distinct seeds for train/test) and save. Delete a pickle to resample.
+    # Charger-ou-calculer : réutiliser les jeux de données picklés s'ils existent,
+    # sinon échantillonner (LHS, graines distinctes pour train/test) et sauvegarder.
+    # Supprimer un pickle pour ré-échantillonner.
     train = _oad.cached(
         os.path.join(HERE, "data", f"{uc.lower()}_p3_train.pkl"),
         lambda: sample_disciplines(disciplines, _oad.get_joint_space(uc), _oad.OUTPUT_NAMES,
@@ -75,7 +82,7 @@ def run(uc):
                                    algo_name="OT_OPT_LHS", n_samples=n_test, seed=1),
     )
 
-    # Screening plot: each joint input against the take-off mass.
+    # Graphe de criblage : chaque entrée conjointe en fonction de la masse au décollage.
     mtom = train.get_view(variable_names="mtom").to_numpy().ravel()
     names = list(joint_space.variable_names)
     ncols = 3
@@ -96,12 +103,5 @@ def run(uc):
 
 
 # %%
-# ## Use Case 1 — Kerosene / Turbofan
-# Skeleton for the UC1 contributor: the ``run`` helper above is use-case agnostic,
-# so completing UC1 is as simple as calling ``run("UC1")`` here (or implementing a
-# dedicated version).
-pass
-
-# %%
-# ## Use Case 2 — Liquid H₂ / Turbofan
+# ## Cas d'usage 2 — Hydrogène liquide / Turbofan
 run("UC2")

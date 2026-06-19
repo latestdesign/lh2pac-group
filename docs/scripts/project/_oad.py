@@ -274,21 +274,15 @@ def train_and_select(train_dataset, test_dataset, output_names,
 
     for name in regressors:
         surrogate = SurrogateDiscipline(name, train_dataset)
-        # GEMSEO records a "validity domain": the hypercube spanned by the
-        # min/max of each input in the *training* DoE, and logs a warning every
-        # time the surrogate is later evaluated outside it. With our small DoEs
-        # and triangular uncertain inputs (whose samples cluster near the mode),
-        # downstream Monte-Carlo/optimization routinely probes just past that
-        # empirical box -- still well within the physical ranges, only outside
-        # the few training points -- which floods the logs with harmless
-        # warnings. We therefore *enlarge* the box by VALIDITY_DOMAIN_MARGIN
-        # about each input's centre, instead of disabling the check: a moderate
-        # factor absorbs that expected near-boundary extrapolation while a point
-        # that lands genuinely far outside still trips the warning, so the safety
-        # net is kept. (Note: emptying the domain does NOT work -- the membership
-        # check then raises internally and re-emits the very same warning.) The
-        # widened bounds are pickled with the surrogate, so the P2/P3 runs that
-        # load it inherit the same behaviour.
+        # GEMSEO warns whenever the surrogate is evaluated outside its validity
+        # domain (the box spanned by the training DoE). With small DoEs and
+        # triangular inputs clustered near the mode, downstream Monte-Carlo and
+        # optimization routinely probe just past that box -- still within the
+        # physical ranges -- which floods the logs. We widen the box by
+        # VALIDITY_DOMAIN_MARGIN about each input's centre to absorb that
+        # near-boundary extrapolation while keeping the warning for points that
+        # land genuinely far outside. The widened bounds are pickled with the
+        # surrogate, so the P2/P3 runs that load it inherit the same behaviour.
         VALIDITY_DOMAIN_MARGIN = 2.0  # 1.0 = original box, 2.0 = doubled about centre
         validity_domain = surrogate.regression_model.validity_domain
         for variable_name in tuple(validity_domain):

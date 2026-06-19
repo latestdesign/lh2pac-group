@@ -1,185 +1,109 @@
-"""Problem 1 — Design of Experiments (full draft pipeline, to be split).
+"""Problème 1 — Plan d'expériences déterministe (espace de conception seul).
 
-NOTE for the Problem-1 contributor: this file currently holds the **complete
-Problem-1 draft** for Use Case 1 (kerosene). It builds the coupled disciplines and
-the 4-parameter design space, runs the deterministic MDF optimization on the true
-model, fits and validates an RBF surrogate of ``f̂(x)``, re-optimizes on the
-surrogate, verifies the optimum and sketches the aircraft.
+Le problème 1 fige les incertitudes technologiques à leurs valeurs nominales et
+n'étudie que les 4 paramètres de conception x = (slst, n_pax, area, ar). Cette
+étape échantillonne le vrai modèle OAD couplé sur le seul espace de conception
+(u gelé au nominal) afin d'entraîner le surrogate déterministe f̂(x) ≈ f(x, u_nom)
+des étapes suivantes. La boucle de rétroaction sur la masse au décollage est
+résolue par une analyse multidisciplinaire (MDA) à chaque échantillon ; le graphe
+de couplage condensé est exporté pour documentation.
 
-It is kept here as a single block on purpose: the surrogate-building/validation
-part is meant to move into ``p1_surrogate.py`` and the optimization part into
-``p1_optimization.py`` (three parts, like Problem 3), and both use cases (UC1 and
-UC2) still need to be wired in. Until then this draft lives in the DoE slot.
+Script lourd (échantillonnage du vrai modèle) : à lancer avant ``p1_surrogate``
+et ``p1_optimization``. Les deux cas d'usage (UC1 kérosène, UC2 hydrogène
+liquide) sont produits ci-dessous ; les jeux de données sont mis en cache dans
+``data/`` (supprimer un pickle pour ré-échantillonner). Le plan est tiré avec une
+graine fixe pour des résultats reproductibles.
 """
 
+from __future__ import annotations
 
-from gemseo import generate_coupling_graph
-from gemseo.disciplines.auto_py import AutoPyDiscipline
-from gemseo_oad_training.models import aerodynamic
-from gemseo_oad_training.models import approach
-# from gemseo_oad_training.models import battery
-from gemseo_oad_training.models import climb
-from gemseo_oad_training.models import engine
-from gemseo_oad_training.models import fuel_tank
-from gemseo_oad_training.models import geometry
-from gemseo_oad_training.models import mass
-from gemseo_oad_training.models import mission
-from gemseo_oad_training.models import operating_cost
-from gemseo_oad_training.models import take_off
-from gemseo_oad_training.models import total_mass
+import os
+import sys
+import warnings
 
-from gemseo.algos.design_space import DesignSpace
-from numpy import array
+warnings.filterwarnings("ignore")
+# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
+# courant est celui du script pendant l'exécution) ; on le définit pour que les
+# helpers ci-dessous fonctionnent.
+if "__file__" not in globals():
+    __file__ = os.path.join(os.getcwd(), "p1_doe.py")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from matplotlib import pyplot as plt
 
-from gemseo.scenarios.mdo_scenario import MDOScenario
+from gemseo import configure_logger, generate_coupling_graph, sample_disciplines
 
-from gemseo_oad_training.unit import convert_from
+import _oad
 
+configure_logger(level="WARNING")
 
-from gemseo import sample_disciplines
-from gemseo.disciplines.surrogate import SurrogateDiscipline
-
-from gemseo_oad_training.utils import AircraftConfiguration
-from gemseo_oad_training.utils import draw_aircraft
-
-disciplines = [AutoPyDiscipline(aerodynamic),
-    AutoPyDiscipline(approach),
-    AutoPyDiscipline(climb),
-    AutoPyDiscipline(engine),
-    AutoPyDiscipline(fuel_tank),
-    AutoPyDiscipline(geometry),
-    AutoPyDiscipline(mass),
-    AutoPyDiscipline(mission),
-    AutoPyDiscipline(operating_cost),
-    AutoPyDiscipline(take_off),
-    AutoPyDiscipline(total_mass)]
-generate_coupling_graph(disciplines, file_path='couplage.png',full=False)
-
-design_space = DesignSpace()
-
-design_space.add_variable("slst", size=1, lower_bound=convert_from('kN',100), upper_bound=convert_from('kN',200) ,value=convert_from('kN',150))
-
-design_space.add_variable("n_pax", size=1, lower_bound=120, upper_bound=180 ,value=150)
-
-design_space.add_variable("area", size=1, lower_bound=convert_from('m2',100), upper_bound=convert_from('m2',200) ,value=convert_from('m2',180))
-
-design_space.add_variable("ar", size=1, lower_bound=5, upper_bound=20 ,value=9)
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-scenario = MDOScenario(disciplines, "mtom", design_space, formulation_name="MDF")
-scenario.add_constraint("tofl", constraint_type="ineq", positive=False, value=convert_from('m',1900))
-scenario.add_constraint("vapp", constraint_type="ineq", positive=False, value=convert_from('kt',135))
-scenario.add_constraint("vz", constraint_type="ineq", positive=True, value=convert_from('ft/min',300))
-scenario.add_constraint("span", constraint_type="ineq", positive=False, value=convert_from('m',40))
-scenario.add_constraint("length", constraint_type="ineq", positive=False, value=convert_from('m',45))
-scenario.add_constraint("fm", constraint_type="ineq", positive=True, value=0)
+def run(uc):
+    """Échantillonne le vrai modèle couplé sur l'espace de conception (u au nominal)."""
+    design_space = _oad.get_design_space()
+    dim = len(design_space.variable_names)  # 4 paramètres de conception
+    # Petit plan space-filling : on reste sobre (≈ 10x la dimension), conforme à la
+    # règle "3 à 5 fois la dimension d'entrée" élargie pour des sorties non
+    # linéaires (tofl notamment). La qualité est vérifiée dans p1_surrogate.
+    n_train = 10 * dim
+    n_test = 12 * dim
 
+    disciplines = _oad.make_disciplines(uc)
+    # Problème déterministe : on gèle les paramètres incertains à leur valeur
+    # nominale, seul x varie ensuite dans le plan d'expériences.
+    _oad.set_design_point(
+        disciplines,
+        {k: _oad.NOMINAL_UNCERTAIN[k] for k in _oad.get_uncertain_space(uc).variable_names},
+    )
 
-print(design_space)
-#scenario.execute(algo_name="SLSQP", max_iter=100)
-scenario.execute(algo_name="NLOPT_COBYLA", max_iter=100)
+    # Graphe de couplage (condensé) : documente la MDA résolue à chaque échantillon
+    # (boucle de rétroaction mass <-> total_mass <-> mission sur la masse mtom).
+    generate_coupling_graph(
+        disciplines,
+        file_path=os.path.join(_oad.FIG_DIR, f"{uc.lower()}_p1_coupling.png"),
+        full=False,
+    )
 
-scenario.optimization_result
+    # Charger-ou-calculer : réutiliser les jeux picklés s'ils existent, sinon
+    # échantillonner (LHS, graines distinctes train/test). Supprimer un pickle pour
+    # ré-échantillonner.
+    train = _oad.cached(
+        os.path.join(HERE, "data", f"{uc.lower()}_p1_train.pkl"),
+        lambda: sample_disciplines(disciplines, _oad.get_design_space(), _oad.OUTPUT_NAMES,
+                                   algo_name="OT_OPT_LHS", n_samples=n_train, seed=0),
+    )
+    test = _oad.cached(
+        os.path.join(HERE, "data", f"{uc.lower()}_p1_test.pkl"),
+        lambda: sample_disciplines(disciplines, _oad.get_design_space(), _oad.OUTPUT_NAMES,
+                                   algo_name="OT_OPT_LHS", n_samples=n_test, seed=1),
+    )
 
-scenario.optimization_result.constraint_values
-# %%
-scenario.optimization_result.x_opt_as_dict
-# %%
-scenario.optimization_result.x_0_as_dict
-# %%
-# Plot the optimization history:
-scenario.post_process(post_name="OptHistoryView", save=False, show=True)
+    # Graphe de criblage : chaque paramètre de conception en fonction du MTOM.
+    mtom = train.get_view(variable_names="mtom").to_numpy().ravel()
+    names = list(design_space.variable_names)
+    ncols = 2
+    nrows = (len(names) + ncols - 1) // ncols
+    fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3 * nrows))
+    for ax, name in zip(axes.ravel(), names):
+        col = train.get_view(variable_names=name).to_numpy().ravel()
+        ax.scatter(col, mtom, s=18, c="tab:blue")
+        ax.set_xlabel(name)
+        ax.set_ylabel("mtom")
+    for ax in axes.ravel()[len(names):]:
+        ax.axis("off")
+    fig.suptitle(f"{uc} - Problem 1 DoE: design inputs vs MTOM ({n_train} LHS samples)")
+    fig.tight_layout()
+    _oad.savefig(fig, f"{uc.lower()}_p1_doe.png")
+    plt.close(fig)
+    print(f"[{uc}] P1 DoE done: {n_train} train / {n_test} test samples ({dim} inputs).")
 
-
-
-#Surrogate
-
-# ### 2. Generate training and test datasets
-training_dataset = sample_disciplines(
-    disciplines, design_space, ["mtom","tofl","vapp","vz","span","length","fm"], algo_name="OT_OPT_LHS", n_samples=30
-)
-test_dataset = sample_disciplines(
-    disciplines, design_space, ["mtom","tofl","vapp","vz","span","length","fm"], algo_name="OT_FULLFACT", n_samples=30**2
-)
 
 # %%
-print("Surrogate Discipline :")
-# ### 3. Build the surrogate discipline
-surrogate_discipline = SurrogateDiscipline("RBFRegressor", training_dataset)
-
-print(surrogate_discipline.execute({"slst":array([convert_from("kN",150)]),"n_pax":array([150]),"area":array([convert_from("m2",180)]),"ar":array([9])}))
-# ### 5. Evaluate accuracy
-
-#
-# R² measure — on training data, by cross-validation, and on test data:
-r2 = surrogate_discipline.get_error_measure("R2Measure")
-print(f"R2 : {r2.compute_learning_measure(as_dict=True)}")
-# %%
-print(f" Cross Validation Measure : {r2.compute_cross_validation_measure(as_dict=True)}")
-# %%
-print(f" Test Measure : {r2.compute_test_measure(test_dataset, as_dict=True)}")
+# ## Cas d'usage 1 — Kérosène / Turbofan
+run("UC1")
 
 # %%
-# RMSE measure:
-rmse = surrogate_discipline.get_error_measure("RMSEMeasure")
-print(f"RMSE : {rmse.compute_learning_measure(as_dict=True)}")
-# %%
-print(f"Cross Validation Measure : {rmse.compute_cross_validation_measure(as_dict=True)}")
-# %%
-print(f"Test Measure : {rmse.compute_test_measure(test_dataset, as_dict=True)}")
-
-# Optimisation avec le surrogate
-
-scenario_surrogate = MDOScenario([surrogate_discipline], "mtom", design_space, formulation_name="DisciplinaryOpt")
-scenario_surrogate.add_constraint("tofl", constraint_type="ineq", positive=False, value=convert_from('m',1900))
-scenario_surrogate.add_constraint("vapp", constraint_type="ineq", positive=False, value=convert_from('kt',135))
-scenario_surrogate.add_constraint("vz", constraint_type="ineq", positive=True, value=convert_from('ft/min',300))
-scenario_surrogate.add_constraint("span", constraint_type="ineq", positive=False, value=convert_from('m',40))
-scenario_surrogate.add_constraint("length", constraint_type="ineq", positive=False, value=convert_from('m',45))
-scenario_surrogate.add_constraint("fm", constraint_type="ineq", positive=True, value=0)
-print(scenario_surrogate)
-
-# %%
-# ### 5. Execute with a gradient-free optimizer
-scenario_surrogate.execute(algo_name="NLOPT_COBYLA", max_iter=100)
-
-# %%
-# ### 6. Inspect the results
-print(f"Optimisation result {scenario_surrogate.optimization_result}")
-# %%
-print(f"Constraint values {scenario_surrogate.optimization_result.constraint_values}")
-# %%
-print(f"X opt : {scenario_surrogate.optimization_result.x_opt_as_dict}")
-# %%
-print(f"X0 : {scenario_surrogate.optimization_result.x_0_as_dict}")
-# %%
-# Plot the optimization history:
-scenario_surrogate.post_process(post_name="OptHistoryView", save=False, show=True)
-
-
-scenario_test = MDOScenario(disciplines, "mtom", design_space, formulation_name="MDF")
-scenario_test.add_constraint("tofl", constraint_type="ineq", positive=False, value=convert_from('m',1900))
-scenario_test.add_constraint("vapp", constraint_type="ineq", positive=False, value=convert_from('kt',135))
-scenario_test.add_constraint("vz", constraint_type="ineq", positive=True, value=convert_from('ft/min',300))
-scenario_test.add_constraint("span", constraint_type="ineq", positive=False, value=convert_from('m',40))
-scenario_test.add_constraint("length", constraint_type="ineq", positive=False, value=convert_from('m',45))
-scenario_test.add_constraint("fm", constraint_type="ineq", positive=True, value=0)
-
-
-scenario_test.execute(algo_name="CustomDOE", samples=[scenario_surrogate.optimization_result.x_opt_as_dict])
-print(f'Execute : ')
-print(f"Optimisation result {scenario_test.optimization_result}")
-
-draw_aircraft()
-# %%
-# ### 2. Draw variants with a custom wing area
-configuration_1 = AircraftConfiguration(area=200, name="Conf 1", color="b")
-draw_aircraft(configuration_1, title="Area = 200")
-
-# %%
-configuration_2 = AircraftConfiguration(area=80, name="Conf 2", color="r")
-draw_aircraft(configuration_2, title="Area = 80")
-
-# %%
-draw_aircraft(configuration_1, configuration_2, title="Comparison")
+# ## Cas d'usage 2 — Hydrogène liquide / Turbofan
+run("UC2")
