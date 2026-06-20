@@ -7,7 +7,7 @@ l'optimum déterministe (problème 1) en propageant les mêmes incertitudes aux 
 conceptions.
 
 k = 2 est un proxy de robustesse fondé sur les moments, pas une garantie
-probabiliste ; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.
+probabiliste; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.
 
 Script lourd : le Monte-Carlo interne rend chaque cas d'usage long de plusieurs
 minutes. Lancer p3_doe puis p3_surrogate d'abord.
@@ -20,7 +20,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_optimization.py")
@@ -44,7 +44,7 @@ configure_logger(level="WARNING")
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 MARGIN_FACTOR = 2.0  # k dans la marge "mean +/- k*std" (proxy fondé sur les
-# moments, pas une garantie probabiliste ; fiabilités réelles mesurées par MC).
+# moments, pas une garantie probabiliste; fiabilités réelles mesurées par MC).
 N_MC = 150           # taille du Monte-Carlo interne pour l'estimation des statistiques.
 MAX_ITER = 60        # itérations de l'optimiseur (chacune lance un échantillonnage interne complet).
 N_TRUE = 2000        # taille du Monte-Carlo pour la vérification sur le VRAI modèle ci-dessous.
@@ -120,7 +120,7 @@ def run(uc):
             "Mean", statistic_estimation_settings=settings, formulation_name="DisciplinaryOpt",
         )
         for name, positive, bound in _oad.CONSTRAINTS:
-            # "<= bound" -> mean + k*std <= bound ; ">= bound" -> mean - k*std >= bound.
+            # "<= bound" -> mean + k*std <= bound; ">= bound" -> mean - k*std >= bound.
             factor = -MARGIN_FACTOR if positive else MARGIN_FACTOR
             scenario.add_constraint(name, "Margin", value=bound, positive=positive, factor=factor)
         scenario.execute(algo_name="NLOPT_COBYLA", max_iter=MAX_ITER)
@@ -164,8 +164,8 @@ def run(uc):
         x_det = _deterministic_optimum(surrogate, uc, start=x_robust)
     print(f"  deterministic optimum: " + " ".join(f"{k}={x_det[k]:.2f}" for k in DES))
 
-    # ---- VÉRIFICATION SUR LE VRAI MODÈLE ---------------------------------- #
-    # Le surrogate ne sert qu'à chercher ; les chiffres rapportés sont lus sur le
+    # Vérification sur le vrai modèle
+    # Le surrogate ne sert qu'à chercher; les chiffres rapportés sont lus sur le
     # vrai modèle. D'abord le point nominal (1 MDA chacun).
     det_true, rob_true = _true_nominal(uc, x_det), _true_nominal(uc, x_robust)
     nominal_u = {k: np.array([v]) for k, v in _oad.NOMINAL_UNCERTAIN.items()
@@ -179,7 +179,7 @@ def run(uc):
     print(f"    deterministic {surr_nominal_mtom(x_det):.0f} / {det_true['mtom']:.0f} kg")
     print(f"    robust        {surr_nominal_mtom(x_robust):.0f} / {rob_true['mtom']:.0f} kg")
 
-    # ---- Avion robuste vs déterministe (géométrie du vrai modèle) ---------- #
+    # Avion robuste vs déterministe (géométrie du vrai modèle)
     det_config = AircraftConfiguration(
         name="Deterministic (P1)", area=x_det["area"], n_pax=int(round(x_det["n_pax"])),
         slst=x_det["slst"], span=det_true["span"], length=det_true["length"], color="tab:blue",
@@ -194,7 +194,7 @@ def run(uc):
         save=True, show=False,
     )
 
-    # ---- Contrôle de robustesse sur le VRAI modèle ------------------------ #
+    # Contrôle de robustesse sur le vrai modèle
     # Propage u à travers le vrai modèle à chaque conception figée : MTOM espéré réel
     # et P(contrainte satisfaite) réelle.
     constrained = [(n, p, b) for n, p, b in _oad.CONSTRAINTS if n in _oad.SENSITIVITY_OUTPUTS]

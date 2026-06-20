@@ -3,8 +3,8 @@
 Compare les trois manières d'estimer l'espérance et l'écart-type propagés à chaque
 itération de l'optimiseur robuste :
 
-* surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings) ;
-* sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings) ;
+* surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings);
+* sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings);
 * taylor : développement de Taylor au premier ordre (TaylorPolynomial_Settings).
 
 Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
@@ -52,7 +52,7 @@ N_SAMPLES = 200  # taille d'échantillonnage des variantes surrogate / sampling
 
 
 def _build_disciplines(uc):
-    """Formulation complète à 11 disciplines (avec operating_cost) ; fuel_type fixé pour UC2."""
+    """Formulation complète à 11 disciplines (avec operating_cost); fuel_type fixé pour UC2."""
     disciplines = [AutoPyDiscipline(func) for func in (
         aerodynamic, approach, climb, engine, fuel_tank, geometry,
         mass, mission, operating_cost, take_off, total_mass)]

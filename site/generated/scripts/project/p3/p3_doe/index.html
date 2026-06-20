@@ -2127,7 +2127,7 @@ plan en hypercube latin échantillonne le vrai modèle couplé sur l'espace conj
 incertains. Exporte aussi le graphe de couplage de la MDA.</p>
 <p>Script lourd : à lancer avant p3_surrogate et p3_optimization. Seul UC2 est
 produit ici. Jeux de données mis en cache dans data/ (supprimer un pickle pour
-ré-échantillonner) ; graine fixe pour la reproductibilité.</p>
+ré-échantillonner); graine fixe pour la reproductibilité.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 12-88 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -2137,7 +2137,7 @@ ré-échantillonner) ; graine fixe pour la reproductibilité.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p3_doe.py&quot;</span><span class="p">)</span>

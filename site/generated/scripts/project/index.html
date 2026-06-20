@@ -2036,13 +2036,13 @@
 <p>Scripts de conception globale d'avion (OAD) comparant kérosène (UC1) et hydrogène
 liquide (UC2), organisés par problème :</p>
 <ul>
-<li><code>p1/</code> — optimisation déterministe (surrogate <code>f_hat(x)</code>) ;</li>
-<li><code>p2/</code> — quantification des incertitudes et sensibilité (<code>f_hat(u)</code>) ;</li>
+<li><code>p1/</code> — optimisation déterministe (surrogate <code>f_hat(x)</code>);</li>
+<li><code>p2/</code> — quantification des incertitudes et sensibilité (<code>f_hat(u)</code>);</li>
 <li><code>p3/</code> — optimisation robuste sur l'espace conjoint (<code>f_hat(x, u)</code>).</li>
 </ul>
 <p><code>_oad.py</code> regroupe la définition partagée du problème (disciplines, espaces,
 contraintes, sélection de surrogate, helpers de figures), importée par tous les
-scripts. Le détail de chaque étape est dans le README de son dossier ; l'analyse
+scripts. Le détail de chaque étape est dans le README de son dossier; l'analyse
 des résultats est dans le rapport (<code>docs/report/</code>).</p>
 <div class="mkd-glr-thumbcontainer" tooltip="Source de vérité unique du problème de conception avion globale (Overall Aircraft Design). Le v...">
     <!--div class="figure align-default" id="id1"-->
@@ -2067,10 +2067,10 @@ des résultats est dans le rapport (<code>docs/report/</code>).</p>
 de conception x = (slst, n_pax, area, ar) varient), pour les deux cas d'usage
 (UC1 kérosène, UC2 hydrogène liquide) :</p>
 <ul>
-<li><code>p1_doe</code> : plan d'expériences sur le vrai modèle couplé ;</li>
-<li><code>p1_model_study</code> : choix du couple métamodèle / taille de plan ;</li>
-<li><code>p1_algo_study</code> : choix de l'algorithme d'optimisation (COBYLA vs SLSQP) ;</li>
-<li><code>p1_surrogate</code> : entraînement et validation du surrogate déterministe f_hat(x) ;</li>
+<li><code>p1_doe</code> : plan d'expériences sur le vrai modèle couplé;</li>
+<li><code>p1_model_study</code> : choix du couple métamodèle / taille de plan;</li>
+<li><code>p1_algo_study</code> : choix de l'algorithme d'optimisation (COBYLA vs SLSQP);</li>
+<li><code>p1_surrogate</code> : entraînement et validation du surrogate déterministe f_hat(x);</li>
 <li><code>p1_optimization</code> : minimisation du MTOM sur le surrogate, optimum vérifié sur
   le vrai modèle (référence du Problème 3).</li>
 </ul>
@@ -2153,7 +2153,7 @@ de conception x = (slst, n_pax, area, ar) varient), pour les deux cas d'usage
 <p>Conception <code>x</code> figée, étude de l'effet des incertitudes technologiques <code>u</code> sur les
 sorties, pour les deux cas d'usage :</p>
 <ul>
-<li><code>p2_uc1</code> (kérosène) : incertitudes <code>aef</code>/<code>cef</code>/<code>sef</code> ;</li>
+<li><code>p2_uc1</code> (kérosène) : incertitudes <code>aef</code>/<code>cef</code>/<code>sef</code>;</li>
 <li><code>p2_uc2</code> (hydrogène liquide) : incertitudes <code>gi</code>/<code>vi</code>/<code>aef</code>/<code>sef</code>.</li>
 </ul>
 <p>Chaque script propage <code>u</code> à travers le vrai modèle couplé à 11 disciplines, ajuste
@@ -2196,9 +2196,9 @@ optimal X_opt ou initial X_init selon le bloc activé en tête de script.</p>
 <p>Optimisation robuste sur l'espace conjoint conception/incertitudes, pour les deux
 cas d'usage (UC1, UC2) :</p>
 <ul>
-<li><code>p3_doe</code> : plan d'expériences conjoint sur le vrai modèle ;</li>
-<li><code>p3_surrogate</code> : entraînement et validation du surrogate robuste f_hat(x, u) ;</li>
-<li><code>p3_optimization</code> : optimisation robuste comparée à l'optimum déterministe (P1) ;</li>
+<li><code>p3_doe</code> : plan d'expériences conjoint sur le vrai modèle;</li>
+<li><code>p3_surrogate</code> : entraînement et validation du surrogate robuste f_hat(x, u);</li>
+<li><code>p3_optimization</code> : optimisation robuste comparée à l'optimum déterministe (P1);</li>
 <li><code>p3_uq_methods</code> : comparaison des méthodes d'estimation des statistiques (UQ).</li>
 </ul>
 <p>Jeux de données et surrogates stockés dans <code>data/</code>.</p>

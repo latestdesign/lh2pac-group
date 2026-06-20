@@ -2127,7 +2127,7 @@ chaque itération (gemseo-umdo). L'optimum robuste est ensuite comparé à
 l'optimum déterministe (problème 1) en propageant les mêmes incertitudes aux deux
 conceptions.</p>
 <p>k = 2 est un proxy de robustesse fondé sur les moments, pas une garantie
-probabiliste ; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.</p>
+probabiliste; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.</p>
 <p>Script lourd : le Monte-Carlo interne rend chaque cas d'usage long de plusieurs
 minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 15-227 -->
@@ -2139,7 +2139,7 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p3_optimization.py&quot;</span><span class="p">)</span>
@@ -2163,7 +2163,7 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
 <span class="n">HERE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
 <span class="n">MARGIN_FACTOR</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># k dans la marge &quot;mean +/- k*std&quot; (proxy fondé sur les</span>
-<span class="c1"># moments, pas une garantie probabiliste ; fiabilités réelles mesurées par MC).</span>
+<span class="c1"># moments, pas une garantie probabiliste; fiabilités réelles mesurées par MC).</span>
 <span class="n">N_MC</span> <span class="o">=</span> <span class="mi">150</span>           <span class="c1"># taille du Monte-Carlo interne pour l&#39;estimation des statistiques.</span>
 <span class="n">MAX_ITER</span> <span class="o">=</span> <span class="mi">60</span>        <span class="c1"># itérations de l&#39;optimiseur (chacune lance un échantillonnage interne complet).</span>
 <span class="n">N_TRUE</span> <span class="o">=</span> <span class="mi">2000</span>        <span class="c1"># taille du Monte-Carlo pour la vérification sur le VRAI modèle ci-dessous.</span>
@@ -2239,7 +2239,7 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
             <span class="s2">&quot;Mean&quot;</span><span class="p">,</span> <span class="n">statistic_estimation_settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span> <span class="n">formulation_name</span><span class="o">=</span><span class="s2">&quot;DisciplinaryOpt&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">_oad</span><span class="o">.</span><span class="n">CONSTRAINTS</span><span class="p">:</span>
-            <span class="c1"># &quot;&lt;= bound&quot; -&gt; mean + k*std &lt;= bound ; &quot;&gt;= bound&quot; -&gt; mean - k*std &gt;= bound.</span>
+            <span class="c1"># &quot;&lt;= bound&quot; -&gt; mean + k*std &lt;= bound; &quot;&gt;= bound&quot; -&gt; mean - k*std &gt;= bound.</span>
             <span class="n">factor</span> <span class="o">=</span> <span class="o">-</span><span class="n">MARGIN_FACTOR</span> <span class="k">if</span> <span class="n">positive</span> <span class="k">else</span> <span class="n">MARGIN_FACTOR</span>
             <span class="n">scenario</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Margin&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">bound</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="n">positive</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">factor</span><span class="p">)</span>
         <span class="n">scenario</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">algo_name</span><span class="o">=</span><span class="s2">&quot;NLOPT_COBYLA&quot;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">MAX_ITER</span><span class="p">)</span>
@@ -2283,8 +2283,8 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
         <span class="n">x_det</span> <span class="o">=</span> <span class="n">_deterministic_optimum</span><span class="p">(</span><span class="n">surrogate</span><span class="p">,</span> <span class="n">uc</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">x_robust</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  deterministic optimum: &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">x_det</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">DES</span><span class="p">))</span>
 
-    <span class="c1"># ---- VÉRIFICATION SUR LE VRAI MODÈLE ---------------------------------- #</span>
-    <span class="c1"># Le surrogate ne sert qu&#39;à chercher ; les chiffres rapportés sont lus sur le</span>
+    <span class="c1"># Vérification sur le vrai modèle</span>
+    <span class="c1"># Le surrogate ne sert qu&#39;à chercher; les chiffres rapportés sont lus sur le</span>
     <span class="c1"># vrai modèle. D&#39;abord le point nominal (1 MDA chacun).</span>
     <span class="n">det_true</span><span class="p">,</span> <span class="n">rob_true</span> <span class="o">=</span> <span class="n">_true_nominal</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span> <span class="n">x_det</span><span class="p">),</span> <span class="n">_true_nominal</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span> <span class="n">x_robust</span><span class="p">)</span>
     <span class="n">nominal_u</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_oad</span><span class="o">.</span><span class="n">NOMINAL_UNCERTAIN</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -2298,7 +2298,7 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    deterministic </span><span class="si">{</span><span class="n">surr_nominal_mtom</span><span class="p">(</span><span class="n">x_det</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">det_true</span><span class="p">[</span><span class="s1">&#39;mtom&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> kg&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    robust        </span><span class="si">{</span><span class="n">surr_nominal_mtom</span><span class="p">(</span><span class="n">x_robust</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">rob_true</span><span class="p">[</span><span class="s1">&#39;mtom&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> kg&quot;</span><span class="p">)</span>
 
-    <span class="c1"># ---- Avion robuste vs déterministe (géométrie du vrai modèle) ---------- #</span>
+    <span class="c1"># Avion robuste vs déterministe (géométrie du vrai modèle)</span>
     <span class="n">det_config</span> <span class="o">=</span> <span class="n">AircraftConfiguration</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Deterministic (P1)&quot;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="n">x_det</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">],</span> <span class="n">n_pax</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_det</span><span class="p">[</span><span class="s2">&quot;n_pax&quot;</span><span class="p">])),</span>
         <span class="n">slst</span><span class="o">=</span><span class="n">x_det</span><span class="p">[</span><span class="s2">&quot;slst&quot;</span><span class="p">],</span> <span class="n">span</span><span class="o">=</span><span class="n">det_true</span><span class="p">[</span><span class="s2">&quot;span&quot;</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="n">det_true</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
@@ -2313,7 +2313,7 @@ minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
         <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># ---- Contrôle de robustesse sur le VRAI modèle ------------------------ #</span>
+    <span class="c1"># Contrôle de robustesse sur le vrai modèle</span>
     <span class="c1"># Propage u à travers le vrai modèle à chaque conception figée : MTOM espéré réel</span>
     <span class="c1"># et P(contrainte satisfaite) réelle.</span>
     <span class="n">constrained</span> <span class="o">=</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">_oad</span><span class="o">.</span><span class="n">CONSTRAINTS</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_oad</span><span class="o">.</span><span class="n">SENSITIVITY_OUTPUTS</span><span class="p">]</span>

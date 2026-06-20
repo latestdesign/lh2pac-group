@@ -2175,7 +2175,7 @@ d'itérations, via le MTOM optimal et les historiques de convergence.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_optimize</span><span class="p">(</span><span class="n">disciplines</span><span class="p">,</span> <span class="n">algo_name</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Résolution déterministe sur le vrai modèle (MDF) ; renvoie (f_opt, historique objectif).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Résolution déterministe sur le vrai modèle (MDF); renvoie (f_opt, historique objectif).&quot;&quot;&quot;</span>
     <span class="n">scenario</span> <span class="o">=</span> <span class="n">MDOScenario</span><span class="p">(</span><span class="n">disciplines</span><span class="p">,</span> <span class="n">_oad</span><span class="o">.</span><span class="n">OBJECTIVE</span><span class="p">,</span> <span class="n">_oad</span><span class="o">.</span><span class="n">get_design_space</span><span class="p">(),</span>
                            <span class="n">formulation_name</span><span class="o">=</span><span class="s2">&quot;MDF&quot;</span><span class="p">)</span>
     <span class="n">_oad</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">scenario</span><span class="p">)</span>

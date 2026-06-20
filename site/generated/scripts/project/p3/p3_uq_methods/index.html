@@ -2146,8 +2146,8 @@ to download the full example code</p>
 <p>Compare les trois manières d'estimer l'espérance et l'écart-type propagés à chaque
 itération de l'optimiseur robuste :</p>
 <ul>
-<li>surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings) ;</li>
-<li>sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings) ;</li>
+<li>surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings);</li>
+<li>sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings);</li>
 <li>taylor : développement de Taylor au premier ordre (TaylorPolynomial_Settings).</li>
 </ul>
 <p>Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
@@ -2194,7 +2194,7 @@ helper de figures est réutilisé).</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_build_disciplines</span><span class="p">(</span><span class="n">uc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formulation complète à 11 disciplines (avec operating_cost) ; fuel_type fixé pour UC2.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formulation complète à 11 disciplines (avec operating_cost); fuel_type fixé pour UC2.&quot;&quot;&quot;</span>
     <span class="n">disciplines</span> <span class="o">=</span> <span class="p">[</span><span class="n">AutoPyDiscipline</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="p">(</span>
         <span class="n">aerodynamic</span><span class="p">,</span> <span class="n">approach</span><span class="p">,</span> <span class="n">climb</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="n">fuel_tank</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span>
         <span class="n">mass</span><span class="p">,</span> <span class="n">mission</span><span class="p">,</span> <span class="n">operating_cost</span><span class="p">,</span> <span class="n">take_off</span><span class="p">,</span> <span class="n">total_mass</span><span class="p">)]</span>

@@ -8,8 +8,8 @@ empiriques et la distribution de la MTOM.
 
 Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
 à 3 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
-L'analyse couvre les deux points de conception (X_init ; X_opt issu de la
-Partie 1) ; étapes aléatoires graînées ; surrogate validé par validation croisée et
+L'analyse couvre les deux points de conception (X_init; X_opt issu de la
+Partie 1); étapes aléatoires graînées; surrogate validé par validation croisée et
 sur un plan de test indépendant tiré du vrai modèle.
 
 Script lourd (échantillonnage du vrai modèle, Sobol sur surrogate).

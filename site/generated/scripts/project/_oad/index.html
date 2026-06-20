@@ -2058,7 +2058,7 @@ rétroaction sur la masse au décollage (mass &lt;-&gt; total_mass &lt;-&gt; mis
 impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.</p>
 <ul>
 <li>x (conception) : slst, n_pax, area, ar.</li>
-<li>u (incertain) : aef, cef, sef ; plus gi, vi pour
+<li>u (incertain) : aef, cef, sef; plus gi, vi pour
   l'hydrogène liquide.</li>
 <li>Objectif : minimiser mtom. Contraintes : tofl, vapp, vz,
   span, length, fm.</li>
@@ -2146,7 +2146,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.<
 <span class="n">SENSITIVITY_OUTPUTS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mtom&quot;</span><span class="p">,</span> <span class="s2">&quot;tofl&quot;</span><span class="p">,</span> <span class="s2">&quot;vapp&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">,</span> <span class="s2">&quot;fm&quot;</span><span class="p">]</span>
 
 <span class="c1"># contraintes sous la forme (nom_sortie, positif, borne) en unités standard (SI).</span>
-<span class="c1"># positive=False signifie sortie &lt;= borne ; positive=True signifie sortie &gt;= borne.</span>
+<span class="c1"># positive=False signifie sortie &lt;= borne; positive=True signifie sortie &gt;= borne.</span>
 <span class="n">CONSTRAINTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="s2">&quot;tofl&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">1900.0</span><span class="p">),</span>                       <span class="c1"># longueur de piste au décollage &lt;= 1900 m</span>
     <span class="p">(</span><span class="s2">&quot;vapp&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_from</span><span class="p">(</span><span class="s2">&quot;kt&quot;</span><span class="p">,</span> <span class="mf">135.0</span><span class="p">)),</span>    <span class="c1"># vitesse d&#39;approche &lt;= 135 kt</span>
@@ -2228,7 +2228,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.<
 <span class="k">def</span><span class="w"> </span><span class="nf">get_uncertain_space</span><span class="p">(</span><span class="n">uc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParameterSpace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Renvoie l&#39;espace incertain des variables aléatoires pertinentes pour un cas d&#39;usage.</span>
 
-<span class="sd">    aef/cef/sef sont toujours pertinentes ; gi/vi seulement</span>
+<span class="sd">    aef/cef/sef sont toujours pertinentes; gi/vi seulement</span>
 <span class="sd">    pour liquid_h2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">USE_CASES</span><span class="p">[</span><span class="n">uc</span><span class="p">]</span>
@@ -2252,7 +2252,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.<
 
 <span class="sd">    Les variables de conception sont ajoutées comme variables aléatoires</span>
 <span class="sd">    uniformes sur leurs bornes afin qu&#39;un unique plan d&#39;expériences explore</span>
-<span class="sd">    f(x, u) ; l&#39;optimisation traite ensuite la partie conception comme</span>
+<span class="sd">    f(x, u); l&#39;optimisation traite ensuite la partie conception comme</span>
 <span class="sd">    déterministe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">space</span> <span class="o">=</span> <span class="n">ParameterSpace</span><span class="p">()</span>

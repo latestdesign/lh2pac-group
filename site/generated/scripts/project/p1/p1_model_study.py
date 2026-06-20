@@ -76,7 +76,7 @@ def run(uc):
 
     for model_name in surrogates:
         for n in n_samples_list:
-            print(f"\n--- Model: {model_name} | N = {n} ---")
+            print(f"\nModel: {model_name} | N = {n} samples")
 
             # Plan d'entraînement échantillonné sur le vrai modèle.
             ds_train = get_fresh_design_space()
@@ -165,7 +165,6 @@ def run(uc):
     # Print the final Markdown table
     print(f"\n=== FINAL RESULTS TABLE ({uc}) ===")
     print("| Métamodèle | Échantillons (N) | MTOM Surrogate (kg) | MTOM Réelle (kg) | Faisable (Réel) | Contraintes violées (valeur standardisée) |")
-    print("|---|---|---|---|---|---|")
     for res in results:
         print(f"| {res['model']} | {res['n']} | {res['surr_mtom']:.1f} | {res['true_mtom']:.1f} | {res['feasible']} | {res['violations']} |")
 

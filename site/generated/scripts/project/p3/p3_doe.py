@@ -7,7 +7,7 @@ incertains. Exporte aussi le graphe de couplage de la MDA.
 
 Script lourd : à lancer avant p3_surrogate et p3_optimization. Seul UC2 est
 produit ici. Jeux de données mis en cache dans data/ (supprimer un pickle pour
-ré-échantillonner) ; graine fixe pour la reproductibilité.
+ré-échantillonner); graine fixe pour la reproductibilité.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_doe.py")

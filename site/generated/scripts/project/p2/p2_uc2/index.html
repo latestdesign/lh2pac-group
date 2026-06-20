@@ -2282,7 +2282,7 @@ de f(u), on le valide, puis on s'en sert pour une propagation Monte-Carlo
 (10 000 tirages) et une analyse de Sobol.</p>
 <p>Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
 à 4 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
-Conception figée au point initial X_init ; décommenter le bloc dédié pour X_opt.</p>
+Conception figée au point initial X_init; décommenter le bloc dédié pour X_opt.</p>
 <p>Script lourd (échantillonnage du vrai modèle, Monte-Carlo et Sobol sur surrogate).</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 15-50 -->
 
@@ -2501,7 +2501,7 @@ Conception figée au point initial X_init ; décommenter le bloc dédié pour X_
 <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">sobol</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">first</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total-order indices:&quot;</span><span class="p">)</span>
 <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">sobol</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">total</span><span class="p">)</span>
-<span class="c1"># Au point initial -&gt; x_init ; renommer en _x_opt si le bloc X_opt est décommenté.</span>
+<span class="c1"># Au point initial -&gt; x_init; renommer en _x_opt si le bloc X_opt est décommenté.</span>
 <span class="n">sobol</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;mtom&quot;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
            <span class="n">file_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_oad</span><span class="o">.</span><span class="n">FIG_DIR</span><span class="p">,</span> <span class="s2">&quot;uc2_p2_sobol_indices_x_init&quot;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sobol indices plot saved.&quot;</span><span class="p">)</span>

@@ -8,7 +8,7 @@ de f(u), on le valide, puis on s'en sert pour une propagation Monte-Carlo
 
 Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
 à 4 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
-Conception figée au point initial X_init ; décommenter le bloc dédié pour X_opt.
+Conception figée au point initial X_init; décommenter le bloc dédié pour X_opt.
 
 Script lourd (échantillonnage du vrai modèle, Monte-Carlo et Sobol sur surrogate).
 """
@@ -205,7 +205,7 @@ print("First-order indices:")
 pprint.pprint(sobol.indices.first)
 print("Total-order indices:")
 pprint.pprint(sobol.indices.total)
-# Au point initial -> x_init ; renommer en _x_opt si le bloc X_opt est décommenté.
+# Au point initial -> x_init; renommer en _x_opt si le bloc X_opt est décommenté.
 sobol.plot("mtom", save=True, show=False,
            file_path=os.path.join(_oad.FIG_DIR, "uc2_p2_sobol_indices_x_init"))
 print("Sobol indices plot saved.")

@@ -7,7 +7,7 @@ rétroaction sur la masse au décollage (mass <-> total_mass <-> mission)
 impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.
 
 * x (conception) : slst, n_pax, area, ar.
-* u (incertain) : aef, cef, sef ; plus gi, vi pour
+* u (incertain) : aef, cef, sef; plus gi, vi pour
   l'hydrogène liquide.
 * Objectif : minimiser mtom. Contraintes : tofl, vapp, vz,
   span, length, fm.
@@ -94,7 +94,7 @@ OUTPUT_NAMES = ["mtom", "tofl", "vapp", "vz", "span", "length", "fm"]
 SENSITIVITY_OUTPUTS = ["mtom", "tofl", "vapp", "vz", "fm"]
 
 # contraintes sous la forme (nom_sortie, positif, borne) en unités standard (SI).
-# positive=False signifie sortie <= borne ; positive=True signifie sortie >= borne.
+# positive=False signifie sortie <= borne; positive=True signifie sortie >= borne.
 CONSTRAINTS = [
     ("tofl", False, 1900.0),                       # longueur de piste au décollage <= 1900 m
     ("vapp", False, convert_from("kt", 135.0)),    # vitesse d'approche <= 135 kt
@@ -176,7 +176,7 @@ def get_design_space() -> DesignSpace:
 def get_uncertain_space(uc: str) -> ParameterSpace:
     """Renvoie l'espace incertain des variables aléatoires pertinentes pour un cas d'usage.
 
-    aef/cef/sef sont toujours pertinentes ; gi/vi seulement
+    aef/cef/sef sont toujours pertinentes; gi/vi seulement
     pour liquid_h2.
     """
     settings = USE_CASES[uc]
@@ -200,7 +200,7 @@ def get_joint_space(uc: str) -> ParameterSpace:
 
     Les variables de conception sont ajoutées comme variables aléatoires
     uniformes sur leurs bornes afin qu'un unique plan d'expériences explore
-    f(x, u) ; l'optimisation traite ensuite la partie conception comme
+    f(x, u); l'optimisation traite ensuite la partie conception comme
     déterministe.
     """
     space = ParameterSpace()

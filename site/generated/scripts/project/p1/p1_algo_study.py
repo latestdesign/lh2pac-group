@@ -33,7 +33,7 @@ MAX_ITERS = (50, 100, 500)
 
 
 def _optimize(disciplines, algo_name, max_iter):
-    """Résolution déterministe sur le vrai modèle (MDF) ; renvoie (f_opt, historique objectif)."""
+    """Résolution déterministe sur le vrai modèle (MDF); renvoie (f_opt, historique objectif)."""
     scenario = MDOScenario(disciplines, _oad.OBJECTIVE, _oad.get_design_space(),
                            formulation_name="MDF")
     _oad.add_constraints(scenario)

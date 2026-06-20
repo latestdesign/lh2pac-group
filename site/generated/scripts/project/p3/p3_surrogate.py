@@ -3,7 +3,7 @@
 Compare les régresseurs linéaire, RBF et krigeage sur un jeu de test, mais conserve
 délibérément le krigeage : mieux calibré dans les coins peu denses de l'espace
 conjoint où se trouve l'optimum. Le retenu est recoupé par validation croisée
-K-fold ; les deux R2 sont superposés sur le graphe de validation.
+K-fold; les deux R2 sont superposés sur le graphe de validation.
 
 Script lourd : lancer p3_doe d'abord. Surrogate retenu mis en cache dans
 data/ et consommé par p3_optimization.
@@ -16,7 +16,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_surrogate.py")

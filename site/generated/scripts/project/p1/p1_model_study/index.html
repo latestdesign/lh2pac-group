@@ -2149,7 +2149,7 @@ l'optimum sur le vrai modèle. Le tableau final rapporte MTOM surrogate, MTOM r�
 et faisabilité réelle.</p>
 <p>Formulation complète à 11 disciplines (avec operating_cost), sans passer par
 le helper _oad. Script lourd (jusqu'à N=1000, plusieurs modèles).</p>
-<!-- GENERATED FROM PYTHON SOURCE LINES 11-173 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 11-172 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -2218,7 +2218,7 @@ le helper _oad. Script lourd (jusqu'à N=1000, plusieurs modèles).</p>
 
     <span class="k">for</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="n">surrogates</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_samples_list</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- Model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> | N = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> | N = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
 
             <span class="c1"># Plan d&#39;entraînement échantillonné sur le vrai modèle.</span>
             <span class="n">ds_train</span> <span class="o">=</span> <span class="n">get_fresh_design_space</span><span class="p">()</span>
@@ -2307,21 +2307,20 @@ le helper _oad. Script lourd (jusqu'à N=1000, plusieurs modèles).</p>
     <span class="c1"># Print the final Markdown table</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== FINAL RESULTS TABLE (</span><span class="si">{</span><span class="n">uc</span><span class="si">}</span><span class="s2">) ===&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;| Métamodèle | Échantillons (N) | MTOM Surrogate (kg) | MTOM Réelle (kg) | Faisable (Réel) | Contraintes violées (valeur standardisée) |&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|---|---|---|---|---|---|&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;surr_mtom&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;true_mtom&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;feasible&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;violations&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
 </code></pre></div>
-<!-- GENERATED FROM PYTHON SOURCE LINES 174-175 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 173-174 -->
 
 <h2 id="cas-dusage-1-kerosene-turbofan">Cas d'usage 1 — Kérosène / Turbofan<a class="headerlink" href="#cas-dusage-1-kerosene-turbofan" title="Permanent link">&para;</a></h2>
-<!-- GENERATED FROM PYTHON SOURCE LINES 175-177 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 174-176 -->
 
 <div class="highlight"><pre><span></span><code><span class="n">run</span><span class="p">(</span><span class="s2">&quot;UC1&quot;</span><span class="p">)</span>
 </code></pre></div>
-<!-- GENERATED FROM PYTHON SOURCE LINES 178-179 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 177-178 -->
 
 <h2 id="cas-dusage-2-hydrogene-liquide-turbofan">Cas d'usage 2 — Hydrogène liquide / Turbofan<a class="headerlink" href="#cas-dusage-2-hydrogene-liquide-turbofan" title="Permanent link">&para;</a></h2>
-<!-- GENERATED FROM PYTHON SOURCE LINES 179-180 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 178-179 -->
 
 <div class="highlight"><pre><span></span><code><span class="n">run</span><span class="p">(</span><span class="s2">&quot;UC2&quot;</span><span class="p">)</span>
 </code></pre></div>

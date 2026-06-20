@@ -15,7 +15,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_surrogate.py")

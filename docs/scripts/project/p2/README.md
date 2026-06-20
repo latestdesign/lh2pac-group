@@ -3,7 +3,7 @@
 Conception `x` figée, étude de l'effet des incertitudes technologiques `u` sur les
 sorties, pour les deux cas d'usage :
 
-- `p2_uc1` (kérosène) : incertitudes `aef`/`cef`/`sef` ;
+- `p2_uc1` (kérosène) : incertitudes `aef`/`cef`/`sef`;
 - `p2_uc2` (hydrogène liquide) : incertitudes `gi`/`vi`/`aef`/`sef`.
 
 Chaque script propage `u` à travers le vrai modèle couplé à 11 disciplines, ajuste
