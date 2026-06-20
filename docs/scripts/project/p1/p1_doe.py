@@ -4,8 +4,8 @@
 x = (slst, n_pax, area, ar), incertitudes gelées au nominal, pour entraîner le
 surrogate déterministe f_hat(x). Exporte aussi le graphe de couplage de la MDA.
 
-Script lourd : à lancer avant ``p1_surrogate`` et ``p1_optimization``. Jeux de
-données mis en cache dans ``data/`` (supprimer un pickle pour ré-échantillonner) ;
+Script lourd : à lancer avant p1_surrogate et p1_optimization. Jeux de
+données mis en cache dans data/ (supprimer un pickle pour ré-échantillonner) ;
 graine fixe pour la reproductibilité.
 """
 
@@ -16,7 +16,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_doe.py")

@@ -1,13 +1,13 @@
 """Problème 2 — Cas d'usage 2 : propagation des incertitudes et sensibilité.
 
-Conception ``x`` figée, on étudie l'effet des incertitudes ``u`` sur les sorties.
-Pour l'hydrogène liquide, l'espace incertain retient ``gi``, ``vi`` (stockage
-cryogénique) et ``aef``, ``sef`` (facteurs d'échelle). On ajuste un surrogate RBF
-de ``f(u)``, on le valide, puis on s'en sert pour une propagation Monte-Carlo
+Conception x figée, on étudie l'effet des incertitudes u sur les sorties.
+Pour l'hydrogène liquide, l'espace incertain retient gi, vi (stockage
+cryogénique) et aef, sef (facteurs d'échelle). On ajuste un surrogate RBF
+de f(u), on le valide, puis on s'en sert pour une propagation Monte-Carlo
 (10 000 tirages) et une analyse de Sobol.
 
-Formulation complète à 11 disciplines (avec ``operating_cost``) et espace incertain
-à 4 variables, hors pipeline ``_oad`` (seul le helper de figures est réutilisé).
+Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 4 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
 Conception figée au point initial X_init ; décommenter le bloc dédié pour X_opt.
 
 Script lourd (échantillonnage du vrai modèle, Monte-Carlo et Sobol sur surrogate).

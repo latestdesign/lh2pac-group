@@ -1,14 +1,14 @@
 """Problème 2 — Cas d'usage 1 : propagation des incertitudes et sensibilité.
 
-Conception ``x`` figée, on étudie l'effet des incertitudes ``u`` sur les sorties.
-Pour le kérosène, l'espace incertain se limite aux facteurs d'échelle ``aef``
-(traînée), ``sef`` (masse) et ``cef`` (consommation). On ajuste un surrogate RBF de
-``f(u)``, on calcule les indices de Sobol dessus, et on rapporte les statistiques
+Conception x figée, on étudie l'effet des incertitudes u sur les sorties.
+Pour le kérosène, l'espace incertain se limite aux facteurs d'échelle aef
+(traînée), sef (masse) et cef (consommation). On ajuste un surrogate RBF de
+f(u), on calcule les indices de Sobol dessus, et on rapporte les statistiques
 empiriques et la distribution de la MTOM.
 
-Formulation complète à 11 disciplines (avec ``operating_cost``) et espace incertain
-à 3 variables, hors pipeline ``_oad`` (seul le helper de figures est réutilisé).
-L'analyse couvre les deux points de conception (``X_init`` ; ``X_opt`` issu de la
+Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 3 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
+L'analyse couvre les deux points de conception (X_init ; X_opt issu de la
 Partie 1) ; étapes aléatoires graînées ; surrogate validé par validation croisée et
 sur un plan de test indépendant tiré du vrai modèle.
 

@@ -1,16 +1,16 @@
-"""Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+"""Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
 
-Minimise ``E[mtom]`` sous des contraintes en marge ``mean +/- k*std`` (``k = 2``),
-l'espérance et les marges étant estimées par un Monte-Carlo interne sur ``u`` à
-chaque itération (``gemseo-umdo``). L'optimum robuste est ensuite comparé à
+Minimise E[mtom] sous des contraintes en marge mean +/- k*std (k = 2),
+l'espérance et les marges étant estimées par un Monte-Carlo interne sur u à
+chaque itération (gemseo-umdo). L'optimum robuste est ensuite comparé à
 l'optimum déterministe (problème 1) en propageant les mêmes incertitudes aux deux
 conceptions.
 
-``k = 2`` est un proxy de robustesse fondé sur les moments, pas une garantie
+k = 2 est un proxy de robustesse fondé sur les moments, pas une garantie
 probabiliste ; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.
 
 Script lourd : le Monte-Carlo interne rend chaque cas d'usage long de plusieurs
-minutes. Lancer ``p3_doe`` puis ``p3_surrogate`` d'abord.
+minutes. Lancer p3_doe puis p3_surrogate d'abord.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_optimization.py")
@@ -90,7 +90,7 @@ def _true_propagate(uc, design):
 def _deterministic_optimum(model, uc, start=None):
     """Optimum déterministe min-MTOM sur le surrogate, u figé au nominal.
 
-    Repli : ``run`` préfère le pickle d'optimum déterministe du problème 1 et
+    Repli : run préfère le pickle d'optimum déterministe du problème 1 et
     n'appelle cette fonction qu'en son absence.
     """
     nominal = {k: np.array([v]) for k, v in _oad.NOMINAL_UNCERTAIN.items()
