@@ -1,0 +1,2726 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../plot_autopydiscipline/">
+      
+      
+        <link rel="next" href="../plot_sensitivity_analysis/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Sample a function with a DOE algorithm - lh2pac</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../../sg_gallery-rendered-html.css">
+    
+      <link rel="stylesheet" href="../../../../sg_gallery-dataframe.css">
+    
+      <link rel="stylesheet" href="../../../../sg_gallery-binder.css">
+    
+      <link rel="stylesheet" href="../../../../sg_gallery.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sample-a-function-with-a-doe-algorithm" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="lh2pac" class="md-header__button md-logo" aria-label="lh2pac" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 3.91c.59.59.59 1.54 0 2.12l-3.89 3.89 2.12 9.19-1.41 1.42-3.88-7.43L9.6 17l.36 2.47-1.07 1.06-1.76-3.18-3.19-1.77L5 14.5l2.5.37L11.37 11 3.94 7.09l1.42-1.41 9.19 2.12 3.89-3.89c.56-.58 1.56-.58 2.12 0"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lh2pac
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sample a function with a DOE algorithm
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://gitlab.com/MatthiasDeLozzo/lh2pac" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="m504 204.6-.7-1.8L433.6 21c-1.4-3.6-3.9-6.6-7.2-8.6-2.4-1.6-5.1-2.5-8-2.8s-5.7.1-8.4 1.1-5.1 2.7-7.1 4.8c-1.9 2.1-3.3 4.7-4.1 7.4l-47 144H161.3l-47.1-144c-.8-2.8-2.2-5.3-4.1-7.4-2-2.1-4.4-3.7-7.1-4.8-2.6-1-5.5-1.4-8.4-1.1s-5.6 1.2-8 2.8c-3.2 2-5.8 5.1-7.2 8.6L9.8 202.8l-.8 1.8c-10 26.2-11.3 55-3.5 82 7.7 26.9 24 50.7 46.4 67.6l.3.2.6.4 106 79.5c38.5 29.1 66.7 50.3 84.6 63.9 3.7 1.9 8.3 4.3 13 4.3s9.3-2.4 13-4.3c17.9-13.5 46.1-34.9 84.6-63.9l106.7-79.9.3-.3c22.4-16.9 38.7-40.6 45.6-67.5 8.6-27 7.4-55.8-2.6-82"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lh2pac
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  Presentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../utils/installation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../project/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scripts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../report/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Report
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="lh2pac" class="md-nav__button md-logo" aria-label="lh2pac" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 3.91c.59.59.59 1.54 0 2.12l-3.89 3.89 2.12 9.19-1.41 1.42-3.88-7.43L9.6 17l.36 2.47-1.07 1.06-1.76-3.18-3.19-1.77L5 14.5l2.5.37L11.37 11 3.94 7.09l1.42-1.41 9.19 2.12 3.89-3.89c.56-.58 1.56-.58 2.12 0"/></svg>
+
+    </a>
+    lh2pac
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://gitlab.com/MatthiasDeLozzo/lh2pac" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="m504 204.6-.7-1.8L433.6 21c-1.4-3.6-3.9-6.6-7.2-8.6-2.4-1.6-5.1-2.5-8-2.8s-5.7.1-8.4 1.1-5.1 2.7-7.1 4.8c-1.9 2.1-3.3 4.7-4.1 7.4l-47 144H161.3l-47.1-144c-.8-2.8-2.2-5.3-4.1-7.4-2-2.1-4.4-3.7-7.1-4.8-2.6-1-5.5-1.4-8.4-1.1s-5.6 1.2-8 2.8c-3.2 2-5.8 5.1-7.2 8.6L9.8 202.8l-.8 1.8c-10 26.2-11.3 55-3.5 82 7.7 26.9 24 50.7 46.4 67.6l.3.2.6.4 106 79.5c38.5 29.1 66.7 50.3 84.6 63.9 3.7 1.9 8.3 4.3 13 4.3s9.3-2.4 13-4.3c17.9-13.5 46.1-34.9 84.6-63.9l106.7-79.9.3-.3c22.4-16.9 38.7-40.6 45.6-67.5 8.6-27 7.4-55.8-2.6-82"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lh2pac
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../.." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../presentation/use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The use cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../presentation/deliverables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The deliverables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../presentation/dates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The important dates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../reference/lh2pac/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../utils/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install LH2PAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../utils/markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Write in markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-to guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_unit_conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Convert units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_draw_aicraft/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Draw an aircraft
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_update_discipline_input_values/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update the default input values of disciplines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_design_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a design space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_autopydiscipline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a discipline from a Python function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sample a function with a DOE algorithm
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sample a function with a DOE algorithm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-step guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-step guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-set-up-the-logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Set up the logger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-the-discipline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Create the discipline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-create-the-design-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Create the design space
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-the-scenario-and-execute-the-doe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Create the scenario and execute the DOE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-export-the-results-as-a-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Export the results as a dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-step-further" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One step further
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_sensitivity_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perform a sensitivity analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_uncertain_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create an uncertain space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_custom_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execute a scenario at a given point
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_uncertainty_propagation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Propagate uncertainties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solve an optimization problem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build and evaluate a surrogate model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../project/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scripts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projet
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projet
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/_oad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Définition partagée du problème OAD, importée par tous les scripts du projet.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Optimisation déterministe (MDO)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 1 — Optimisation déterministe (MDO)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p1/p1_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Surrogate déterministe f_hat(x) et sa validation.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p1/p1_algo_study/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Étude du choix de l'algorithme d'optimisation (COBYLA vs SLSQP).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p1/p1_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Plan d'expériences déterministe (espace de conception seul).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p1/p1_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p1/p1_model_study/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Étude croisée métamodèle x taille du plan d'expériences.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Quantification des incertitudes et sensibilité
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 2 — Quantification des incertitudes et sensibilité
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p2/p2_uc1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Cas d'usage 1 : propagation des incertitudes et sensibilité.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p2/p2_uc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Cas d'usage 2 : propagation des incertitudes et sensibilité.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Optimisation robuste sous incertitudes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 3 — Optimisation robuste sous incertitudes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p3/p3_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p3/p3_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Plan d'expériences conjoint (conception + incertain).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p3/p3_uq_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Comparaison des méthodes d'estimation des statistiques (UQ).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/p3/p3_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../report/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Report
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Report
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../report/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../report/part1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../report/part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../report/part3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../report/conclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-step guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-step guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-set-up-the-logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Set up the logger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-the-discipline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Create the discipline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-create-the-design-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Create the design space
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-the-scenario-and-execute-the-doe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Create the scenario and execute the DOE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-export-the-results-as-a-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Export the results as a dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-step-further" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One step further
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<!--
+ DO NOT EDIT.
+ THIS FILE WAS AUTOMATICALLY GENERATED BY mkdocs-gallery.
+ TO MAKE CHANGES, EDIT THE SOURCE PYTHON FILE:
+ "docs/scripts/how_tos/plot_doe.py"
+ LINE NUMBERS ARE GIVEN BELOW.
+-->
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a href="#download_links">here</a>
+to download the full example code</p>
+</div>
+<h1 id="sample-a-function-with-a-doe-algorithm">Sample a function with a DOE algorithm<a class="headerlink" href="#sample-a-function-with-a-doe-algorithm" title="Permanent link">&para;</a></h1>
+<h2 id="problem">Problem<a class="headerlink" href="#problem" title="Permanent link">&para;</a></h2>
+<p>Evaluating a function at many points in its domain
+requires a design of experiments (DOE) and execution infrastructure.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>Create a <code>DOEScenario</code> from a discipline and a design space,
+then call <code>execute</code> with a DOE algorithm name and a sample count.</p>
+<h2 id="step-by-step-guide">Step-by-step guide<a class="headerlink" href="#step-by-step-guide" title="Permanent link">&para;</a></h2>
+<p>The following steps sample the Rosenbrock function
+<span class="arithmatex">\(f(x,y)=(1-x)^2+100(y-x^2)^2\)</span> over <span class="arithmatex">\([-2,2]^2\)</span>
+using a Latin hypercube sampling algorithm.</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 19-24 -->
+
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gemseo</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gemseo.algos.design_space</span><span class="w"> </span><span class="kn">import</span> <span class="n">DesignSpace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gemseo.disciplines.analytic</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalyticDiscipline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gemseo.scenarios.doe_scenario</span><span class="w"> </span><span class="kn">import</span> <span class="n">DOEScenario</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 25-26 -->
+
+<h3 id="1-set-up-the-logger">1. Set up the logger<a class="headerlink" href="#1-set-up-the-logger" title="Permanent link">&para;</a></h3>
+<!-- GENERATED FROM PYTHON SOURCE LINES 26-28 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">configure_logger</span><span class="p">()</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code>&lt;RootLogger<span class="w"> </span>root<span class="w"> </span><span class="o">(</span>INFO<span class="o">)</span>&gt;
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 29-33 -->
+
+<h3 id="2-create-the-discipline">2. Create the discipline<a class="headerlink" href="#2-create-the-discipline" title="Permanent link">&para;</a></h3>
+<p><code>AnalyticDiscipline</code> defines a function from a string expression
+and derives gradients symbolically via <a href="https://www.sympy.org/fr/">sympy</a>:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 33-38 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">discipline</span> <span class="o">=</span> <span class="n">AnalyticDiscipline</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;(1-x)**2+100*(y-x**2)**2&quot;</span><span class="p">},</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Rosenbrock&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 39-40 -->
+
+<h3 id="3-create-the-design-space">3. Create the design space<a class="headerlink" href="#3-create-the-design-space" title="Permanent link">&para;</a></h3>
+<!-- GENERATED FROM PYTHON SOURCE LINES 40-44 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">design_space</span> <span class="o">=</span> <span class="n">DesignSpace</span><span class="p">()</span>
+<span class="n">design_space</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">design_space</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 45-53 -->
+
+<h3 id="4-create-the-scenario-and-execute-the-doe">4. Create the scenario and execute the DOE<a class="headerlink" href="#4-create-the-scenario-and-execute-the-doe" title="Permanent link">&para;</a></h3>
+<p><code>"DisciplinaryOpt"</code> evaluates disciplines sequentially.
+For multiple outputs of interest, call <code>add_observable</code> before executing:</p>
+<div class="highlight"><pre><span></span><code><span class="n">scenario</span><span class="o">.</span><span class="n">add_observable</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 53-56 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">scenario</span> <span class="o">=</span> <span class="n">DOEScenario</span><span class="p">([</span><span class="n">discipline</span><span class="p">],</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">design_space</span><span class="p">,</span> <span class="n">formulation_name</span><span class="o">=</span><span class="s2">&quot;DisciplinaryOpt&quot;</span><span class="p">)</span>
+<span class="n">scenario</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">algo_name</span><span class="o">=</span><span class="s2">&quot;OT_OPT_LHS&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</code></pre></div>
+<p class="mkd-glr-script-out">Out:</p>
+<div class="mkd-glr-script-out-disp highlight"><pre><span></span><code><span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>***<span class="w"> </span>Start<span class="w"> </span>DOEScenario<span class="w"> </span>execution<span class="w"> </span>***
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>DOEScenario
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>Disciplines:<span class="w"> </span>Rosenbrock
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>MDO<span class="w"> </span>formulation:<span class="w"> </span>DisciplinaryOpt
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>Optimization<span class="w"> </span>problem:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>minimize<span class="w"> </span>z<span class="o">(</span>x,<span class="w"> </span>y<span class="o">)</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>with<span class="w"> </span>respect<span class="w"> </span>to<span class="w"> </span>x,<span class="w"> </span>y
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>over<span class="w"> </span>the<span class="w"> </span>design<span class="w"> </span>space:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>+------+-------------+-------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span><span class="p">|</span><span class="w"> </span>Name<span class="w"> </span><span class="p">|</span><span class="w"> </span>Lower<span class="w"> </span>bound<span class="w"> </span><span class="p">|</span><span class="w"> </span>Value<span class="w"> </span><span class="p">|</span><span class="w"> </span>Upper<span class="w"> </span>bound<span class="w"> </span><span class="p">|</span><span class="w"> </span>Type<span class="w">  </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>+------+-------------+-------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span><span class="p">|</span><span class="w"> </span>x<span class="w">    </span><span class="p">|</span><span class="w">      </span>-2<span class="w">     </span><span class="p">|</span><span class="w">  </span>None<span class="w"> </span><span class="p">|</span><span class="w">      </span><span class="m">2</span><span class="w">      </span><span class="p">|</span><span class="w"> </span>float<span class="w"> </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span><span class="p">|</span><span class="w"> </span>y<span class="w">    </span><span class="p">|</span><span class="w">      </span>-2<span class="w">     </span><span class="p">|</span><span class="w">  </span>None<span class="w"> </span><span class="p">|</span><span class="w">      </span><span class="m">2</span><span class="w">      </span><span class="p">|</span><span class="w"> </span>float<span class="w"> </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>+------+-------------+-------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>Solving<span class="w"> </span>optimization<span class="w"> </span>problem<span class="w"> </span>with<span class="w"> </span>algorithm<span class="w"> </span>OT_OPT_LHS:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">1</span>%<span class="p">|</span><span class="w">          </span><span class="p">|</span><span class="w"> </span><span class="m">1</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">1045</span>.44<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.19e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">2</span>%<span class="p">|</span>▏<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">2</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">1639</span>.04<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.07e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">3</span>%<span class="p">|</span>▎<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">3</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">2204</span>.05<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">675</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">4</span>%<span class="p">|</span>▍<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">4</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">2669</span>.41<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.15e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">5</span>%<span class="p">|</span>▌<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">5</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">3087</span>.23<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.51e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">6</span>%<span class="p">|</span>▌<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">6</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">3456</span>.84<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">30</span>.7<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">7</span>%<span class="p">|</span>▋<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">7</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">3786</span>.94<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.18e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">8</span>%<span class="p">|</span>▊<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">8</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">4043</span>.68<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">885</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">      </span><span class="m">9</span>%<span class="p">|</span>▉<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">9</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">4305</span>.78<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">53</span>.1<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">10</span>%<span class="p">|</span>█<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">10</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">4552</span>.10<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">994</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">11</span>%<span class="p">|</span>█<span class="w">         </span><span class="p">|</span><span class="w"> </span><span class="m">11</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">4767</span>.24<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">169</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">12</span>%<span class="p">|</span>█▏<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">12</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">4970</span>.05<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">735</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">13</span>%<span class="p">|</span>█▎<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">13</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5156</span>.61<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">0</span>.9<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">14</span>%<span class="p">|</span>█▍<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">14</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5329</span>.00<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">244</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">15</span>%<span class="p">|</span>█▌<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">15</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5493</span>.76<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">266</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">16</span>%<span class="p">|</span>█▌<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">16</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5650</span>.32<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">26</span>.2<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">17</span>%<span class="p">|</span>█▋<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">17</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5793</span>.71<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">203</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">18</span>%<span class="p">|</span>█▊<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">18</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">5903</span>.77<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">435</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">19</span>%<span class="p">|</span>█▉<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">19</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6027</span>.67<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">186</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">20</span>%<span class="p">|</span>██<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">20</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6146</span>.85<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">501</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">21</span>%<span class="p">|</span>██<span class="w">        </span><span class="p">|</span><span class="w"> </span><span class="m">21</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6263</span>.27<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">82</span>.9<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">22</span>%<span class="p">|</span>██▏<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">22</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6369</span>.48<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">8</span>.31<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">23</span>%<span class="p">|</span>██▎<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">23</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6466</span>.62<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">6</span>.15<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">24</span>%<span class="p">|</span>██▍<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">24</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6561</span>.29<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">60</span>.3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">25</span>%<span class="p">|</span>██▌<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">25</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6653</span>.40<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">323</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">26</span>%<span class="p">|</span>██▌<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">26</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6740</span>.34<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">94</span>.4<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">27</span>%<span class="p">|</span>██▋<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">27</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6803</span>.21<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.01<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">28</span>%<span class="p">|</span>██▊<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">28</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6874</span>.70<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.87<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">29</span>%<span class="p">|</span>██▉<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">29</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">6945</span>.40<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.93e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">30</span>%<span class="p">|</span>███<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">30</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7015</span>.06<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">247</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">31</span>%<span class="p">|</span>███<span class="w">       </span><span class="p">|</span><span class="w"> </span><span class="m">31</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7082</span>.66<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">58</span>.4<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">32</span>%<span class="p">|</span>███▏<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">32</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7148</span>.75<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">3</span>.72<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">33</span>%<span class="p">|</span>███▎<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">33</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7212</span>.34<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">160</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">34</span>%<span class="p">|</span>███▍<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">34</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7273</span>.24<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">335</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">35</span>%<span class="p">|</span>███▌<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">35</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7329</span>.40<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">333</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">36</span>%<span class="p">|</span>███▌<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">36</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7386</span>.14<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">590</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">37</span>%<span class="p">|</span>███▋<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">37</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7432</span>.08<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.5e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">38</span>%<span class="p">|</span>███▊<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">38</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7484</span>.55<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">67</span>.5<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">39</span>%<span class="p">|</span>███▉<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">39</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7537</span>.80<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">848</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">40</span>%<span class="p">|</span>████<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">40</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7589</span>.10<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">688</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">41</span>%<span class="p">|</span>████<span class="w">      </span><span class="p">|</span><span class="w"> </span><span class="m">41</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7636</span>.84<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">8</span>.1<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">42</span>%<span class="p">|</span>████▏<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">42</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7683</span>.89<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.39e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">43</span>%<span class="p">|</span>████▎<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">43</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7726</span>.96<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.06e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">44</span>%<span class="p">|</span>████▍<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">44</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7769</span>.19<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">22</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">45</span>%<span class="p">|</span>████▌<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">45</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7810</span>.95<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">294</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">46</span>%<span class="p">|</span>████▌<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">46</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7851</span>.94<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.04e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">47</span>%<span class="p">|</span>████▋<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">47</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7881</span>.19<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">29</span>.5<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">48</span>%<span class="p">|</span>████▊<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">48</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7913</span>.47<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">165</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">49</span>%<span class="p">|</span>████▉<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">49</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7949</span>.90<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">261</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">50</span>%<span class="p">|</span>█████<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">50</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">7982</span>.76<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">55</span>.2<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">51</span>%<span class="p">|</span>█████<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">51</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8017</span>.30<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">388</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">52</span>%<span class="p">|</span>█████▏<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">52</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8050</span>.78<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">358</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">53</span>%<span class="p">|</span>█████▎<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">53</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8081</span>.22<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.04e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">54</span>%<span class="p">|</span>█████▍<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">54</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8111</span>.03<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">16</span>.7<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">55</span>%<span class="p">|</span>█████▌<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">55</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8142</span>.84<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">21</span>.5<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">56</span>%<span class="p">|</span>█████▌<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">56</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8173</span>.76<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">84</span>.9<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">57</span>%<span class="p">|</span>█████▋<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">57</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8202</span>.68<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">338</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">58</span>%<span class="p">|</span>█████▊<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">58</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8216</span>.35<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">869</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">59</span>%<span class="p">|</span>█████▉<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">59</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8244</span>.40<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">400</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">60</span>%<span class="p">|</span>██████<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">60</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8271</span>.97<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">160</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">61</span>%<span class="p">|</span>██████<span class="w">    </span><span class="p">|</span><span class="w"> </span><span class="m">61</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8299</span>.63<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">370</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">62</span>%<span class="p">|</span>██████▏<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">62</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8327</span>.36<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">274</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">63</span>%<span class="p">|</span>██████▎<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">63</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8354</span>.92<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">48</span>.1<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">64</span>%<span class="p">|</span>██████▍<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">64</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8383</span>.11<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.25<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">65</span>%<span class="p">|</span>██████▌<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">65</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8409</span>.57<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">167</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">66</span>%<span class="p">|</span>██████▌<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">66</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8435</span>.64<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">91</span>.1<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">67</span>%<span class="p">|</span>██████▋<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">67</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8459</span>.57<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">845</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">68</span>%<span class="p">|</span>██████▊<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">68</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8473</span>.59<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">5</span>.05<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">69</span>%<span class="p">|</span>██████▉<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">69</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8495</span>.23<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">96</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">70</span>%<span class="p">|</span>███████<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">70</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8519</span>.07<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.35e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">71</span>%<span class="p">|</span>███████<span class="w">   </span><span class="p">|</span><span class="w"> </span><span class="m">71</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8541</span>.15<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">74</span>.5<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">72</span>%<span class="p">|</span>███████▏<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">72</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8563</span>.45<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">463</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">73</span>%<span class="p">|</span>███████▎<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">73</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8586</span>.69<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">25</span>.2<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">74</span>%<span class="p">|</span>███████▍<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">74</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8609</span>.91<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">540</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">75</span>%<span class="p">|</span>███████▌<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">75</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8631</span>.68<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">59</span>.6<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">76</span>%<span class="p">|</span>███████▌<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">76</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8650</span>.87<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">43</span>.9<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">77</span>%<span class="p">|</span>███████▋<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">77</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8637</span>.41<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">211</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">78</span>%<span class="p">|</span>███████▊<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">78</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8643</span>.25<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">641</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">79</span>%<span class="p">|</span>███████▉<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">79</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8658</span>.67<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">101</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">80</span>%<span class="p">|</span>████████<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">80</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8674</span>.43<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">723</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">81</span>%<span class="p">|</span>████████<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="m">81</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8690</span>.30<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">82</span>.6<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">82</span>%<span class="p">|</span>████████▏<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">82</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8706</span>.94<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">580</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">83</span>%<span class="p">|</span>████████▎<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">83</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8723</span>.46<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">35</span>.6<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">84</span>%<span class="p">|</span>████████▍<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">84</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8738</span>.78<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">1</span>.72e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">85</span>%<span class="p">|</span>████████▌<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">85</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8755</span>.30<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">4</span>.25<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">86</span>%<span class="p">|</span>████████▌<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">86</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8770</span>.43<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">113</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">87</span>%<span class="p">|</span>████████▋<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">87</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8786</span>.31<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">54</span>.1<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">88</span>%<span class="p">|</span>████████▊<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">88</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8794</span>.35<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">2</span>.36e+3<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">89</span>%<span class="p">|</span>████████▉<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">89</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8807</span>.61<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">119</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">90</span>%<span class="p">|</span>█████████<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">90</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8822</span>.68<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">227</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">91</span>%<span class="p">|</span>█████████<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="m">91</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8839</span>.11<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">951</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">92</span>%<span class="p">|</span>█████████▏<span class="p">|</span><span class="w"> </span><span class="m">92</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8854</span>.83<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">246</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">93</span>%<span class="p">|</span>█████████▎<span class="p">|</span><span class="w"> </span><span class="m">93</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8869</span>.87<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">76</span>.2<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">94</span>%<span class="p">|</span>█████████▍<span class="p">|</span><span class="w"> </span><span class="m">94</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8884</span>.84<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">0</span>.75<span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">95</span>%<span class="p">|</span>█████████▌<span class="p">|</span><span class="w"> </span><span class="m">95</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8900</span>.33<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">123</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">96</span>%<span class="p">|</span>█████████▌<span class="p">|</span><span class="w"> </span><span class="m">96</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8917</span>.13<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">957</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">97</span>%<span class="p">|</span>█████████▋<span class="p">|</span><span class="w"> </span><span class="m">97</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8933</span>.06<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">187</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">98</span>%<span class="p">|</span>█████████▊<span class="p">|</span><span class="w"> </span><span class="m">98</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8941</span>.72<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">122</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">     </span><span class="m">99</span>%<span class="p">|</span>█████████▉<span class="p">|</span><span class="w"> </span><span class="m">99</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8953</span>.30<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">146</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span><span class="m">100</span>%<span class="p">|</span>██████████<span class="p">|</span><span class="w"> </span><span class="m">100</span>/100<span class="w"> </span><span class="o">[</span><span class="m">00</span>:00&lt;<span class="m">00</span>:00,<span class="w"> </span><span class="m">8864</span>.08<span class="w"> </span>it/sec,<span class="w"> </span><span class="nv">feas</span><span class="o">=</span>True,<span class="w"> </span><span class="nv">obj</span><span class="o">=</span><span class="m">167</span><span class="o">]</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>Optimization<span class="w"> </span>result:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>Optimizer<span class="w"> </span>info:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>Status:<span class="w"> </span>None
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>Message:<span class="w"> </span>None
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">    </span>Solution:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>Objective:<span class="w"> </span><span class="m">0</span>.7502023831914535
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">       </span>Design<span class="w"> </span>space:
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span>+------+-------------+--------------------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span><span class="p">|</span><span class="w"> </span>Name<span class="w"> </span><span class="p">|</span><span class="w"> </span>Lower<span class="w"> </span>bound<span class="w"> </span><span class="p">|</span><span class="w">       </span>Value<span class="w">        </span><span class="p">|</span><span class="w"> </span>Upper<span class="w"> </span>bound<span class="w"> </span><span class="p">|</span><span class="w"> </span>Type<span class="w">  </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span>+------+-------------+--------------------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span><span class="p">|</span><span class="w"> </span>x<span class="w">    </span><span class="p">|</span><span class="w">      </span>-2<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.6290200784167475<span class="w"> </span><span class="p">|</span><span class="w">      </span><span class="m">2</span><span class="w">      </span><span class="p">|</span><span class="w"> </span>float<span class="w"> </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span><span class="p">|</span><span class="w"> </span>y<span class="w">    </span><span class="p">|</span><span class="w">      </span>-2<span class="w">     </span><span class="p">|</span><span class="w"> </span><span class="m">0</span>.3173990065780083<span class="w"> </span><span class="p">|</span><span class="w">      </span><span class="m">2</span><span class="w">      </span><span class="p">|</span><span class="w"> </span>float<span class="w"> </span><span class="p">|</span>
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w">          </span>+------+-------------+--------------------+-------------+-------+
+<span class="w">    </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">02</span>:11:24:<span class="w"> </span>***<span class="w"> </span>End<span class="w"> </span>DOEScenario<span class="w"> </span>execution<span class="w"> </span>***
+</code></pre></div>
+<!-- GENERATED FROM PYTHON SOURCE LINES 57-60 -->
+
+<h3 id="5-export-the-results-as-a-dataset">5. Export the results as a dataset<a class="headerlink" href="#5-export-the-results-as-a-dataset" title="Permanent link">&para;</a></h3>
+<p>The result is an <code>IODataset</code>, a subclass of <code>pandas.DataFrame</code>:</p>
+<!-- GENERATED FROM PYTHON SOURCE LINES 60-63 -->
+
+<div class="highlight"><pre><span></span><code><span class="n">dataset</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">to_dataset</span><span class="p">(</span><span class="n">opt_naming</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dataset</span>
+</code></pre></div>
+<div class="output_subarea output_html rendered_html output_result">
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+
+        .dataframe thead tr th {
+            text-align: left;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr>
+          <th>GROUP</th>
+          <th colspan="2" halign="left">inputs</th>
+          <th>outputs</th>
+        </tr>
+        <tr>
+          <th>VARIABLE</th>
+          <th>x</th>
+          <th>y</th>
+          <th>z</th>
+        </tr>
+        <tr>
+          <th>COMPONENT</th>
+          <th>0</th>
+          <th>0</th>
+          <th>0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>1.922870</td>
+          <td>-0.983117</td>
+          <td>2191.602002</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>-1.623831</td>
+          <td>-0.631063</td>
+          <td>1074.794249</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>-1.284228</td>
+          <td>-0.939310</td>
+          <td>675.278032</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>-1.404675</td>
+          <td>-1.412094</td>
+          <td>1151.744652</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>-1.948194</td>
+          <td>-1.200895</td>
+          <td>2505.048222</td>
+        </tr>
+        <tr>
+          <th>...</th>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+        </tr>
+        <tr>
+          <th>95</th>
+          <td>-1.529573</td>
+          <td>-0.743620</td>
+          <td>957.019782</td>
+        </tr>
+        <tr>
+          <th>96</th>
+          <td>-0.030064</td>
+          <td>-1.364104</td>
+          <td>187.385541</td>
+        </tr>
+        <tr>
+          <th>97</th>
+          <td>1.278946</td>
+          <td>0.531163</td>
+          <td>122.078532</td>
+        </tr>
+        <tr>
+          <th>98</th>
+          <td>-0.501204</td>
+          <td>1.450870</td>
+          <td>146.173021</td>
+        </tr>
+        <tr>
+          <th>99</th>
+          <td>0.100055</td>
+          <td>1.297336</td>
+          <td>166.530600</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>100 rows × 3 columns</p>
+    </div>
+</div>
+
+<!-- GENERATED FROM PYTHON SOURCE LINES 64-74 -->
+
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Create a <code>DOEScenario</code>, call <code>execute</code> with a DOE algorithm,
+then export with <code>to_dataset</code>.</p>
+<h2 id="one-step-further">One step further<a class="headerlink" href="#one-step-further" title="Permanent link">&para;</a></h2>
+<p>See the <a href="https://gemseo.readthedocs.io/en/stable/examples/dataset/index.html">Dataset examples</a>
+and <a href="https://gemseo.readthedocs.io/en/stable/examples/doe/index.html">DOE examples</a>
+for more options.</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.101 seconds)</p>
+<div id="download_links"></div>
+
+<p><a class="md-button center" href="../plot_doe.py"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg></span> Download Python source code: plot_doe.py</a></p>
+<p><a class="md-button center" href="../plot_doe.ipynb"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg></span> Download Jupyter notebook: plot_doe.ipynb</a></p>
+<p><a class="mkd-glr-signature" href="https://smarie.github.io/mkdocs-gallery">Gallery generated by mkdocs-gallery</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Matthias De Lozzo -  All rights reserved -  Reproduction prohibited without permission.
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.instant", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

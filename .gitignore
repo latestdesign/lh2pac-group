@@ -12,7 +12,6 @@
 
 # --- Doc outputs ---
 docs/generated/
-site/
 
 # --- Misc ---
 *.md

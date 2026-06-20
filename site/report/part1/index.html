@@ -1,0 +1,2881 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../introduction/">
+      
+      
+        <link rel="next" href="../part2/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Part 1 - lh2pac</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../sg_gallery-rendered-html.css">
+    
+      <link rel="stylesheet" href="../../sg_gallery-dataframe.css">
+    
+      <link rel="stylesheet" href="../../sg_gallery-binder.css">
+    
+      <link rel="stylesheet" href="../../sg_gallery.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#partie-1-modele-surrogate-et-optimisation-deterministe" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="lh2pac" class="md-header__button md-logo" aria-label="lh2pac" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 3.91c.59.59.59 1.54 0 2.12l-3.89 3.89 2.12 9.19-1.41 1.42-3.88-7.43L9.6 17l.36 2.47-1.07 1.06-1.76-3.18-3.19-1.77L5 14.5l2.5.37L11.37 11 3.94 7.09l1.42-1.41 9.19 2.12 3.89-3.89c.56-.58 1.56-.58 2.12 0"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lh2pac
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Part 1
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://gitlab.com/MatthiasDeLozzo/lh2pac" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="m504 204.6-.7-1.8L433.6 21c-1.4-3.6-3.9-6.6-7.2-8.6-2.4-1.6-5.1-2.5-8-2.8s-5.7.1-8.4 1.1-5.1 2.7-7.1 4.8c-1.9 2.1-3.3 4.7-4.1 7.4l-47 144H161.3l-47.1-144c-.8-2.8-2.2-5.3-4.1-7.4-2-2.1-4.4-3.7-7.1-4.8-2.6-1-5.5-1.4-8.4-1.1s-5.6 1.2-8 2.8c-3.2 2-5.8 5.1-7.2 8.6L9.8 202.8l-.8 1.8c-10 26.2-11.3 55-3.5 82 7.7 26.9 24 50.7 46.4 67.6l.3.2.6.4 106 79.5c38.5 29.1 66.7 50.3 84.6 63.9 3.7 1.9 8.3 4.3 13 4.3s9.3-2.4 13-4.3c17.9-13.5 46.1-34.9 84.6-63.9l106.7-79.9.3-.3c22.4-16.9 38.7-40.6 45.6-67.5 8.6-27 7.4-55.8-2.6-82"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lh2pac
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  Presentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/installation/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../generated/scripts/project/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scripts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Report
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="lh2pac" class="md-nav__button md-logo" aria-label="lh2pac" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.56 3.91c.59.59.59 1.54 0 2.12l-3.89 3.89 2.12 9.19-1.41 1.42-3.88-7.43L9.6 17l.36 2.47-1.07 1.06-1.76-3.18-3.19-1.77L5 14.5l2.5.37L11.37 11 3.94 7.09l1.42-1.41 9.19 2.12 3.89-3.89c.56-.58 1.56-.58 2.12 0"/></svg>
+
+    </a>
+    lh2pac
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://gitlab.com/MatthiasDeLozzo/lh2pac" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="m504 204.6-.7-1.8L433.6 21c-1.4-3.6-3.9-6.6-7.2-8.6-2.4-1.6-5.1-2.5-8-2.8s-5.7.1-8.4 1.1-5.1 2.7-7.1 4.8c-1.9 2.1-3.3 4.7-4.1 7.4l-47 144H161.3l-47.1-144c-.8-2.8-2.2-5.3-4.1-7.4-2-2.1-4.4-3.7-7.1-4.8-2.6-1-5.5-1.4-8.4-1.1s-5.6 1.2-8 2.8c-3.2 2-5.8 5.1-7.2 8.6L9.8 202.8l-.8 1.8c-10 26.2-11.3 55-3.5 82 7.7 26.9 24 50.7 46.4 67.6l.3.2.6.4 106 79.5c38.5 29.1 66.7 50.3 84.6 63.9 3.7 1.9 8.3 4.3 13 4.3s9.3-2.4 13-4.3c17.9-13.5 46.1-34.9 84.6-63.9l106.7-79.9.3-.3c22.4-16.9 38.7-40.6 45.6-67.5 8.6-27 7.4-55.8-2.6-82"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lh2pac
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../.." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../presentation/use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The use cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../presentation/deliverables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The deliverables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../presentation/dates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The important dates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/lh2pac/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install LH2PAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Write in markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../generated/scripts/how_tos/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How-to guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_unit_conversion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Convert units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_draw_aicraft/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Draw an aircraft
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_update_discipline_input_values/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update the default input values of disciplines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_design_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a design space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_autopydiscipline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create a discipline from a Python function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sample a function with a DOE algorithm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_sensitivity_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perform a sensitivity analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_uncertain_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create an uncertain space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_custom_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execute a scenario at a given point
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_uncertainty_propagation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Propagate uncertainties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solve an optimization problem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/how_tos/plot_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build and evaluate a surrogate model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../generated/scripts/project/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scripts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projet
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projet
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/_oad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Définition partagée du problème OAD, importée par tous les scripts du projet.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Optimisation déterministe (MDO)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 1 — Optimisation déterministe (MDO)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p1/p1_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Surrogate déterministe f_hat(x) et sa validation.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p1/p1_algo_study/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Étude du choix de l'algorithme d'optimisation (COBYLA vs SLSQP).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p1/p1_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Plan d'expériences déterministe (espace de conception seul).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p1/p1_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p1/p1_model_study/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 1 — Étude croisée métamodèle x taille du plan d'expériences.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Quantification des incertitudes et sensibilité
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 2 — Quantification des incertitudes et sensibilité
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p2/p2_uc1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Cas d'usage 1 : propagation des incertitudes et sensibilité.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p2/p2_uc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 2 — Cas d'usage 2 : propagation des incertitudes et sensibilité.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Optimisation robuste sous incertitudes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Problème 3 — Optimisation robuste sous incertitudes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p3/p3_surrogate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p3/p3_doe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Plan d'expériences conjoint (conception + incertain).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p3/p3_uq_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Comparaison des méthodes d'estimation des statistiques (UQ).
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../generated/scripts/project/p3/p3_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Report
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Report
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 1
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 1
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectif-et-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectif et formulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-1-kerosene-turbofan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage 1 — Kérosène / Turbofan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage 1 — Kérosène / Turbofan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-optimisation-directe-sur-le-vrai-modele-sans-surrogate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Optimisation directe sur le vrai modèle (sans surrogate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-modele-surrogate-et-taille-du-plan-dexperiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Modèle surrogate et taille du plan d'expériences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optimisation-sur-le-surrogate-et-validation-sur-le-vrai-modele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optimisation sur le surrogate et validation sur le vrai modèle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-2-hydrogene-liquide-turbofan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage 2 — Hydrogène liquide / Turbofan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage 2 — Hydrogène liquide / Turbofan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-optimisation-directe-et-choix-de-lalgorithme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Optimisation directe et choix de l'algorithme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-surrogate-et-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Surrogate et validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optimisation-sur-surrogate-et-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optimisation sur surrogate et validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparaison-kerosene-vs-hydrogene-liquide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparaison kérosène vs hydrogène liquide
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synthese" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synthèse
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../part3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part 3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectif-et-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectif et formulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-1-kerosene-turbofan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage 1 — Kérosène / Turbofan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage 1 — Kérosène / Turbofan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-optimisation-directe-sur-le-vrai-modele-sans-surrogate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Optimisation directe sur le vrai modèle (sans surrogate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-modele-surrogate-et-taille-du-plan-dexperiences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Modèle surrogate et taille du plan d'expériences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optimisation-sur-le-surrogate-et-validation-sur-le-vrai-modele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optimisation sur le surrogate et validation sur le vrai modèle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-2-hydrogene-liquide-turbofan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage 2 — Hydrogène liquide / Turbofan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage 2 — Hydrogène liquide / Turbofan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-optimisation-directe-et-choix-de-lalgorithme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Optimisation directe et choix de l'algorithme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-surrogate-et-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Surrogate et validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optimisation-sur-surrogate-et-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optimisation sur surrogate et validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparaison-kerosene-vs-hydrogene-liquide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparaison kérosène vs hydrogène liquide
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synthese" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synthèse
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="partie-1-modele-surrogate-et-optimisation-deterministe">Partie 1 — Modèle surrogate et optimisation déterministe<a class="headerlink" href="#partie-1-modele-surrogate-et-optimisation-deterministe" title="Permanent link">&para;</a></h1>
+<h2 id="objectif-et-formulation">Objectif et formulation<a class="headerlink" href="#objectif-et-formulation" title="Permanent link">&para;</a></h2>
+<p>Le Problème 1 fige les incertitudes technologiques à leurs valeurs nominales et ne
+fait varier que les quatre paramètres de conception
+<span class="arithmatex">\(x = (\texttt{slst}, \texttt{n_pax}, \texttt{area}, \texttt{ar})\)</span>. On cherche la
+conception qui minimise la masse maximale au décollage sous les six contraintes
+opérationnelles :</p>
+<div class="arithmatex">\[
+\min_{x} \; \texttt{mtom}(x, u_{\text{nom}})
+\quad \text{sous} \quad g(x, u_{\text{nom}}) \le 0,
+\]</div>
+<p>où <span class="arithmatex">\(g\)</span> regroupe les contraintes <code>tofl</code> <span class="arithmatex">\(\leq\)</span> 1900 m, <code>vapp</code> <span class="arithmatex">\(\leq\)</span> 135 kt,
+<code>vz</code> <span class="arithmatex">\(\geq\)</span> 300 ft/min, <code>span</code> <span class="arithmatex">\(\leq\)</span> 40 m, <code>length</code> <span class="arithmatex">\(\leq\)</span> 45 m et <code>fm</code> <span class="arithmatex">\(\geq\)</span> 0 %.</p>
+<p>Les fonctions exactes étant supposées coûteuses à l'évaluation, la démarche, appliquée
+successivement aux deux cas d'usage, est la suivante :</p>
+<ol>
+<li><strong>optimiser directement sur le vrai modèle</strong> (sans surrogate) pour disposer
+   d'une conception de référence <span class="arithmatex">\(x^\star\)</span>, en choisissant l'algorithme et le
+   budget d'itérations ;</li>
+<li><strong>construire un surrogate</strong> <span class="arithmatex">\(\hat{f}(x)\)</span> en étudiant la taille du plan
+   d'expériences et l'erreur d'approximation ;</li>
+<li><strong>optimiser sur le surrogate puis valider la solution sur le vrai modèle</strong>, et
+   comparer les optima ;</li>
+<li><strong>comparer les deux cas d'usage</strong> kérosène et hydrogène liquide.</li>
+</ol>
+<p>Le modèle OAD est un système multidisciplinaire : la masse au décollage est
+solution d'une boucle de rétroaction (<code>mass</code> <span class="arithmatex">\(\leftrightarrow\)</span> <code>total_mass</code> <span class="arithmatex">\(\leftrightarrow\)</span> <code>mission</code>), résolue
+par une analyse multidisciplinaire (MDA) à chaque évaluation. Le graphe de couplage
+condensé l'illustre : <code>geometry</code> conditionne toute la chaîne (longueur de fuselage,
+volume de réservoir, envergure), le cœur fortement couplé converge la masse, et les
+blocs <code>take_off</code>, <code>approach</code>, <code>climb</code> en déduisent <code>tofl</code>, <code>vapp</code>, <code>vz</code>.</p>
+<p><img alt="Graphe de couplage des disciplines (UC1)" src="../../images/use_case/uc1_p1_coupling.png" /></p>
+<hr />
+<h2 id="cas-dusage-1-kerosene-turbofan">Cas d'usage 1 — Kérosène / Turbofan<a class="headerlink" href="#cas-dusage-1-kerosene-turbofan" title="Permanent link">&para;</a></h2>
+<h3 id="1-optimisation-directe-sur-le-vrai-modele-sans-surrogate">1. Optimisation directe sur le vrai modèle (sans surrogate)<a class="headerlink" href="#1-optimisation-directe-sur-le-vrai-modele-sans-surrogate" title="Permanent link">&para;</a></h3>
+<p>On résout d'abord le problème directement sur le modèle couplé (formulation MDF,
+qui garantit la convergence de la MDA à chaque itération). Deux algorithmes sont
+comparés :</p>
+<ul>
+<li><strong><code>NLOPT_COBYLA</code></strong> (sans gradient) : à chaque étape, un simplexe est construit à
+  partir des évaluations et approxime localement l'objectif et les contraintes dans
+  une région de confiance. Aucune dérivée n'est requise.</li>
+<li><strong><code>SLSQP</code></strong> (par gradient) : utilise les dérivées de l'objectif et des
+  contraintes (estimées ici par différences finies) pour suivre une direction de
+  descente.</li>
+</ul>
+<p><img alt="Convergence COBYLA vs SLSQP (UC1)" src="../../images/use_case/uc1_p1_algo_study.png" /></p>
+<p>Le MTOM optimal obtenu en fonction du budget d'itérations est :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">max_iter</th>
+<th style="text-align: center;">COBYLA</th>
+<th style="text-align: center;">SLSQP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">63 395,4</td>
+<td style="text-align: center;">63 144,2</td>
+</tr>
+<tr>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">63 138,1</td>
+<td style="text-align: center;">63 144,2</td>
+</tr>
+<tr>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">63 138,1</td>
+<td style="text-align: center;">63 144,2</td>
+</tr>
+</tbody>
+</table>
+<p>SLSQP converge très vite (sa solution est identique dès 50 itérations) mais se
+stabilise à 63 144 kg. COBYLA, plus lent, explore plus finement et atteint un MTOM
+légèrement inférieur (<strong>63 138 kg</strong>) à partir de 100 itérations. L'écart est faible
+(<span class="arithmatex">\(\approx\)</span> 6 kg, 0,01 %), mais comme COBYLA n'exige pas de dérivées, coûteuses et bruitées
+par différences finies sur le vrai modèle, <strong>on retient COBYLA pour la suite du
+projet</strong>. La conception de référence sature les bornes inférieures de poussée
+(<code>slst</code> = 100 kN) et de passagers (<code>n_pax</code> = 120), réduction directe de la masse.</p>
+<h3 id="2-modele-surrogate-et-taille-du-plan-dexperiences">2. Modèle surrogate et taille du plan d'expériences<a class="headerlink" href="#2-modele-surrogate-et-taille-du-plan-dexperiences" title="Permanent link">&para;</a></h3>
+<p>On échantillonne le vrai modèle sur l'espace de conception (4-D, <span class="arithmatex">\(u\)</span> gelé) par
+hypercube latin optimisé (<code>OT_OPT_LHS</code>), avec un plan d'entraînement et un plan de
+test indépendants. La règle de dimensionnement recommandée est de <strong>3 à 5 fois la
+dimension d'entrée</strong> ; on retient ici un plan un peu plus fourni (40 points,
+soit 10 <span class="arithmatex">\(\times\)</span> dim) car la sortie <code>tofl</code> est fortement non linéaire, ce qui suffit à
+obtenir un surrogate fidèle (vérifié ci-dessous).</p>
+<p><img alt="Plan d'expériences : entrées de conception vs MTOM (UC1)" src="../../images/use_case/uc1_p1_doe.png" /></p>
+<p>Trois régresseurs sont comparés sur le plan de test : <strong>linéaire</strong>, <strong>RBF</strong>
+(fonctions de base radiales) et <strong>krigeage</strong> (processus gaussien), et le meilleur
+R<span class="arithmatex">\(^{2}\)</span> moyen est conservé, conformément à la règle « commencer simple ». Le krigeage
+l'emporte sur toutes les sorties :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Régresseur</th>
+<th style="text-align: center;">R<span class="arithmatex">\(^{2}\)</span> test <code>mtom</code></th>
+<th style="text-align: center;">R<span class="arithmatex">\(^{2}\)</span> test (min sur sorties)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LinearRegressor</td>
+<td style="text-align: center;">0,955</td>
+<td style="text-align: center;">0,955</td>
+</tr>
+<tr>
+<td style="text-align: left;">RBFRegressor</td>
+<td style="text-align: center;">0,994</td>
+<td style="text-align: center;">0,992</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GaussianProcessRegressor</strong></td>
+<td style="text-align: center;"><strong>0,998</strong></td>
+<td style="text-align: center;"><strong>0,997</strong></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Validation du surrogate (UC1)" src="../../images/use_case/uc1_p1_validation.png" /></p>
+<p>Le plan d'expériences étant petit, un découpage train/test unique peut être
+optimiste. Une <strong>validation croisée K-fold</strong> du krigeage donne un R<span class="arithmatex">\(^{2}\)</span> <span class="arithmatex">\(\geq\)</span> 0,98 sur
+toutes les sorties (<code>mtom</code> 0,983, <code>vapp</code> 0,995, <code>length</code> 0,996), proche du R<span class="arithmatex">\(^{2}\)</span> de
+test : il n'y a pas de sur-apprentissage. Les barres hachurées de la figure
+montrent cet accord. L'augmentation de la taille du plan (étude de la section
+suivante) améliore marginalement l'erreur, ce qui confirme qu'un plan modéré
+suffit.</p>
+<h3 id="3-optimisation-sur-le-surrogate-et-validation-sur-le-vrai-modele">3. Optimisation sur le surrogate et validation sur le vrai modèle<a class="headerlink" href="#3-optimisation-sur-le-surrogate-et-validation-sur-le-vrai-modele" title="Permanent link">&para;</a></h3>
+<p>On optimise ensuite avec COBYLA sur le surrogate (peu coûteux). L'optimiseur
+converge vers une conception différente de la référence directe :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: center;">Optimum surrogate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>slst</code></td>
+<td style="text-align: center;">100 kN <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_pax</code></td>
+<td style="text-align: center;">120 <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>area</code></td>
+<td style="text-align: center;">100,8 m<span class="arithmatex">\(^{2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ar</code></td>
+<td style="text-align: center;">15,3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mtom</code> (surrogate)</td>
+<td style="text-align: center;">63 781 kg</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Convergence de l'optimisation sur surrogate (UC1)" src="../../images/use_case/uc1_p1_opt_history.png" /></p>
+<p><strong>Validation sur le vrai modèle.</strong> Le surrogate n'étant qu'une approximation, on
+ré-évalue cette conception sur le modèle couplé. Le MTOM réel est de <strong>62 779 kg</strong>,
+mais la contrainte de <strong>distance de décollage est violée</strong> : <code>tofl</code> <span class="arithmatex">\(\approx\)</span> 2 030 m pour
+une limite de 1 900 m (+130 m). L'optimiseur a poussé la surface alaire à sa valeur
+minimale (<span class="arithmatex">\(\approx\)</span> 101 m<span class="arithmatex">\(^{2}\)</span>) et l'allongement à <span class="arithmatex">\(\approx\)</span> 15,3 en exploitant l'erreur résiduelle du
+surrogate à la frontière de la contrainte active <code>tofl</code> : c'est un cas classique
+d'<strong>exploitation du métamodèle</strong> (« surrogate exploitation »). La conception
+directe de la section 1 (63 138 kg, faisable) est donc préférable comme référence,
+et l'optimum surrogate doit être corrigé par une marge de sécurité.</p>
+<p>Pour quantifier ce phénomène, on balaie le couple (métamodèle, taille <span class="arithmatex">\(N\)</span> du plan
+d'expériences) et on vérifie chaque optimum sur le vrai modèle :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Métamodèle</th>
+<th style="text-align: center;"><span class="arithmatex">\(N\)</span></th>
+<th style="text-align: center;">MTOM surrogate (kg)</th>
+<th style="text-align: center;">MTOM réel (kg)</th>
+<th style="text-align: center;">Faisable (réel)</th>
+<th style="text-align: left;">Contrainte violée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LinearRegressor</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">63 091</td>
+<td style="text-align: center;">62 749</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+142)</td>
+</tr>
+<tr>
+<td style="text-align: left;">LinearRegressor</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">63 172</td>
+<td style="text-align: center;">62 748</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+142)</td>
+</tr>
+<tr>
+<td style="text-align: left;">LinearRegressor</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">63 187</td>
+<td style="text-align: center;">62 748</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+142)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RBFRegressor</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">65 317</td>
+<td style="text-align: center;">62 851</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+115)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RBFRegressor</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">63 650</td>
+<td style="text-align: center;">63 133</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+4,7), <code>span</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">RBFRegressor</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">63 398</td>
+<td style="text-align: center;">63 120</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+5,9)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RandomForestRegressor</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">68 903</td>
+<td style="text-align: center;">66 767</td>
+<td style="text-align: center;"><strong>Oui</strong></td>
+<td style="text-align: left;">aucune</td>
+</tr>
+<tr>
+<td style="text-align: left;">RandomForestRegressor</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">66 319</td>
+<td style="text-align: center;">64 094</td>
+<td style="text-align: center;">Non</td>
+<td style="text-align: left;"><code>tofl</code> (+51)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RandomForestRegressor</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">65 310</td>
+<td style="text-align: center;">63 502</td>
+<td style="text-align: center;"><strong>Oui</strong></td>
+<td style="text-align: left;">aucune</td>
+</tr>
+</tbody>
+</table>
+<p>La majorité des couples donne un optimum <strong>infaisable</strong> sur le vrai modèle,
+en violant la distance de décollage. La régression linéaire reste infaisable quel
+que soit <span class="arithmatex">\(N\)</span> (biais trop fort sur la courbure de <code>tofl</code>), tandis que le RBF s'en
+rapproche en augmentant <span class="arithmatex">\(N\)</span> (violation tombant à quelques mètres). Le Random Forest
+à <span class="arithmatex">\(N=30\)</span> produit un avion conservateur et trop lourd (66 767 kg), artefact de son
+comportement par paliers ; en revanche, à <span class="arithmatex">\(N=1000\)</span> il converge vers une conception
+faisable à 63 502 kg, soit seulement +364 kg au-dessus de la référence directe.
+Ce résultat reste toutefois plus lourd que l'optimum direct, et la faisabilité
+dépend du caractère conservateur du Random Forest plutôt que d'une modélisation
+précise des contraintes. Cette étude illustre les directives du projet : <strong>un
+surrogate n'est qu'une approximation, et toute solution optimisée dessus doit être
+validée sur le vrai modèle</strong>.</p>
+<hr />
+<h2 id="cas-dusage-2-hydrogene-liquide-turbofan">Cas d'usage 2 — Hydrogène liquide / Turbofan<a class="headerlink" href="#cas-dusage-2-hydrogene-liquide-turbofan" title="Permanent link">&para;</a></h2>
+<p>La même démarche est reconduite pour l'hydrogène liquide. Le réservoir
+cryogénique alourdit et agrandit le fuselage, ce qui durcit les contraintes
+géométriques et de masse.</p>
+<h3 id="1-optimisation-directe-et-choix-de-lalgorithme">1. Optimisation directe et choix de l'algorithme<a class="headerlink" href="#1-optimisation-directe-et-choix-de-lalgorithme" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">max_iter</th>
+<th style="text-align: center;">COBYLA</th>
+<th style="text-align: center;">SLSQP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">63 323,8</td>
+<td style="text-align: center;">63 532,5</td>
+</tr>
+<tr>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">63 323,8</td>
+<td style="text-align: center;">63 532,5</td>
+</tr>
+<tr>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">63 323,8</td>
+<td style="text-align: center;">63 532,5</td>
+</tr>
+</tbody>
+</table>
+<p>Ici <strong>COBYLA est nettement meilleur</strong> (63 324 kg contre 63 533 kg pour SLSQP, soit
+-209 kg), confirmant le choix de l'algorithme sans gradient. Comme pour le
+kérosène, l'optimum sature <code>slst</code> = 100 kN et <code>n_pax</code> = 120.</p>
+<h3 id="2-surrogate-et-validation">2. Surrogate et validation<a class="headerlink" href="#2-surrogate-et-validation" title="Permanent link">&para;</a></h3>
+<p>Le krigeage est de nouveau le plus précis (R<span class="arithmatex">\(^{2}\)</span> test <code>mtom</code> : linéaire 0,989, RBF
+0,996, <strong>krigeage 0,998</strong>), avec une validation croisée concordante (R<span class="arithmatex">\(^{2}\)</span> <code>mtom</code>
+0,988). Le surrogate est donc fiable.</p>
+<p><img alt="Validation du surrogate (UC2)" src="../../images/use_case/uc2_p1_validation.png" /></p>
+<h3 id="3-optimisation-sur-surrogate-et-validation">3. Optimisation sur surrogate et validation<a class="headerlink" href="#3-optimisation-sur-surrogate-et-validation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: center;">Optimum surrogate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>slst</code></td>
+<td style="text-align: center;">100 kN <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_pax</code></td>
+<td style="text-align: center;">120 <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>area</code></td>
+<td style="text-align: center;">110,9 m<span class="arithmatex">\(^{2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ar</code></td>
+<td style="text-align: center;">9,38</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mtom</code> (surrogate)</td>
+<td style="text-align: center;">64 624 kg</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Convergence de l'optimisation sur surrogate (UC2)" src="../../images/use_case/uc2_p1_opt_history.png" /></p>
+<p>Sur le vrai modèle, cette conception donne un MTOM réel de <strong>63 288 kg</strong>. Les
+contraintes sont presque toutes respectées (<code>tofl</code> 1 880 m, <code>vz</code> 1,89 m/s,
+<code>span</code> 32,3 m, <code>length</code> 34,8 m), mais la <strong>vitesse d'approche dépasse légèrement la
+limite</strong> (<code>vapp</code> <span class="arithmatex">\(\approx\)</span> 69,7 m/s contre 69,45 m/s, soit +0,25 m/s) et la marge de
+carburant est quasi nulle (<code>fm</code> <span class="arithmatex">\(\approx\)</span> 0,04). L'exploitation du surrogate est ici
+beaucoup plus modérée que pour le kérosène (où <code>tofl</code> était violée de 130 m), mais
+le constat est le même : <strong>l'optimum nominal sature les contraintes</strong> et n'a aucune
+marge face aux incertitudes, ce qui motive l'optimisation robuste de la Partie 3.</p>
+<p>Le balayage (métamodèle, <span class="arithmatex">\(N\)</span>) confirme que, contrairement au kérosène, la configuration
+hydrogène admet plusieurs configurations faisables (régression linéaire à tout <span class="arithmatex">\(N\)</span>,
+RBF à <span class="arithmatex">\(N \ge 100\)</span>), mais toujours au prix d'un MTOM plus élevé que l'optimum
+saturé :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Métamodèle</th>
+<th style="text-align: center;"><span class="arithmatex">\(N\)</span></th>
+<th style="text-align: center;">MTOM réel (kg)</th>
+<th style="text-align: center;">Faisable (réel)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LinearRegressor</td>
+<td style="text-align: center;">30 / 100 / 1000</td>
+<td style="text-align: center;"><span class="arithmatex">\(\approx\)</span> 64 230-64 250</td>
+<td style="text-align: center;">Oui</td>
+</tr>
+<tr>
+<td style="text-align: left;">RBFRegressor</td>
+<td style="text-align: center;">100 / 1000</td>
+<td style="text-align: center;">63 510 / 63 372</td>
+<td style="text-align: center;">Oui</td>
+</tr>
+<tr>
+<td style="text-align: left;">RandomForestRegressor</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">64 758</td>
+<td style="text-align: center;">Oui</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="comparaison-kerosene-vs-hydrogene-liquide">Comparaison kérosène vs hydrogène liquide<a class="headerlink" href="#comparaison-kerosene-vs-hydrogene-liquide" title="Permanent link">&para;</a></h2>
+<p><img alt="Avion optimal — kérosène (UC1)" src="../../images/use_case/uc1_p1_aircraft.png" />
+<img alt="Avion optimal — hydrogène liquide (UC2)" src="../../images/use_case/uc2_p1_aircraft.png" /></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Critère</th>
+<th style="text-align: center;">Kérosène (UC1)</th>
+<th style="text-align: center;">Hydrogène liquide (UC2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">MTOM optimal direct (vrai modèle)</td>
+<td style="text-align: center;">63 138 kg</td>
+<td style="text-align: center;">63 324 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>slst</code></td>
+<td style="text-align: center;">100 kN <em>(borne inf.)</em></td>
+<td style="text-align: center;">100 kN <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_pax</code></td>
+<td style="text-align: center;">120 <em>(borne inf.)</em></td>
+<td style="text-align: center;">120 <em>(borne inf.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>area</code> (optimum surrogate)</td>
+<td style="text-align: center;">100,8 m<span class="arithmatex">\(^{2}\)</span></td>
+<td style="text-align: center;">110,9 m<span class="arithmatex">\(^{2}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ar</code> (optimum surrogate)</td>
+<td style="text-align: center;">15,3</td>
+<td style="text-align: center;">9,38</td>
+</tr>
+<tr>
+<td style="text-align: left;">Paramètres incertains (gelés)</td>
+<td style="text-align: center;">3 (<code>aef</code>, <code>cef</code>, <code>sef</code>)</td>
+<td style="text-align: center;">5 (+ <code>gi</code>, <code>vi</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Contrainte active critique</td>
+<td style="text-align: center;"><code>tofl</code> (décollage)</td>
+<td style="text-align: center;"><code>vapp</code> (approche)</td>
+</tr>
+</tbody>
+</table>
+<p>Les deux cas d'usage convergent vers des MTOM nominaux très proches (<span class="arithmatex">\(\approx\)</span> 63,1-63,3 t) et
+saturent toutes deux les bornes de poussée et de passagers. La différence se joue
+sur la <strong>géométrie de la voilure</strong> : le kérosène privilégie une aile petite et très
+allongée (<code>area</code> <span class="arithmatex">\(\approx\)</span> 101 m<span class="arithmatex">\(^{2}\)</span>, <code>ar</code> <span class="arithmatex">\(\approx\)</span> 15,3) pour réduire la traînée induite, alors que
+l'hydrogène, pénalisé par le volume et la masse du réservoir, retient une aile plus
+grande et moins allongée (<code>area</code> <span class="arithmatex">\(\approx\)</span> 111 m<span class="arithmatex">\(^{2}\)</span>, <code>ar</code> <span class="arithmatex">\(\approx\)</span> 9,4). Le cas
+hydrogène
+introduit en outre <strong>deux verrous technologiques supplémentaires</strong> (<code>gi</code>, <code>vi</code>),
+qui feront l'objet des Parties 2 et 3.</p>
+<h2 id="synthese">Synthèse<a class="headerlink" href="#synthese" title="Permanent link">&para;</a></h2>
+<ul>
+<li>L'optimisation <strong>directe sur le vrai modèle</strong> fournit une référence faisable :
+  63 138 kg (kérosène), 63 324 kg (hydrogène). <strong>COBYLA</strong> est retenu, sans
+  gradient, robuste, et au moins aussi bon que SLSQP (nettement meilleur pour
+  l'hydrogène).</li>
+<li>Le <strong>krigeage</strong> est le surrogate le plus précis pour les deux cas d'usage (R<span class="arithmatex">\(^{2}\)</span> test
+  et validation croisée <span class="arithmatex">\(\approx\)</span> 0,99), avec un plan d'expériences modéré conforme à la
+  règle 3-5 <span class="arithmatex">\(\times\)</span> dimension.</li>
+<li>Optimiser <strong>sur le surrogate</strong> produit des conceptions plus légères mais
+  <strong>infaisables sur le vrai modèle</strong> (kérosène : <code>tofl</code> +130 m ; hydrogène : <code>vapp</code>
+  +0,25 m/s) : l'optimiseur exploite l'erreur résiduelle aux contraintes actives.
+  Toute solution surrogate <strong>doit être validée</strong> sur le vrai modèle.</li>
+<li>Les optima nominaux <strong>saturent les contraintes</strong> sans marge de sécurité, ce qui
+  les rend fragiles dès qu'on introduit des incertitudes, point de départ des
+  Parties 2 (quantification) et 3 (optimisation robuste).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Matthias De Lozzo -  All rights reserved -  Reproduction prohibited without permission.
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.instant", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
