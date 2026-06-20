@@ -3,16 +3,16 @@
 Compare les trois manières d'estimer l'espérance et l'écart-type propagés à chaque
 itération de l'optimiseur robuste :
 
-* ``surrogate`` : krigeage de ``f_hat(x, u)`` ré-échantillonné (``Surrogate_Settings``) ;
-* ``sampling`` : Monte-Carlo direct sur le modèle multidisciplinaire (``Sampling_Settings``) ;
-* ``taylor`` : développement de Taylor au premier ordre (``TaylorPolynomial_Settings``).
+* surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings) ;
+* sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings) ;
+* taylor : développement de Taylor au premier ordre (TaylorPolynomial_Settings).
 
-Formulation complète à 11 disciplines (avec ``operating_cost``) et espace incertain
-à 7 variables (incluant ``fc_pwd`` et ``bed``), hors pipeline ``_oad`` (seul le
+Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 7 variables (incluant fc_pwd et bed), hors pipeline _oad (seul le
 helper de figures est réutilisé).
 
-Script lourd (la variante ``sampling`` sur le vrai modèle surtout) : chaque couple
-(cas d'usage, méthode) est dans un bloc ``# %%`` séparé.
+Script lourd (la variante sampling sur le vrai modèle surtout) : chaque couple
+(cas d'usage, méthode) est dans un bloc # %% séparé.
 """
 
 from __future__ import annotations

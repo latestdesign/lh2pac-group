@@ -1,12 +1,12 @@
 """Problème 3 — Plan d'expériences conjoint (conception + incertain).
 
-Construit les données d'entraînement du surrogate robuste ``f_hat(x, u)``. Un seul
+Construit les données d'entraînement du surrogate robuste f_hat(x, u). Un seul
 plan en hypercube latin échantillonne le vrai modèle couplé sur l'espace conjoint :
 4 paramètres de conception plus 3 (kérosène) ou 5 (hydrogène liquide) paramètres
 incertains. Exporte aussi le graphe de couplage de la MDA.
 
-Script lourd : à lancer avant ``p3_surrogate`` et ``p3_optimization``. Seul UC2 est
-produit ici. Jeux de données mis en cache dans ``data/`` (supprimer un pickle pour
+Script lourd : à lancer avant p3_surrogate et p3_optimization. Seul UC2 est
+produit ici. Jeux de données mis en cache dans data/ (supprimer un pickle pour
 ré-échantillonner) ; graine fixe pour la reproductibilité.
 """
 
@@ -17,7 +17,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_doe.py")

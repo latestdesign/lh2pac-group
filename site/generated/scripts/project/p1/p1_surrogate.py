@@ -4,8 +4,8 @@ Compare les régresseurs linéaire, RBF et krigeage sur un jeu de test et garde 
 meilleur (R2 moyen le plus élevé), puis recoupe le retenu par validation croisée
 K-fold. Les deux R2 sont superposés sur le graphe de validation.
 
-Script lourd : lancer ``p1_doe`` d'abord. Surrogate retenu mis en cache dans
-``data/`` et consommé par ``p1_optimization``.
+Script lourd : lancer p1_doe d'abord. Surrogate retenu mis en cache dans
+data/ et consommé par p1_optimization.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_surrogate.py")

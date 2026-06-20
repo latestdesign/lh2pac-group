@@ -1792,7 +1792,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1876,7 +1876,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2275,13 +2275,13 @@
 to download the full example code</p>
 </div>
 <p>Problème 2 — Cas d'usage 2 : propagation des incertitudes et sensibilité.</p>
-<p>Conception <code>x</code> figée, on étudie l'effet des incertitudes <code>u</code> sur les sorties.
-Pour l'hydrogène liquide, l'espace incertain retient <code>gi</code>, <code>vi</code> (stockage
-cryogénique) et <code>aef</code>, <code>sef</code> (facteurs d'échelle). On ajuste un surrogate RBF
-de <code>f(u)</code>, on le valide, puis on s'en sert pour une propagation Monte-Carlo
+<p>Conception x figée, on étudie l'effet des incertitudes u sur les sorties.
+Pour l'hydrogène liquide, l'espace incertain retient gi, vi (stockage
+cryogénique) et aef, sef (facteurs d'échelle). On ajuste un surrogate RBF
+de f(u), on le valide, puis on s'en sert pour une propagation Monte-Carlo
 (10 000 tirages) et une analyse de Sobol.</p>
-<p>Formulation complète à 11 disciplines (avec <code>operating_cost</code>) et espace incertain
-à 4 variables, hors pipeline <code>_oad</code> (seul le helper de figures est réutilisé).
+<p>Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 4 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
 Conception figée au point initial X_init ; décommenter le bloc dédié pour X_opt.</p>
 <p>Script lourd (échantillonnage du vrai modèle, Monte-Carlo et Sobol sur surrogate).</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 15-50 -->

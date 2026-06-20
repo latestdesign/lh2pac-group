@@ -1,16 +1,16 @@
 """Définition partagée du problème OAD, importée par tous les scripts du projet.
 
 Source de vérité unique du problème de conception avion globale (Overall Aircraft
-Design). Le vrai modèle ``f(x, u)`` couple les fonctions analytiques de
-``gemseo_oad_training.models`` via des :class:`.AutoPyDiscipline`. La boucle de
-rétroaction sur la masse au décollage (``mass`` <-> ``total_mass`` <-> ``mission``)
-impose une analyse multidisciplinaire (MDA), construite par la formulation ``MDF``.
+Design). Le vrai modèle f(x, u) couple les fonctions analytiques de
+gemseo_oad_training.models via des AutoPyDiscipline. La boucle de
+rétroaction sur la masse au décollage (mass <-> total_mass <-> mission)
+impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.
 
-* ``x`` (conception) : ``slst``, ``n_pax``, ``area``, ``ar``.
-* ``u`` (incertain) : ``aef``, ``cef``, ``sef`` ; plus ``gi``, ``vi`` pour
+* x (conception) : slst, n_pax, area, ar.
+* u (incertain) : aef, cef, sef ; plus gi, vi pour
   l'hydrogène liquide.
-* Objectif : minimiser ``mtom``. Contraintes : ``tofl``, ``vapp``, ``vz``,
-  ``span``, ``length``, ``fm``.
+* Objectif : minimiser mtom. Contraintes : tofl, vapp, vz,
+  span, length, fm.
 """
 
 from __future__ import annotations
@@ -61,16 +61,13 @@ def cached(file_path: str, compute):
     to_pickle(artifact, file_path)
     return artifact
 
-# --------------------------------------------------------------------------- #
-# Cas d'usage (seuls UC1 et UC2 sont requis par le projet, cf. docs/index.md)
-# --------------------------------------------------------------------------- #
 USE_CASES = {
     "UC1": {"fuel_type": "kerosene", "engine_type": "turbofan", "design_range_km": 5500},
     "UC2": {"fuel_type": "liquid_h2", "engine_type": "turbofan", "design_range_km": 5500},
 }
 
 # Les 11 disciplines impliquées dans le processus multidisciplinaire.
-# ``battery`` reste silencieuse (renvoie des zéros) pour kerosene/liquid_h2 mais
+# battery reste silencieuse (renvoie des zéros) pour kerosene/liquid_h2 mais
 # est conservée afin que la chaîne soit identique pour chaque cas d'usage.
 _MODEL_FUNCTIONS = (
     models.geometry,
@@ -91,13 +88,13 @@ OBJECTIVE = "mtom"
 OUTPUT_NAMES = ["mtom", "tofl", "vapp", "vz", "span", "length", "fm"]
 
 # Sorties qui dépendent réellement des paramètres incertains u.
-# ``span`` et ``length`` sont purement géométriques (déterministes une fois x
+# span et length sont purement géométriques (déterministes une fois x
 # fixé), donc leur variance sous u est nulle et elles doivent être exclues de
 # l'analyse de sensibilité basée sur la variance.
 SENSITIVITY_OUTPUTS = ["mtom", "tofl", "vapp", "vz", "fm"]
 
-# Contraintes sous la forme (nom_sortie, positif, borne) en unités STANDARD (SI).
-# ``positive=False`` signifie ``sortie <= borne`` ; ``positive=True`` signifie ``sortie >= borne``.
+# contraintes sous la forme (nom_sortie, positif, borne) en unités standard (SI).
+# positive=False signifie sortie <= borne ; positive=True signifie sortie >= borne.
 CONSTRAINTS = [
     ("tofl", False, 1900.0),                       # longueur de piste au décollage <= 1900 m
     ("vapp", False, convert_from("kt", 135.0)),    # vitesse d'approche <= 135 kt
@@ -123,10 +120,10 @@ def make_disciplines(uc: str):
     """Construit la liste des disciplines couplées pour un cas d'usage donné.
 
     Args:
-        uc: L'identifiant du cas d'usage (``"UC1"`` ou ``"UC2"``).
+        uc: L'identifiant du cas d'usage ("UC1" ou "UC2").
 
     Returns:
-        La liste des objets :class:`.AutoPyDiscipline` dont les entrées
+        La liste des objets AutoPyDiscipline dont les entrées
         catégorielles et fixes sont réglées aux valeurs du cas d'usage.
     """
     settings = USE_CASES[uc]
@@ -145,12 +142,12 @@ def make_disciplines(uc: str):
 def set_design_point(disciplines, design_point) -> None:
     """Fige les paramètres de conception des disciplines en un point donné.
 
-    Utilisé par le problème 2, où la conception ``x`` est figée et où seul ``u``
+    Utilisé par le problème 2, où la conception x est figée et où seul u
     varie.
 
     Args:
-        disciplines: Les disciplines renvoyées par :func:`make_disciplines`.
-        design_point: Dictionnaire ``nom -> valeur`` en unités SI (scalaires ou
+        disciplines: Les disciplines renvoyées par make_disciplines.
+        design_point: Dictionnaire nom -> valeur en unités SI (scalaires ou
             tableaux).
     """
     import numpy as np
@@ -179,7 +176,7 @@ def get_design_space() -> DesignSpace:
 def get_uncertain_space(uc: str) -> ParameterSpace:
     """Renvoie l'espace incertain des variables aléatoires pertinentes pour un cas d'usage.
 
-    ``aef``/``cef``/``sef`` sont toujours pertinentes ; ``gi``/``vi`` seulement
+    aef/cef/sef sont toujours pertinentes ; gi/vi seulement
     pour liquid_h2.
     """
     settings = USE_CASES[uc]
@@ -203,7 +200,7 @@ def get_joint_space(uc: str) -> ParameterSpace:
 
     Les variables de conception sont ajoutées comme variables aléatoires
     uniformes sur leurs bornes afin qu'un unique plan d'expériences explore
-    ``f(x, u)`` ; l'optimisation traite ensuite la partie conception comme
+    f(x, u) ; l'optimisation traite ensuite la partie conception comme
     déterministe.
     """
     space = ParameterSpace()
@@ -230,9 +227,6 @@ def add_constraints(scenario) -> None:
         scenario.add_constraint(name, constraint_type="ineq", positive=positive, value=bound)
 
 
-# --------------------------------------------------------------------------- #
-# Sélection & validation du surrogate (linéaire vs RBF, garder le plus simple adéquat)
-# --------------------------------------------------------------------------- #
 def train_and_select(train_dataset, test_dataset, output_names,
                      regressors=("LinearRegressor", "RBFRegressor", "GaussianProcessRegressor"),
                      prefer=None):
@@ -247,8 +241,8 @@ def train_and_select(train_dataset, test_dataset, output_names,
             krigeage.
 
     Returns:
-        ``(selected_name, selected_surrogate, results)`` où ``results`` associe
-        chaque nom de régresseur à ``{"R2": {out: value}, "RMSE": {out: value}}``.
+        (selected_name, selected_surrogate, results) où results associe
+        chaque nom de régresseur à {"R2": {out: value}, "RMSE": {out: value}}.
     """
     from gemseo.disciplines.surrogate import SurrogateDiscipline
 
@@ -296,7 +290,7 @@ def plot_validation_bars(results, output_names, filename, title, cv=None, cv_lab
     """Diagramme en barres comparant le R2 de test de chaque régresseur par sortie, et l'enregistre.
 
     Args:
-        cv: Dictionnaire optionnel ``sortie -> R2 de validation croisée``, superposé
+        cv: Dictionnaire optionnel sortie -> R2 de validation croisée, superposé
             au graphe sous forme d'une série de barres supplémentaire.
         cv_label: Libellé de légende de cette série (par défaut « cross-val. »).
     """

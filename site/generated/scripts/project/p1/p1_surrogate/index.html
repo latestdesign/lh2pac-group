@@ -1726,7 +1726,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1810,7 +1810,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2146,8 +2146,8 @@ to download the full example code</p>
 <p>Compare les régresseurs linéaire, RBF et krigeage sur un jeu de test et garde le
 meilleur (R2 moyen le plus élevé), puis recoupe le retenu par validation croisée
 K-fold. Les deux R2 sont superposés sur le graphe de validation.</p>
-<p>Script lourd : lancer <code>p1_doe</code> d'abord. Surrogate retenu mis en cache dans
-<code>data/</code> et consommé par <code>p1_optimization</code>.</p>
+<p>Script lourd : lancer p1_doe d'abord. Surrogate retenu mis en cache dans
+data/ et consommé par p1_optimization.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 10-68 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -2157,7 +2157,7 @@ K-fold. Les deux R2 sont superposés sur le graphe de validation.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p1_surrogate.py&quot;</span><span class="p">)</span>

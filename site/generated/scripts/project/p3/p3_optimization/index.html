@@ -23,7 +23,7 @@
     
     
       
-        <title>Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``. - lh2pac</title>
+        <title>Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u). - lh2pac</title>
       
     
     
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+              Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
             
           </span>
         </div>
@@ -1661,7 +1661,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1752,7 +1752,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -1770,7 +1770,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2105,7 +2105,7 @@
   
 
 
-  <h1>Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.</h1>
+  <h1>Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).</h1>
 
 <!--
  DO NOT EDIT.
@@ -2120,16 +2120,16 @@
 <p>Click <a href="#download_links">here</a>
 to download the full example code</p>
 </div>
-<p>Problème 3 — Optimisation robuste sur le surrogate conjoint <code>f_hat(x, u)</code>.</p>
-<p>Minimise <code>E[mtom]</code> sous des contraintes en marge <code>mean +/- k*std</code> (<code>k = 2</code>),
-l'espérance et les marges étant estimées par un Monte-Carlo interne sur <code>u</code> à
-chaque itération (<code>gemseo-umdo</code>). L'optimum robuste est ensuite comparé à
+<p>Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).</p>
+<p>Minimise E[mtom] sous des contraintes en marge mean +/- k*std (k = 2),
+l'espérance et les marges étant estimées par un Monte-Carlo interne sur u à
+chaque itération (gemseo-umdo). L'optimum robuste est ensuite comparé à
 l'optimum déterministe (problème 1) en propageant les mêmes incertitudes aux deux
 conceptions.</p>
-<p><code>k = 2</code> est un proxy de robustesse fondé sur les moments, pas une garantie
+<p>k = 2 est un proxy de robustesse fondé sur les moments, pas une garantie
 probabiliste ; les fiabilités réelles sont mesurées par Monte-Carlo ci-dessous.</p>
 <p>Script lourd : le Monte-Carlo interne rend chaque cas d'usage long de plusieurs
-minutes. Lancer <code>p3_doe</code> puis <code>p3_surrogate</code> d'abord.</p>
+minutes. Lancer p3_doe puis p3_surrogate d'abord.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 15-227 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -2139,7 +2139,7 @@ minutes. Lancer <code>p3_doe</code> puis <code>p3_surrogate</code> d'abord.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p3_optimization.py&quot;</span><span class="p">)</span>
@@ -2209,7 +2209,7 @@ minutes. Lancer <code>p3_doe</code> puis <code>p3_surrogate</code> d'abord.</p>
 <span class="k">def</span><span class="w"> </span><span class="nf">_deterministic_optimum</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">uc</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimum déterministe min-MTOM sur le surrogate, u figé au nominal.</span>
 
-<span class="sd">    Repli : ``run`` préfère le pickle d&#39;optimum déterministe du problème 1 et</span>
+<span class="sd">    Repli : run préfère le pickle d&#39;optimum déterministe du problème 1 et</span>
 <span class="sd">    n&#39;appelle cette fonction qu&#39;en son absence.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nominal</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_oad</span><span class="o">.</span><span class="n">NOMINAL_UNCERTAIN</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>

@@ -5,8 +5,8 @@ Pour chaque couple régresseur (linéaire, RBF, forêt aléatoire) x taille de p
 l'optimum sur le vrai modèle. Le tableau final rapporte MTOM surrogate, MTOM réel
 et faisabilité réelle.
 
-Formulation complète à 11 disciplines (avec ``operating_cost``), sans passer par
-le helper ``_oad``. Script lourd (jusqu'à N=1000, plusieurs modèles).
+Formulation complète à 11 disciplines (avec operating_cost), sans passer par
+le helper _oad. Script lourd (jusqu'à N=1000, plusieurs modèles).
 """
 
 from __future__ import annotations

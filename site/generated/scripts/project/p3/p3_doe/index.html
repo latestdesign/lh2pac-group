@@ -1661,7 +1661,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1799,7 +1799,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2121,12 +2121,12 @@
 to download the full example code</p>
 </div>
 <p>Problème 3 — Plan d'expériences conjoint (conception + incertain).</p>
-<p>Construit les données d'entraînement du surrogate robuste <code>f_hat(x, u)</code>. Un seul
+<p>Construit les données d'entraînement du surrogate robuste f_hat(x, u). Un seul
 plan en hypercube latin échantillonne le vrai modèle couplé sur l'espace conjoint :
 4 paramètres de conception plus 3 (kérosène) ou 5 (hydrogène liquide) paramètres
 incertains. Exporte aussi le graphe de couplage de la MDA.</p>
-<p>Script lourd : à lancer avant <code>p3_surrogate</code> et <code>p3_optimization</code>. Seul UC2 est
-produit ici. Jeux de données mis en cache dans <code>data/</code> (supprimer un pickle pour
+<p>Script lourd : à lancer avant p3_surrogate et p3_optimization. Seul UC2 est
+produit ici. Jeux de données mis en cache dans data/ (supprimer un pickle pour
 ré-échantillonner) ; graine fixe pour la reproductibilité.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 12-88 -->
 
@@ -2137,7 +2137,7 @@ ré-échantillonner) ; graine fixe pour la reproductibilité.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p3_doe.py&quot;</span><span class="p">)</span>

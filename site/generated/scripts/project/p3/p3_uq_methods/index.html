@@ -1661,7 +1661,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1810,7 +1810,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2146,15 +2146,15 @@ to download the full example code</p>
 <p>Compare les trois manières d'estimer l'espérance et l'écart-type propagés à chaque
 itération de l'optimiseur robuste :</p>
 <ul>
-<li><code>surrogate</code> : krigeage de <code>f_hat(x, u)</code> ré-échantillonné (<code>Surrogate_Settings</code>) ;</li>
-<li><code>sampling</code> : Monte-Carlo direct sur le modèle multidisciplinaire (<code>Sampling_Settings</code>) ;</li>
-<li><code>taylor</code> : développement de Taylor au premier ordre (<code>TaylorPolynomial_Settings</code>).</li>
+<li>surrogate : krigeage de f_hat(x, u) ré-échantillonné (Surrogate_Settings) ;</li>
+<li>sampling : Monte-Carlo direct sur le modèle multidisciplinaire (Sampling_Settings) ;</li>
+<li>taylor : développement de Taylor au premier ordre (TaylorPolynomial_Settings).</li>
 </ul>
-<p>Formulation complète à 11 disciplines (avec <code>operating_cost</code>) et espace incertain
-à 7 variables (incluant <code>fc_pwd</code> et <code>bed</code>), hors pipeline <code>_oad</code> (seul le
+<p>Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 7 variables (incluant fc_pwd et bed), hors pipeline _oad (seul le
 helper de figures est réutilisé).</p>
-<p>Script lourd (la variante <code>sampling</code> sur le vrai modèle surtout) : chaque couple
-(cas d'usage, méthode) est dans un bloc <code># %%</code> séparé.</p>
+<p>Script lourd (la variante sampling sur le vrai modèle surtout) : chaque couple
+(cas d'usage, méthode) est dans un bloc # %% séparé.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 17-128 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>

@@ -1,6 +1,6 @@
 """Problème 1 — Étude du choix de l'algorithme d'optimisation (COBYLA vs SLSQP).
 
-Compare ``NLOPT_COBYLA`` (sans gradient, région de confiance) et ``SLSQP`` (par
+Compare NLOPT_COBYLA (sans gradient, région de confiance) et SLSQP (par
 gradient) sur le vrai modèle couplé (u gelé au nominal), pour plusieurs budgets
 d'itérations, via le MTOM optimal et les historiques de convergence.
 

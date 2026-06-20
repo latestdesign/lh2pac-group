@@ -1759,7 +1759,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1843,7 +1843,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2209,14 +2209,14 @@
 to download the full example code</p>
 </div>
 <p>Problème 2 — Cas d'usage 1 : propagation des incertitudes et sensibilité.</p>
-<p>Conception <code>x</code> figée, on étudie l'effet des incertitudes <code>u</code> sur les sorties.
-Pour le kérosène, l'espace incertain se limite aux facteurs d'échelle <code>aef</code>
-(traînée), <code>sef</code> (masse) et <code>cef</code> (consommation). On ajuste un surrogate RBF de
-<code>f(u)</code>, on calcule les indices de Sobol dessus, et on rapporte les statistiques
+<p>Conception x figée, on étudie l'effet des incertitudes u sur les sorties.
+Pour le kérosène, l'espace incertain se limite aux facteurs d'échelle aef
+(traînée), sef (masse) et cef (consommation). On ajuste un surrogate RBF de
+f(u), on calcule les indices de Sobol dessus, et on rapporte les statistiques
 empiriques et la distribution de la MTOM.</p>
-<p>Formulation complète à 11 disciplines (avec <code>operating_cost</code>) et espace incertain
-à 3 variables, hors pipeline <code>_oad</code> (seul le helper de figures est réutilisé).
-L'analyse couvre les deux points de conception (<code>X_init</code> ; <code>X_opt</code> issu de la
+<p>Formulation complète à 11 disciplines (avec operating_cost) et espace incertain
+à 3 variables, hors pipeline _oad (seul le helper de figures est réutilisé).
+L'analyse couvre les deux points de conception (X_init ; X_opt issu de la
 Partie 1) ; étapes aléatoires graînées ; surrogate validé par validation croisée et
 sur un plan de test indépendant tiré du vrai modèle.</p>
 <p>Script lourd (échantillonnage du vrai modèle, Sobol sur surrogate).</p>

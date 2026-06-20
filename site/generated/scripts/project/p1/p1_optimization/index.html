@@ -1726,7 +1726,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1810,7 +1810,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2143,10 +2143,10 @@
 to download the full example code</p>
 </div>
 <p>Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).</p>
-<p>Minimise <code>mtom</code> sous les six contraintes (incertitudes gelées au nominal) avec
-<code>COBYLA</code> sur le surrogate, puis vérifie l'optimum sur le vrai modèle couplé.
-L'optimum est picklé dans <code>data/</code> et sert de référence au problème 3.</p>
-<p>Script lourd : lancer <code>p1_doe</code> puis <code>p1_surrogate</code> d'abord. Produit les figures
+<p>Minimise mtom sous les six contraintes (incertitudes gelées au nominal) avec
+COBYLA sur le surrogate, puis vérifie l'optimum sur le vrai modèle couplé.
+L'optimum est picklé dans data/ et sert de référence au problème 3.</p>
+<p>Script lourd : lancer p1_doe puis p1_surrogate d'abord. Produit les figures
 d'historique de convergence et de dessin de l'avion.</p>
 <!-- GENERATED FROM PYTHON SOURCE LINES 10-113 -->
 
@@ -2157,7 +2157,7 @@ d'historique de convergence et de dessin de l'avion.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-<span class="c1"># mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour</span>
+<span class="c1"># mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour</span>
 <span class="c1"># résoudre les imports et chemins ci-dessous.</span>
 <span class="k">if</span> <span class="s2">&quot;__file__&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="vm">__file__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;p1_optimization.py&quot;</span><span class="p">)</span>

@@ -1,10 +1,10 @@
 """Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).
 
-Minimise ``mtom`` sous les six contraintes (incertitudes gelées au nominal) avec
-``COBYLA`` sur le surrogate, puis vérifie l'optimum sur le vrai modèle couplé.
-L'optimum est picklé dans ``data/`` et sert de référence au problème 3.
+Minimise mtom sous les six contraintes (incertitudes gelées au nominal) avec
+COBYLA sur le surrogate, puis vérifie l'optimum sur le vrai modèle couplé.
+L'optimum est picklé dans data/ et sert de référence au problème 3.
 
-Script lourd : lancer ``p1_doe`` puis ``p1_surrogate`` d'abord. Produit les figures
+Script lourd : lancer p1_doe puis p1_surrogate d'abord. Produit les figures
 d'historique de convergence et de dessin de l'avion.
 """
 
@@ -15,7 +15,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# mkdocs-gallery exécute ce fichier sans __file__ ; on le définit pour
 # résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_optimization.py")

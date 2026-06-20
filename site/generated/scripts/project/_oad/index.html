@@ -1664,7 +1664,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
+    Problème 3 — Surrogate robuste f_hat(x, u) et sa validation.
   
 
     
@@ -1748,7 +1748,7 @@
   <span class="md-ellipsis">
     
   
-    Problème 3 — Optimisation robuste sur le surrogate conjoint ``f_hat(x, u)``.
+    Problème 3 — Optimisation robuste sur le surrogate conjoint f_hat(x, u).
   
 
     
@@ -2052,18 +2052,18 @@ to download the full example code</p>
 </div>
 <p>Définition partagée du problème OAD, importée par tous les scripts du projet.</p>
 <p>Source de vérité unique du problème de conception avion globale (Overall Aircraft
-Design). Le vrai modèle <code>f(x, u)</code> couple les fonctions analytiques de
-<code>gemseo_oad_training.models</code> via des :class:<code>.AutoPyDiscipline</code>. La boucle de
-rétroaction sur la masse au décollage (<code>mass</code> &lt;-&gt; <code>total_mass</code> &lt;-&gt; <code>mission</code>)
-impose une analyse multidisciplinaire (MDA), construite par la formulation <code>MDF</code>.</p>
+Design). Le vrai modèle f(x, u) couple les fonctions analytiques de
+gemseo_oad_training.models via des AutoPyDiscipline. La boucle de
+rétroaction sur la masse au décollage (mass &lt;-&gt; total_mass &lt;-&gt; mission)
+impose une analyse multidisciplinaire (MDA), construite par la formulation MDF.</p>
 <ul>
-<li><code>x</code> (conception) : <code>slst</code>, <code>n_pax</code>, <code>area</code>, <code>ar</code>.</li>
-<li><code>u</code> (incertain) : <code>aef</code>, <code>cef</code>, <code>sef</code> ; plus <code>gi</code>, <code>vi</code> pour
+<li>x (conception) : slst, n_pax, area, ar.</li>
+<li>u (incertain) : aef, cef, sef ; plus gi, vi pour
   l'hydrogène liquide.</li>
-<li>Objectif : minimiser <code>mtom</code>. Contraintes : <code>tofl</code>, <code>vapp</code>, <code>vz</code>,
-  <code>span</code>, <code>length</code>, <code>fm</code>.</li>
+<li>Objectif : minimiser mtom. Contraintes : tofl, vapp, vz,
+  span, length, fm.</li>
 </ul>
-<!-- GENERATED FROM PYTHON SOURCE LINES 15-328 -->
+<!-- GENERATED FROM PYTHON SOURCE LINES 15-322 -->
 
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -2113,16 +2113,13 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
     <span class="n">to_pickle</span><span class="p">(</span><span class="n">artifact</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">artifact</span>
 
-<span class="c1"># --------------------------------------------------------------------------- #</span>
-<span class="c1"># Cas d&#39;usage (seuls UC1 et UC2 sont requis par le projet, cf. docs/index.md)</span>
-<span class="c1"># --------------------------------------------------------------------------- #</span>
 <span class="n">USE_CASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;UC1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;fuel_type&quot;</span><span class="p">:</span> <span class="s2">&quot;kerosene&quot;</span><span class="p">,</span> <span class="s2">&quot;engine_type&quot;</span><span class="p">:</span> <span class="s2">&quot;turbofan&quot;</span><span class="p">,</span> <span class="s2">&quot;design_range_km&quot;</span><span class="p">:</span> <span class="mi">5500</span><span class="p">},</span>
     <span class="s2">&quot;UC2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;fuel_type&quot;</span><span class="p">:</span> <span class="s2">&quot;liquid_h2&quot;</span><span class="p">,</span> <span class="s2">&quot;engine_type&quot;</span><span class="p">:</span> <span class="s2">&quot;turbofan&quot;</span><span class="p">,</span> <span class="s2">&quot;design_range_km&quot;</span><span class="p">:</span> <span class="mi">5500</span><span class="p">},</span>
 <span class="p">}</span>
 
 <span class="c1"># Les 11 disciplines impliquées dans le processus multidisciplinaire.</span>
-<span class="c1"># ``battery`` reste silencieuse (renvoie des zéros) pour kerosene/liquid_h2 mais</span>
+<span class="c1"># battery reste silencieuse (renvoie des zéros) pour kerosene/liquid_h2 mais</span>
 <span class="c1"># est conservée afin que la chaîne soit identique pour chaque cas d&#39;usage.</span>
 <span class="n">_MODEL_FUNCTIONS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">models</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
@@ -2143,13 +2140,13 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="n">OUTPUT_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mtom&quot;</span><span class="p">,</span> <span class="s2">&quot;tofl&quot;</span><span class="p">,</span> <span class="s2">&quot;vapp&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">,</span> <span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;fm&quot;</span><span class="p">]</span>
 
 <span class="c1"># Sorties qui dépendent réellement des paramètres incertains u.</span>
-<span class="c1"># ``span`` et ``length`` sont purement géométriques (déterministes une fois x</span>
+<span class="c1"># span et length sont purement géométriques (déterministes une fois x</span>
 <span class="c1"># fixé), donc leur variance sous u est nulle et elles doivent être exclues de</span>
 <span class="c1"># l&#39;analyse de sensibilité basée sur la variance.</span>
 <span class="n">SENSITIVITY_OUTPUTS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mtom&quot;</span><span class="p">,</span> <span class="s2">&quot;tofl&quot;</span><span class="p">,</span> <span class="s2">&quot;vapp&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">,</span> <span class="s2">&quot;fm&quot;</span><span class="p">]</span>
 
-<span class="c1"># Contraintes sous la forme (nom_sortie, positif, borne) en unités STANDARD (SI).</span>
-<span class="c1"># ``positive=False`` signifie ``sortie &lt;= borne`` ; ``positive=True`` signifie ``sortie &gt;= borne``.</span>
+<span class="c1"># contraintes sous la forme (nom_sortie, positif, borne) en unités standard (SI).</span>
+<span class="c1"># positive=False signifie sortie &lt;= borne ; positive=True signifie sortie &gt;= borne.</span>
 <span class="n">CONSTRAINTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="s2">&quot;tofl&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">1900.0</span><span class="p">),</span>                       <span class="c1"># longueur de piste au décollage &lt;= 1900 m</span>
     <span class="p">(</span><span class="s2">&quot;vapp&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_from</span><span class="p">(</span><span class="s2">&quot;kt&quot;</span><span class="p">,</span> <span class="mf">135.0</span><span class="p">)),</span>    <span class="c1"># vitesse d&#39;approche &lt;= 135 kt</span>
@@ -2175,10 +2172,10 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Construit la liste des disciplines couplées pour un cas d&#39;usage donné.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        uc: L&#39;identifiant du cas d&#39;usage (``&quot;UC1&quot;`` ou ``&quot;UC2&quot;``).</span>
+<span class="sd">        uc: L&#39;identifiant du cas d&#39;usage (&quot;UC1&quot; ou &quot;UC2&quot;).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        La liste des objets :class:`.AutoPyDiscipline` dont les entrées</span>
+<span class="sd">        La liste des objets AutoPyDiscipline dont les entrées</span>
 <span class="sd">        catégorielles et fixes sont réglées aux valeurs du cas d&#39;usage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">USE_CASES</span><span class="p">[</span><span class="n">uc</span><span class="p">]</span>
@@ -2197,12 +2194,12 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="k">def</span><span class="w"> </span><span class="nf">set_design_point</span><span class="p">(</span><span class="n">disciplines</span><span class="p">,</span> <span class="n">design_point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fige les paramètres de conception des disciplines en un point donné.</span>
 
-<span class="sd">    Utilisé par le problème 2, où la conception ``x`` est figée et où seul ``u``</span>
+<span class="sd">    Utilisé par le problème 2, où la conception x est figée et où seul u</span>
 <span class="sd">    varie.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        disciplines: Les disciplines renvoyées par :func:`make_disciplines`.</span>
-<span class="sd">        design_point: Dictionnaire ``nom -&gt; valeur`` en unités SI (scalaires ou</span>
+<span class="sd">        disciplines: Les disciplines renvoyées par make_disciplines.</span>
+<span class="sd">        design_point: Dictionnaire nom -&gt; valeur en unités SI (scalaires ou</span>
 <span class="sd">            tableaux).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -2231,7 +2228,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="k">def</span><span class="w"> </span><span class="nf">get_uncertain_space</span><span class="p">(</span><span class="n">uc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParameterSpace</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Renvoie l&#39;espace incertain des variables aléatoires pertinentes pour un cas d&#39;usage.</span>
 
-<span class="sd">    ``aef``/``cef``/``sef`` sont toujours pertinentes ; ``gi``/``vi`` seulement</span>
+<span class="sd">    aef/cef/sef sont toujours pertinentes ; gi/vi seulement</span>
 <span class="sd">    pour liquid_h2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">USE_CASES</span><span class="p">[</span><span class="n">uc</span><span class="p">]</span>
@@ -2255,7 +2252,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 
 <span class="sd">    Les variables de conception sont ajoutées comme variables aléatoires</span>
 <span class="sd">    uniformes sur leurs bornes afin qu&#39;un unique plan d&#39;expériences explore</span>
-<span class="sd">    ``f(x, u)`` ; l&#39;optimisation traite ensuite la partie conception comme</span>
+<span class="sd">    f(x, u) ; l&#39;optimisation traite ensuite la partie conception comme</span>
 <span class="sd">    déterministe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">space</span> <span class="o">=</span> <span class="n">ParameterSpace</span><span class="p">()</span>
@@ -2282,9 +2279,6 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
         <span class="n">scenario</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">constraint_type</span><span class="o">=</span><span class="s2">&quot;ineq&quot;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="n">positive</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">bound</span><span class="p">)</span>
 
 
-<span class="c1"># --------------------------------------------------------------------------- #</span>
-<span class="c1"># Sélection &amp; validation du surrogate (linéaire vs RBF, garder le plus simple adéquat)</span>
-<span class="c1"># --------------------------------------------------------------------------- #</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">train_and_select</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span><span class="p">,</span> <span class="n">output_names</span><span class="p">,</span>
                      <span class="n">regressors</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;LinearRegressor&quot;</span><span class="p">,</span> <span class="s2">&quot;RBFRegressor&quot;</span><span class="p">,</span> <span class="s2">&quot;GaussianProcessRegressor&quot;</span><span class="p">),</span>
                      <span class="n">prefer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -2299,8 +2293,8 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="sd">            krigeage.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        ``(selected_name, selected_surrogate, results)`` où ``results`` associe</span>
-<span class="sd">        chaque nom de régresseur à ``{&quot;R2&quot;: {out: value}, &quot;RMSE&quot;: {out: value}}``.</span>
+<span class="sd">        (selected_name, selected_surrogate, results) où results associe</span>
+<span class="sd">        chaque nom de régresseur à {&quot;R2&quot;: {out: value}, &quot;RMSE&quot;: {out: value}}.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">gemseo.disciplines.surrogate</span><span class="w"> </span><span class="kn">import</span> <span class="n">SurrogateDiscipline</span>
 
@@ -2348,7 +2342,7 @@ impose une analyse multidisciplinaire (MDA), construite par la formulation <code
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Diagramme en barres comparant le R2 de test de chaque régresseur par sortie, et l&#39;enregistre.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cv: Dictionnaire optionnel ``sortie -&gt; R2 de validation croisée``, superposé</span>
+<span class="sd">        cv: Dictionnaire optionnel sortie -&gt; R2 de validation croisée, superposé</span>
 <span class="sd">            au graphe sous forme d&#39;une série de barres supplémentaire.</span>
 <span class="sd">        cv_label: Libellé de légende de cette série (par défaut « cross-val. »).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
