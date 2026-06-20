@@ -1,15 +1,11 @@
 """Problème 1 — Optimisation déterministe sur le surrogate f_hat(x).
 
-Minimise la masse maximale au décollage ``mtom`` sous les six contraintes
-opérationnelles, les incertitudes étant gelées à leurs valeurs nominales. La
-recherche se fait sur le surrogate (peu coûteux) avec l'algorithme sans gradient
-``COBYLA`` (retenu au problème 1) ; l'optimum est ensuite **vérifié sur le vrai
-modèle couplé** (une MDA), car le surrogate n'est qu'une approximation. L'optimum
-déterministe obtenu sert aussi de **référence au problème 3** : il est picklé dans
-``data/`` sous ``{uc}_p1_optimization.pkl``, que l'optimisation robuste recharge.
+Minimise ``mtom`` sous les six contraintes (incertitudes gelées au nominal) avec
+``COBYLA`` sur le surrogate, puis vérifie l'optimum sur le vrai modèle couplé.
+L'optimum est picklé dans ``data/`` et sert de référence au problème 3.
 
-Script lourd : lancer ``p1_doe`` puis ``p1_surrogate`` d'abord. Les figures
-(historique de convergence, dessin de l'avion) sont produites et commitées.
+Script lourd : lancer ``p1_doe`` puis ``p1_surrogate`` d'abord. Produit les figures
+d'historique de convergence et de dessin de l'avion.
 """
 
 from __future__ import annotations
@@ -19,9 +15,8 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
-# courant est celui du script pendant l'exécution) ; on le définit pour que les
-# helpers ci-dessous fonctionnent.
+# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_optimization.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -45,9 +40,8 @@ DES = ("slst", "n_pax", "area", "ar")
 def _true_at(uc, design):
     """Évalue le VRAI modèle couplé en un point de conception, u gelé au nominal.
 
-    Le surrogate n'est qu'une approximation : les chiffres clés (MTOM, contraintes)
-    doivent être lus sur le vrai modèle. (Les grammaires AutoPyDiscipline veulent
-    des entrées scalaires.)
+    Les chiffres clés (MTOM, contraintes) sont lus ici, pas sur le surrogate.
+    (Les grammaires AutoPyDiscipline veulent des entrées scalaires.)
     """
     disc = _oad.make_disciplines(uc)
     _oad.set_design_point(
@@ -60,16 +54,14 @@ def run(uc):
     """Optimisation déterministe + vérification sur le vrai modèle pour un cas d'usage."""
     surrogate = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p1_surrogate.pkl"))
 
-    # Optimisation déterministe sur le surrogate. Mise en cache : supprimer le
-    # pickle d'optimisation pour la refaire (et sa figure d'historique).
+    # Optimisation déterministe sur le surrogate (supprimer le pickle pour la refaire).
     def run_scenario():
         scenario = MDOScenario([surrogate], _oad.OBJECTIVE, _oad.get_design_space(),
                                formulation_name="DisciplinaryOpt")
         _oad.add_constraints(scenario)
         scenario.execute(algo_name="NLOPT_COBYLA", max_iter=200)
 
-        # Historique de convergence (a besoin de la base de données du scénario
-        # vivant -> tracé ici, uniquement lors d'un recalcul).
+        # Historique de convergence (base de données du scénario, tracé au recalcul).
         problem = scenario.formulation.optimization_problem
         database = problem.database
         obj_history = np.array(database.get_function_history(problem.objective.name)).ravel()
@@ -90,7 +82,7 @@ def run(uc):
         plt.close(fig)
         return scenario.optimization_result
 
-    # Le pickle est aussi la référence déterministe rechargée par le problème 3.
+    # Référence déterministe rechargée par le problème 3.
     result = _oad.cached(
         os.path.join(HERE, "data", f"{uc.lower()}_p1_optimization.pkl"), run_scenario
     )

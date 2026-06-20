@@ -1,20 +1,12 @@
 """Problème 3 — Surrogate robuste ``f_hat(x, u)`` et sa validation.
 
-Entraîne et valide le surrogate sur lequel l'optimisation robuste tournera. Les
-modèles **linéaire**, **RBF** et **krigeage** (processus gaussien) sont comparés
-sur un jeu de test mis de côté. On conserve délibérément le modèle de
-**krigeage** : bien que les trois aient des R2 globaux proches, le processus
-gaussien est mieux calibré dans les *coins* peu denses de l'espace conjoint où se
-trouve l'optimum, ce qui réduit la sur-estimation systématique du MTOM à
-l'optimum (quantifiée, puis corrigée, par la vérification sur le vrai modèle dans
-``p3_optimization``). Comme le plan d'expériences conjoint reste petit, un unique
-découpage train/test peut être optimiste ; le surrogate est donc recoupé par une
-**validation croisée K-fold** : un R2 de validation croisée proche du R2 de test
-est la preuve qu'il n'y a pas de sur-apprentissage. Les deux sont superposés sur
-le graphe de validation.
+Compare les régresseurs linéaire, RBF et krigeage sur un jeu de test, mais conserve
+délibérément le krigeage : mieux calibré dans les coins peu denses de l'espace
+conjoint où se trouve l'optimum. Le retenu est recoupé par validation croisée
+K-fold ; les deux R2 sont superposés sur le graphe de validation.
 
-Script lourd : lancer ``p3_doe`` d'abord. Le surrogate sélectionné est mis en
-cache dans ``data/`` par cas d'usage et consommé par ``p3_optimization``.
+Script lourd : lancer ``p3_doe`` d'abord. Surrogate retenu mis en cache dans
+``data/`` et consommé par ``p3_optimization``.
 """
 
 from __future__ import annotations
@@ -24,9 +16,8 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
-# courant est celui du script pendant l'exécution) ; on le définit pour que les
-# helpers ci-dessous fonctionnent.
+# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p3_surrogate.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -48,11 +39,8 @@ def run(uc):
         train = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p3_train.pkl"))
         test = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p3_test.pkl"))
 
-        # Compare linéaire / RBF / krigeage, mais conserve délibérément le krigeage
-        # (processus gaussien) : il est mieux calibré dans les coins peu denses de
-        # l'espace conjoint où se trouve l'optimum, ce qui réduit la sur-estimation
-        # du MTOM à l'optimum (voir la vérification sur le vrai modèle dans
-        # p3_optimization). La comparaison complète reste tracée pour le justifier.
+        # Compare linéaire / RBF / krigeage, mais conserve délibérément le krigeage :
+        # mieux calibré dans les coins peu denses où se trouve l'optimum.
         best_name, surrogate, results = _oad.train_and_select(
             train, test, _oad.OUTPUT_NAMES, prefer="GaussianProcessRegressor")
         print(f"\n[{uc}] Problem 3 surrogate validation (test set R2):")
@@ -61,15 +49,13 @@ def run(uc):
             print(f"  {name:16s} {r2s}")
         print(f"  -> selected: {best_name}")
 
-        # Validation croisée K-fold du surrogate sélectionné (proche du R2 de test
-        # => pas de sur-apprentissage malgré le petit plan d'expériences).
+        # Validation croisée K-fold du surrogate sélectionné.
         cv_r2 = surrogate.get_error_measure("R2Measure").compute_cross_validation_measure(as_dict=True)
         print(f"[{uc}] cross-validation R2 ({best_name}):")
         for o in _oad.OUTPUT_NAMES:
             print(f"  {o:7s} {float(cv_r2[o][0]):.3f}")
 
-        # Superpose le R2 de validation croisée sur le graphe de validation pour
-        # qu'on le voie suivre le R2 de test (découpage unique), sortie par sortie.
+        # Superpose le R2 de validation croisée au R2 de test, sortie par sortie.
         cv = {o: float(cv_r2[o][0]) for o in _oad.OUTPUT_NAMES}
         _oad.plot_validation_bars(
             results, _oad.OUTPUT_NAMES, f"{uc.lower()}_p3_validation.png",
@@ -79,8 +65,6 @@ def run(uc):
         print(f"[{uc}] P3 surrogate fitted and validated ({best_name}).")
         return surrogate
 
-    # Charger-ou-calculer : réutiliser le surrogate picklé s'il existe, sinon
-    # l'ajuster + le valider.
     _oad.cached(surrogate_path, fit_and_validate)
 
 

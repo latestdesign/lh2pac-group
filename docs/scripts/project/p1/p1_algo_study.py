@@ -1,16 +1,10 @@
 """Problème 1 — Étude du choix de l'algorithme d'optimisation (COBYLA vs SLSQP).
 
-Étude justifiant le choix d'optimiseur du problème 1, menée directement sur le
-**vrai modèle** couplé (résolution déterministe, u gelé au nominal). On compare
-``NLOPT_COBYLA`` (sans gradient : à chaque étape un simplexe approxime les
-fonctions dans une région de confiance) et ``SLSQP`` (par gradient : descente
-utilisant les dérivées de l'objectif et des contraintes), pour plusieurs budgets
-d'itérations. La conclusion (reprise dans la suite du projet) est de retenir
-**COBYLA**, qui explore plus finement et atteint un MTOM légèrement inférieur à
-budget faible, là où SLSQP converge plus vite mais se fige plus haut.
+Compare ``NLOPT_COBYLA`` (sans gradient, région de confiance) et ``SLSQP`` (par
+gradient) sur le vrai modèle couplé (u gelé au nominal), pour plusieurs budgets
+d'itérations, via le MTOM optimal et les historiques de convergence.
 
-Script lourd (optimisation sur le vrai modèle, plusieurs exécutions). Les deux
-cas d'usage sont produits ci-dessous.
+Script lourd (optimisation sur le vrai modèle, plusieurs exécutions).
 """
 
 from __future__ import annotations

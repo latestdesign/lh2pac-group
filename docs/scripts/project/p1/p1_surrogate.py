@@ -1,16 +1,11 @@
 """Problème 1 — Surrogate déterministe f_hat(x) et sa validation.
 
-Entraîne et valide le surrogate déterministe sur lequel l'optimisation du
-problème 1 tournera. Les modèles **linéaire**, **RBF** et **krigeage** (processus
-gaussien) sont comparés sur un jeu de test mis de côté, et le meilleur (R2 moyen
-le plus élevé sur les sorties) est conservé, conformément à la règle « commencer
-simple ». Comme le plan d'expériences reste petit, le surrogate retenu est recoupé
-par une **validation croisée K-fold** : un R2 de validation croisée proche du R2
-de test atteste l'absence de sur-apprentissage. Les deux sont superposés sur le
-graphe de validation.
+Compare les régresseurs linéaire, RBF et krigeage sur un jeu de test et garde le
+meilleur (R2 moyen le plus élevé), puis recoupe le retenu par validation croisée
+K-fold. Les deux R2 sont superposés sur le graphe de validation.
 
-Script lourd : lancer ``p1_doe`` d'abord. Le surrogate sélectionné est mis en
-cache dans ``data/`` par cas d'usage et consommé par ``p1_optimization``.
+Script lourd : lancer ``p1_doe`` d'abord. Surrogate retenu mis en cache dans
+``data/`` et consommé par ``p1_optimization``.
 """
 
 from __future__ import annotations
@@ -20,9 +15,8 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
-# courant est celui du script pendant l'exécution) ; on le définit pour que les
-# helpers ci-dessous fonctionnent.
+# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_surrogate.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -44,8 +38,7 @@ def run(uc):
         train = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p1_train.pkl"))
         test = from_pickle(os.path.join(HERE, "data", f"{uc.lower()}_p1_test.pkl"))
 
-        # Compare linéaire / RBF / krigeage et garde le meilleur sur le jeu de test
-        # (règle « commencer simple » : le plus simple qui valide bien).
+        # Compare linéaire / RBF / krigeage, garde le meilleur sur le jeu de test.
         best_name, surrogate, results = _oad.train_and_select(train, test, _oad.OUTPUT_NAMES)
         print(f"\n[{uc}] Problem 1 surrogate validation (test set R2):")
         for name, res in results.items():
@@ -53,15 +46,13 @@ def run(uc):
             print(f"  {name:16s} {r2s}")
         print(f"  -> selected: {best_name}")
 
-        # Validation croisée K-fold du surrogate sélectionné (proche du R2 de test
-        # => pas de sur-apprentissage malgré le petit plan d'expériences).
+        # Validation croisée K-fold du surrogate sélectionné.
         cv_r2 = surrogate.get_error_measure("R2Measure").compute_cross_validation_measure(as_dict=True)
         print(f"[{uc}] cross-validation R2 ({best_name}):")
         for o in _oad.OUTPUT_NAMES:
             print(f"  {o:7s} {float(cv_r2[o][0]):.3f}")
 
-        # Superpose le R2 de validation croisée sur le graphe de validation pour
-        # qu'on le voie suivre le R2 de test (découpage unique), sortie par sortie.
+        # Superpose le R2 de validation croisée au R2 de test, sortie par sortie.
         cv = {o: float(cv_r2[o][0]) for o in _oad.OUTPUT_NAMES}
         _oad.plot_validation_bars(
             results, _oad.OUTPUT_NAMES, f"{uc.lower()}_p1_validation.png",
@@ -71,8 +62,6 @@ def run(uc):
         print(f"[{uc}] P1 surrogate fitted and validated ({best_name}).")
         return surrogate
 
-    # Charger-ou-calculer : réutiliser le surrogate picklé s'il existe, sinon
-    # l'ajuster + le valider.
     _oad.cached(surrogate_path, fit_and_validate)
 
 

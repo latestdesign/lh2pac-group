@@ -1,21 +1,7 @@
 # Introduction
 
-**Titre.** Conception optimale d'un avion de 150 passagers sous incertitudes
-technologiques : optimisation multidisciplinaire, surrogates et quantification des
-incertitudes pour les filières kérosène et hydrogène liquide.
-
-**Auteurs.** Paul Louka, Driss Chraibi, Yasmine Bennaceur, Sarah Procope
-
-**Mots-clés.** conception avion (OAD) $\cdot$ optimisation multidisciplinaire (MDO) $\cdot$
-modèle surrogate $\cdot$ quantification des incertitudes $\cdot$ indices de Sobol $\cdot$
-optimisation robuste.
-
-**Résumé.** Ce rapport applique la conception globale d'avion (OAD) à un
-appareil de 150 passagers volant à Mach 0,78 sur 5500 km, en comparant une
-filière kérosène (UC1) et une filière hydrogène liquide (UC2). L'objectif est de
-minimiser la masse maximale au décollage (MTOM) sous six contraintes
-opérationnelles, les fonctions vraies étant supposées coûteuses. Trois problèmes
-sont traités avec GEMSEO. La Partie 1 construit un surrogate déterministe
+L'objectif de ce projet est d'étudier la conception globale d'un avion, en comparant l'usage de kérosène (UC1) et d'hydrogène liquide (UC2) comme carburants. Cela ce traduit par un problème de minimisation de la masse maximale au décollage (MTOM), sous contraintes. Trois déclinaisons du problème
+sont traitées avec la librairie python GEMSEO. La Partie 1 construit un surrogate déterministe
 `f_hat(x)` et optimise la conception, en validant systématiquement chaque optimum
 sur le vrai modèle couplé. La Partie 2 fige la conception et propage les
 incertitudes technologiques `u` pour quantifier la dispersion des sorties et
@@ -57,18 +43,24 @@ Le problème se décline en trois volets, traités chacun pour les deux cas d'us
 
 | | Description |
 |:---|:---|
-| **Paramètres de conception $x$** | poussée `slst` (100–200 kN), passagers `n_pax` (120–180), surface alaire `area` (100–200 m$^{2}$), allongement `ar` (5–20) |
+| **Paramètres de conception $x$** | poussée `slst` (100-200 kN), passagers `n_pax` (120-180), surface alaire `area` (100-200 m$^{2}$), allongement `ar` (5-20) |
 | **Contraintes** | `tofl` $\leq$ 1900 m, `vapp` $\leq$ 135 kt, `vz` $\geq$ 300 ft/min, `span` $\leq$ 40 m, `length` $\leq$ 45 m, `fm` $\geq$ 0 % |
 | **Objectif** | minimiser la MTOM (`mtom`) |
 | **Cas d'usage** | UC1 : kérosène / turbofan $\cdot$ UC2 : hydrogène liquide / turbofan (5500 km) |
 
-Les deux filières partagent le même processus à 11 disciplines couplées : la
-masse au décollage est solution d'une boucle de rétroaction
-(`mass` $\leftrightarrow$ `total_mass` $\leftrightarrow$ `mission`), résolue par une analyse multidisciplinaire
-(MDA) à chaque évaluation. Le passage à l'hydrogène liquide introduit un réservoir
-cryogénique volumineux qui alourdit et agrandit le fuselage, modifiant fortement
-le compromis de conception et ajoutant deux verrous technologiques incertains
-(indices gravimétrique `gi` et volumétrique `vi` du réservoir).
+Les deux cas d'usage (UC1 et UC2) partagent le même processus multidisciplinaire,
+qui couple 11 disciplines, les modèles physiques de `gemseo-oad-training`
+(géométrie, aérodynamique, moteur, masses, mission, décollage…), hormis le modèle
+de coût `operating_cost`, sans objet ici puisque l'on minimise la `mtom`. La masse
+maximale au décollage n'est pas calculée directement : elle est solution d'une
+boucle de rétroaction entre les disciplines `mass`, `total_mass` et `mission` (la
+masse totale dépend du carburant de mission, qui dépend lui-même de la masse),
+résolue par une analyse multidisciplinaire (MDA) à chaque évaluation. Le passage à
+l'hydrogène liquide introduit un réservoir cryogénique volumineux qui alourdit et
+agrandit le fuselage, modifiant fortement le compromis de conception et ajoutant
+deux verrous technologiques incertains (indices gravimétrique `gi` et volumétrique
+`vi` du réservoir).
+
 
 Tous les calculs s'appuient sur la bibliothèque GEMSEO et ses extensions
 (`gemseo-oad-training`, `gemseo-umdo`, `gemseo-mlearning`). Le code correspondant

@@ -9,8 +9,7 @@ $\hat{f}(u) = f(x_{\text{fixe}}, u)$, on le valide, puis on l'utilise pour
 **l'expliquer** par une analyse de sensibilité (indices de Sobol). L'analyse est
 menée pour les deux cas d'usage, et pour chacun **à deux points de conception** :
 le point initial $X_{\mathrm{init}}$ (valeurs par défaut) et le point optimal
-$X_{\mathrm{opt}}$ issu de la Partie 1. Les espaces incertains diffèrent selon la
-filière : trois facteurs d'échelle (`aef`, `cef`, `sef`) pour le kérosène, auxquels
+$X_{\mathrm{opt}}$ issu de la Partie 1. Les espaces incertains diffèrent selon le cas d'usage : trois facteurs d'échelle (`aef`, `cef`, `sef`) pour le kérosène, auxquels
 s'ajoutent les indices de réservoir cryogénique (`gi`, `vi`) pour l'hydrogène
 liquide.
 
@@ -20,25 +19,27 @@ liquide.
 
 **Avion conventionnel kérosène avec turbofans.**
 
+> **Note de formulation.** Toute la Partie 2 s'appuie sur la formulation étendue à
+> 11 disciplines (incluant `operating_cost`), distincte du pipeline canonique `_oad.py`
+> de la Partie 1. L'optimum $X_{\mathrm{opt}}$ utilisé plus bas y est donc recalculé
+> sous cette formulation : ses valeurs de `area`/`ar` diffèrent de l'optimum
+> canonique rapporté en Partie 1, sans changer les conclusions qualitatives.
+
 ### 1. Espace technologique incertain
 
-Dans le cadre du Cas d'Utilisation 1 (concept conventionnel au kérosène avec turbofans), nous modélisons les incertitudes sur les verrous technologiques clés liés à la masse structurale et à l'efficacité aérodynamique/propulsive de l'avion.
+Dans le cadre du UC1 (concept conventionnel au kérosène avec turbofans), nous modélisons les incertitudes sur les verrous technologiques clés liés à la masse structurale et à l'efficacité aérodynamique/propulsive de l'avion. Les trois paramètres incertains retenus sont :
 
-### Facteurs d'échelle technologiques
+- **`aef`** (facteur d'échelle de traînée aérodynamique) : distribution triangulaire centrée sur 1,0
+- **`cef`** (facteur d'échelle de consommation moteur) : distribution triangulaire centrée sur 1,0
+- **`sef`** (facteur d'échelle de masse structurale) : distribution triangulaire centrée sur 1,0
 
-Les trois paramètres incertains retenus sont :
+Contrairement au UC2 (hydrogène liquide), il n'y a ici aucun paramètre de réservoir cryogénique (`gi`, `vi`) : le kérosène est stocké dans des réservoirs intégrés classiques, dont la masse et le volume ne constituent pas un verrou technologique incertain. L'espace incertain du UC1 se limite donc aux trois facteurs d'échelle `aef`, `sef` et `cef`, qui capturent la dispersion liée à la fabrication et à la maturité technologique de la cellule, du moteur et de l'aérodynamique.
 
-- **`aef`** (Facteur d'échelle de traînée aérodynamique) : distribution triangulaire centrée sur 1.0
-- **`cef`** (Facteur d'échelle de consommation moteur) : distribution triangulaire centrée sur 1.0
-- **`sef`** (Facteur d'échelle de masse structurale) : distribution triangulaire centrée sur 1.0
-
-Contrairement au Cas d'Utilisation 2 (hydrogène liquide), il n'y a ici aucun paramètre de réservoir cryogénique (`gi`, `vi`) : le kérosène est stocké dans des réservoirs intégrés classiques, dont la masse et le volume ne constituent pas un verrou technologique incertain. L'espace incertain du UC1 se limite donc aux trois facteurs d'échelle `aef`, `sef` et `cef`, qui capturent la dispersion liée à la fabrication et à la maturité technologique de la cellule, du moteur et de l'aérodynamique.
-
-### Lien avec le Problème 1
+#### Lien avec le Problème 1
 
 La grandeur principale étudiée ici (`mtom`) est **l'objectif du problème de conception**. La différence fondamentale avec le Problème 1 réside dans ce que l'on fait varier :
 
-|  | Problème 1 | Problème 2 (ce rapport) |
+|  | Problème 1 | Problème 2 |
 |:---|:---|:---|
 | **Variables** | Variables de décision $x$ : `slst`, `n_pax`, `area`, `ar` | Paramètres technologiques incertains $u$ : `aef`, `sef`, `cef` |
 | **Objectif** | Minimiser `mtom` sous contraintes | Propager l'incertitude sur `mtom` (et autres sorties) |
@@ -55,21 +56,21 @@ Les variables de décision sont fixées à leurs valeurs nominales par défaut :
 | Poussée maximale moteurs (`slst`) | 150 kN |
 | Nombre de passagers (`n_pax`) | 150 |
 | Surface alaire (`area`) | 180 m$^{2}$ |
-| Allongement de l'aile (`ar`) | 9.0 |
+| Allongement de l'aile (`ar`) | 9,0 |
 
-#### 2.1 Statistiques empiriques (plan factoriel, 900 évaluations)
+#### 2.1 Statistiques empiriques (plan factoriel, 729 points)
 
-Un plan factoriel complet (Full Factorial, 30$^{2}$ = 900 points) est exécuté sur le vrai modèle physique en faisant varier les paramètres incertains (`aef`, `sef`, `cef`). Les statistiques obtenues sont :
+Un plan factoriel complet (Full Factorial, 9$^{3}$ = 729 points, soit 9 niveaux par facteur) est exécuté sur le vrai modèle physique en faisant varier les paramètres incertains (`aef`, `sef`, `cef`). Les statistiques obtenues sont :
 
 | Variable | Description | Unité | Moyenne ($\mu$) | Écart-type ($\sigma$) | CV (%) |
 |:---|:---|:---:|---:|---:|---:|
-| `mtom` | Masse max. au décollage | kg | 75 049.96 | 448.98 | 0.60 |
-| `tofl` | Distance de décollage | m | 1 127.65 | 12.34 | 1.09 |
-| `vapp` | Vitesse d'approche | m/s | 56.76 | 0.18 | 0.33 |
-| `vz` | Taux de montée | m/s | 7.35 | 0.15 | 2.02 |
-| `fm` | Marge de carburant | % | 1.19 | 0.02 | 2.09 |
+| `mtom` | Masse max. au décollage | kg | 75 049,96 | 448,98 | 0,60 |
+| `tofl` | Distance de décollage | m | 1 127,65 | 12,34 | 1,09 |
+| `vapp` | Vitesse d'approche | m/s | 56,76 | 0,18 | 0,33 |
+| `vz` | Taux de montée | m/s | 7,35 | 0,15 | 2,02 |
+| `fm` | Marge de carburant | % | 1,19 | 0,02 | 2,09 |
 
-> **Lecture :** Le coefficient de variation (CV = $\sigma$/$\mu$ $\times$ 100) quantifie la dispersion relative. La `vz` (taux de montée) et la `fm` (marge de carburant) présentent les dispersions relatives les plus élevées (~2%), tandis que la `vapp` est la grandeur la plus robuste (CV = 0.33%).
+> **Lecture :** Le coefficient de variation (CV = $\sigma$/$\mu$ $\times$ 100) quantifie la dispersion relative. La `vz` (taux de montée) et la `fm` (marge de carburant) présentent les dispersions relatives les plus élevées (~2%), tandis que la `vapp` est la grandeur la plus robuste (CV = 0,33%).
 
 ![Distribution de la MTOM au point initial](../images/use_case/uc1_p2_distribmtom.png)
 
@@ -77,36 +78,41 @@ La distribution de la MTOM présente une forme globalement unimodale centrée au
 
 #### 2.2 Précision du Métamodèle RBF
 
-Le métamodèle par fonctions de base radiales (RBF) est entraîné par échantillonnage LHS (Latin Hypercube Sampling) sur l'espace incertain à 3 dimensions. Les métriques de qualité pour l'ensemble des sorties sont :
+Le métamodèle par fonctions de base radiales (RBF) est entraîné par échantillonnage LHS (Latin Hypercube Sampling) sur l'espace incertain à 3 dimensions. Le RBF **interpole** ses points d'entraînement : son R$^{2}$ d'apprentissage vaut donc trivialement 1,000 et ne mesure pas la généralisation. On rapporte deux mesures honnêtes : la **validation croisée** K-fold et surtout un **R$^{2}$ de test sur un plan factoriel indépendant tiré du vrai modèle** :
 
-| Variable | R$^{2}$ | RMSE | Mesure CV | Mesure Test |
-|:---|:---:|:---|:---:|:---:|
-| `mtom` | 1.000 | $7.42 \times 10^{-12}$ kg | 0.99848 | 1.000 |
-| `tofl` | 1.000 | 0.00 m | 0.99846 | 1.000 |
-| `vapp` | 1.000 | $4.38 \times 10^{-15}$ m/s | 0.99857 | 1.000 |
-| `vz`   | 1.000 | $9.85 \times 10^{-3}$ m/s | 0.99856 | 0.994 |
-| `fm`   | 1.000 | $1.22 \times 10^{-16}$ | 0.99729 | 1.000 |
+| Variable | R$^{2}$ validation croisée | R$^{2}$ test (vrai modèle) | RMSE test |
+|:---|:---:|:---:|:---|
+| `mtom` | 0,998 | 0,972 | 74,6 kg |
+| `tofl` | 0,998 | 0,973 | 2,04 m |
+| `vapp` | 0,998 | 0,991 | 0,018 m/s |
+| `vz`   | 0,998 | 0,952 | 0,033 m/s |
+| `fm`   | 0,998 | 0,980 | 0,0036 |
 
-> **Interprétation :** Le R$^{2}$ vaut **1.000** pour toutes les sorties, avec des RMSE de l'ordre de la précision numérique (10$^{-12}$ à 10$^{-16}$). La mesure de validation croisée dépasse **0.997** pour toutes les variables, et la mesure de test atteint **1.000** sur quatre sorties sur cinq. Ce niveau de précision s'explique par le caractère lisse des relations entrée-sortie sur le domaine exploré : les facteurs d'échelle n'introduisent pas de non-linéarité forte. Ces résultats confirment que le métamodèle est suffisamment fiable pour les analyses de propagation et de sensibilité.
+> **Interprétation :** Le R$^{2}$ sur le plan de test indépendant reste $\geq$ 0,95 sur toutes les sorties (`mtom` 0,972, `vapp` 0,991, `vz` 0,952), ce qui confirme une bonne fidélité du surrogate. La validation croisée ($\approx$ 0,998), évaluée sur le nuage LHS d'entraînement, est logiquement un peu plus optimiste que le test sur la grille factorielle, qui sonde aussi les coins du domaine. Ce bon niveau s'explique par le caractère lisse des relations entrée-sortie (les facteurs d'échelle n'introduisent pas de non-linéarité forte). Le métamodèle est donc suffisamment fiable pour les analyses de propagation et de sensibilité.
 
 #### 2.3 Indices de Sobol — Analyse de sensibilité
 
-Les indices de Sobol (premier ordre S1 et totaux ST) sont calculés via le métamodèle RBF. Variance totale de la MTOM $\approx$ $1.3 \times 10^{5}$ ($\sigma$ $\approx$ 360 kg).
+Les indices de Sobol (premier ordre S1 et totaux ST) sont calculés via le métamodèle RBF et normalisés par la variance totale de chaque sortie.
 
 | Facteur incertain | S1 mtom | ST mtom | S1 tofl | S1 vapp | S1 vz | S1 fm |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| `sef` (masse structurale) | 0.938 | 0.938 | 0.989 | 1.073 | 0.576 | -0.002 |
-| `cef` (consommation moteur) | 0.057 | 0.057 | 0.023 | -0.004 | 0.043 | 0.759 |
-| `aef` (traînée aérodynamique) | 0.023 | 0.013 | 0.013 | -0.002 | 0.336 | 0.245 |
+| `sef` (masse structurale) | 0,897 | 0,853 | 0,897 | 1,033 | 0,588 | 0,058 |
+| `cef` (consommation moteur) | 0,094 | 0,111 | 0,094 | 0,010 | 0,076 | 0,795 |
+| `aef` (traînée aérodynamique) | 0,020 | 0,024 | 0,020 | 0,010 | 0,341 | 0,253 |
 
 ![Indices de Sobol pour MTOM au point initial](../images/use_case/uc1_p2_sobol.png)
 
 **Analyse :**
 
-- **`sef` domine la MTOM et le `tofl`** ($\approx$ 94% et $\approx$ 99% de la variance respectivement). Les indices S1 et ST sont quasi confondus, ce qui indique peu d'interactions croisées : la masse répond à `sef` de façon quasi linéaire.
-- **`cef` domine la marge de carburant `fm`** ($\approx$ 76%), ce qui est physiquement cohérent : la consommation spécifique pilote directement l'emport de carburant.
+- **`sef` domine la MTOM et le `tofl`** ($\approx$ 90% de la variance, en S1 comme en ST). Les indices S1 et ST sont quasi confondus, ce qui indique peu d'interactions croisées : la masse répond à `sef` de façon quasi linéaire.
+- **`cef` domine la marge de carburant `fm`** ($\approx$ 80%), ce qui est physiquement cohérent : la consommation spécifique pilote directement l'emport de carburant.
 - **`aef` contribue significativement au taux de montée `vz`** ($\approx$ 34%), car la traînée aérodynamique influence directement l'excédent de poussée disponible.
-- **`vapp`** est quasi exclusivement sensible à `sef` (coefficient > 1 en raison de la non-linéarité de la relation vitesse d'approche / masse).
+- **`vapp`** est quasi exclusivement sensible à `sef`.
+
+> Quelques indices sortent légèrement de l'intervalle $[0, 1]$ théorique (par
+> exemple S1 `vapp` $\approx$ 1,03, ou un ST inférieur au S1 pour `mtom`). Ce ne
+> sont pas des effets physiques mais des **artefacts d'estimation** de l'analyse de
+> Sobol par échantillonnage fini (10 000 tirages).
 
 ---
 
@@ -114,28 +120,22 @@ Les indices de Sobol (premier ordre S1 et totaux ST) sont calculés via le méta
 
 Les variables de conception optimales issues du Problème 1 (optimisation déterministe sous contraintes) sont :
 
-> **Note de formulation.** L'analyse de la Partie 2 s'appuie sur la formulation
-> étendue à 11 disciplines (incluant `operating_cost`), distincte du pipeline
-> canonique `_oad` de la Partie 1. L'optimum y est donc recalculé sous cette
-> formulation : ses valeurs de `area`/`ar` diffèrent légèrement de l'optimum
-> canonique rapporté en Partie 1, sans changer les conclusions qualitatives.
-
 | Variable de décision | Point initial | Point optimal |
 |:---|:---:|:---:|
 | Poussée maximale moteurs (`slst`) | 150 kN | 100 kN *(borne inf.)* |
 | Nombre de passagers (`n_pax`) | 150 | 120 *(borne inf.)* |
 | Surface alaire (`area`) | 180 m$^{2}$ | 120 m$^{2}$ |
-| Allongement de l'aile (`ar`) | 9.0 | 15.199 |
+| Allongement de l'aile (`ar`) | 9,0 | 15,199 |
 
-#### 3.1 Statistiques empiriques (plan factoriel, 900 évaluations)
+#### 3.1 Statistiques empiriques (plan factoriel, 729 points)
 
 | Variable | Description | Unité | Moyenne ($\mu$) | Écart-type ($\sigma$) | CV (%) |
 |:---|:---|:---:|---:|---:|---:|
-| `mtom` | Masse max. au décollage | kg | 64 001.92 | 407.72 | 0.64 |
-| `tofl` | Distance de décollage | m | 1 783.11 | 21.51 | 1.21 |
-| `vapp` | Vitesse d'approche | m/s | 64.19 | 0.22 | 0.35 |
-| `vz` | Taux de montée | m/s | 5.14 | 0.12 | 2.39 |
-| `fm` | Marge de carburant | % | 0.74 | 0.02 | 2.72 |
+| `mtom` | Masse max. au décollage | kg | 64 001,92 | 407,72 | 0,64 |
+| `tofl` | Distance de décollage | m | 1 783,11 | 21,51 | 1,21 |
+| `vapp` | Vitesse d'approche | m/s | 64,19 | 0,22 | 0,35 |
+| `vz` | Taux de montée | m/s | 5,14 | 0,12 | 2,39 |
+| `fm` | Marge de carburant | % | 0,74 | 0,02 | 2,72 |
 
 ![Distribution de la MTOM au point optimal](../images/use_case/uc1_p2_distribmtom_opt.png)
 
@@ -144,296 +144,300 @@ la gauche (centrée sur $\approx$ 64 002 kg) tout en gardant la même forme unim
 légèrement dissymétrique. L'écart-type absolu diminue ($\sigma$ : 449 $\to$ 408 kg),
 mais rapporté à une masse plus faible, la **dispersion relative augmente**
 (CV : 0,60 % $\to$ 0,64 %) : l'optimisation a allégé l'avion sans le rendre plus
-robuste — au contraire, elle l'a rendu marginalement plus sensible aux
-incertitudes, ce que confirme l'analyse de Sobol ci-dessous.
+robuste ; au contraire, elle l'a rendu marginalement plus sensible aux
+incertitudes en **dispersion relative**. La *hiérarchie* des sources d'incertitude,
+elle, reste inchangée (analyse de Sobol ci-dessous).
 
 #### Comparaison point initial / point optimal
 
 | Variable | $\mu$ Initial | $\mu$ Optimal | CV% Initial | CV% Optimal | $\Delta\mu$ (%) |
 |:---|---:|---:|:---:|:---:|:---:|
-| `mtom` (kg) | 75 049.96 | 64 001.92 | 0.60 | 0.64 | -14.72 |
-| `tofl` (m) | 1 127.65 | 1 783.11 | 1.09 | 1.21 | +58.13 |
-| `vapp` (m/s) | 56.76 | 64.19 | 0.33 | 0.35 | +13.10 |
-| `vz` (m/s) | 7.35 | 5.14 | 2.02 | 2.39 | -30.07 |
-| `fm` (%) | 1.19 | 0.74 | 2.09 | 2.72 | -37.82 |
+| `mtom` (kg) | 75 049,96 | 64 001,92 | 0,60 | 0,64 | -14,72 |
+| `tofl` (m) | 1 127,65 | 1 783,11 | 1,09 | 1,21 | +58,13 |
+| `vapp` (m/s) | 56,76 | 64,19 | 0,33 | 0,35 | +13,10 |
+| `vz` (m/s) | 7,35 | 5,14 | 2,02 | 2,39 | -30,07 |
+| `fm` (%) | 1,19 | 0,74 | 2,09 | 2,72 | -37,82 |
 
 **Analyse physique :**
 
-L'optimisation déterministe réduit la masse moyenne de 75 050 kg à 64 002 kg, soit un gain de **$\approx$ 11 tonnes (-14.7%)**. Ce gain vient principalement d'un **fort allongement de la voilure** (`ar` : 9.0 $\to$ 15.2), combiné à une réduction de la surface alaire (180 $\to$ 120 m$^{2}$) et de la poussée installée (150 $\to$ 100 kN). Cette configuration réduit la traînée induite et allège la voilure et la motorisation.
+L'optimisation déterministe réduit la masse moyenne de 75 050 kg à 64 002 kg, soit un gain de **$\approx$ 11 tonnes (-14,7%)**. Ce gain vient principalement d'un **fort allongement de la voilure** (`ar` : 9,0 $\to$ 15,2), combiné à une réduction de la surface alaire (180 $\to$ 120 m$^{2}$) et de la poussée installée (150 $\to$ 100 kN). Cette configuration réduit la traînée induite et allège la voilure et la motorisation.
 
 En revanche, on note des effets collatéraux sur les autres grandeurs :
 
 - La **distance de décollage** `tofl` augmente significativement (+58%), en raison de la réduction de poussée et de surface alaire.
 - La **vitesse d'approche** `vapp` augmente de +13%, conséquence de la surface alaire réduite.
 - Le **taux de montée** `vz` diminue de -30%, cohérent avec la réduction de la poussée installée.
-- La **marge de carburant** `fm` diminue de -38% (de 1.19% à 0.74%), ce qui réduit la marge de sécurité sur l'emport de carburant.
+- La **marge de carburant** `fm` diminue de -38% (de 1,19% à 0,74%), ce qui réduit la marge de sécurité sur l'emport de carburant.
 
 Côté **robustesse**, tous les CV augmentent légèrement au point optimal, ce qui montre que l'avion optimisé est un peu plus sensible aux incertitudes.
 
 #### 3.2 Précision du Métamodèle RBF
 
-| Variable | R$^{2}$ | RMSE | Mesure CV | Mesure Test |
-|:---|:---:|:---|:---:|:---:|
-| `mtom` | 1.000 | $4.05 \times 10^{-12}$ kg | 0.99850 | 1.000 |
-| `tofl` | 1.000 | $1.56 \times 10^{-13}$ m | 0.99848 | 1.000 |
-| `vapp` | 1.000 | $1.59 \times 10^{-15}$ m/s | 0.99857 | 1.000 |
-| `vz`   | 1.000 | $9.08 \times 10^{-3}$ m/s | 0.99858 | 0.992 |
-| `fm`   | 1.000 | $6.84 \times 10^{-17}$ | 0.99729 | 1.000 |
+| Variable | R$^{2}$ validation croisée | R$^{2}$ test (vrai modèle) | RMSE test |
+|:---|:---:|:---:|:---|
+| `mtom` | 0,998 | 0,976 | 63,0 kg |
+| `tofl` | 0,998 | 0,976 | 3,31 m |
+| `vapp` | 0,998 | 0,991 | 0,021 m/s |
+| `vz`   | 0,998 | 0,955 | 0,026 m/s |
+| `fm`   | 0,998 | 0,980 | 0,0029 |
 
-> La précision du métamodèle reste **très bonne** au point optimal. La relation entre les facteurs d'échelle et les sorties reste lisse et bien capturée par l'interpolation RBF, même après modification de la géométrie de l'avion.
-
-#### Comparaison des métriques RBF (initial vs optimal)
-
-| Variable | Mesure CV — Init | Mesure CV — Opt | R$^{2}$ — Init | R$^{2}$ — Opt |
-|:---|:---:|:---:|:---:|:---:|
-| `mtom` | 0.99848 | 0.99850 | 1.000 | 1.000 |
-| `tofl` | 0.99846 | 0.99848 | 1.000 | 1.000 |
-| `vapp` | 0.99857 | 0.99857 | 1.000 | 1.000 |
-| `vz`   | 0.99856 | 0.99858 | 1.000 | 1.000 |
-| `fm`   | 0.99729 | 0.99729 | 1.000 | 1.000 |
-
-Les métriques de qualité du métamodèle sont **quasi identiques** aux deux points de fonctionnement, confirmant que la précision de l'approximation est indépendante du point de design exploré.
+> Au point optimal, les deux mesures restent au même niveau qu'à l'initial (R$^{2}$ de test $\geq$ 0,95, validation croisée $\approx$ 0,998) : la fidélité du surrogate est indépendante du point de conception exploré, même après la forte modification de géométrie.
 
 #### 3.3 Indices de Sobol — Analyse de sensibilité
 
 | Facteur incertain | S1 mtom | ST mtom | S1 tofl | S1 vapp | S1 vz | S1 fm |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| `sef` (masse structurale) | 0.938 | 0.987 | 0.939 | 1.073 | 0.613 | -0.002 |
-| `cef` (consommation moteur) | 0.057 | 0.020 | 0.057 | -0.004 | 0.043 | 0.760 |
-| `aef` (traînée aérodynamique) | 0.023 | 0.013 | 0.023 | -0.002 | 0.337 | 0.245 |
+| `sef` (masse structurale) | 0,910 | 0,867 | 0,911 | 1,033 | 0,601 | 0,058 |
+| `cef` (consommation moteur) | 0,084 | 0,100 | 0,084 | 0,010 | 0,070 | 0,795 |
+| `aef` (traînée aérodynamique) | 0,018 | 0,021 | 0,018 | 0,010 | 0,333 | 0,253 |
 
 ![Indices de Sobol pour MTOM au point optimal](../images/use_case/uc1_p2_sobol_opt.png)
 
 **Analyse :**
 
-Au point optimal $X_{\mathrm{opt}}$, la dominance de `sef` s'accentue : son influence sur la MTOM passe de $\approx$ 94% (S1, point initial) à **$\approx$ 99% (ST, point optimal)**, ce qui rend `aef` et `cef` quasi négligeables pour la masse. Physiquement, l'optimisation a fortement réduit la masse de la cellule (allongement accru, surface réduite, motorisation allégée). La masse restante dépend donc presque uniquement de la structure résiduelle, et toute incertitude sur `sef` se répercute quasi proportionnellement sur la MTOM. Au point optimal, le facteur structural est le risque principal.
+Au point optimal $X_{\mathrm{opt}}$, la structure de sensibilité est **quasi inchangée** : `sef` reste très dominant sur la MTOM (S1 $\approx$ 0,91, ST $\approx$ 0,87, contre 0,90 et 0,85 au point initial), tandis que `cef` et `aef` demeurent marginaux. L'écart entre les deux points ($\approx$ 1 point) est de l'ordre du bruit d'estimation de Sobol ; pour le kérosène, l'optimisation **ne modifie pas la hiérarchie des verrous** : la masse structurale gouverne la dispersion de la MTOM aux deux points de conception, et c'est le risque technologique principal. (Le faible écart entre S1 et ST confirme l'absence d'interactions fortes.)
 
 ---
 
-### 4. Matrices de dispersion de l'espace incertain
+### 4. Matrice de dispersion de l'espace incertain
 
 La matrice de dispersion (scatter plot matrix) ci-dessous présente la structure de l'échantillonnage LHS sur les trois dimensions incertaines (`aef`, `sef`, `cef`), ainsi que les histogrammes marginaux de chaque facteur :
 
 ![Matrice de dispersion de l'espace incertain](../images/use_case/uc1_p2_scatter.png)
 
-Les distributions marginales confirment des lois **triangulaires centrées sur 1.0** pour les trois facteurs, sans corrélation croisée visible (nuages de points sans structure apparente). Ceci **valide l'hypothèse d'indépendance statistique** entre les paramètres technologiques, utilisée dans le calcul des indices de Sobol. Cette structure d'échantillonnage étant pilotée uniquement par les bornes de l'espace incertain (indépendantes de $x$), elle est rigoureusement identique au point initial et au point optimal.
+Les distributions marginales confirment des lois **triangulaires centrées sur 1,0** pour les trois facteurs, sans corrélation croisée visible (nuages de points sans structure apparente). Ceci **valide l'hypothèse d'indépendance statistique** entre les paramètres technologiques, utilisée dans le calcul des indices de Sobol. Cette structure d'échantillonnage étant pilotée uniquement par les bornes de l'espace incertain (indépendantes de $x$), elle est rigoureusement identique au point initial et au point optimal.
 
 ---
 
 ### 5. Bilan UC1 (point initial vs optimal)
 
-#### Tableau de synthèse
-
 | Critère | Point Initial | Point Optimal |
 |:---|:---:|:---:|
 | Masse moyenne $\mu$ (mtom) | 75 050 kg | 64 002 kg |
-| CV de la MTOM | 0.60% | 0.64% |
-| R$^{2}$ métamodèle (mtom) | 1.000 | 1.000 |
-| Mesure CV métamodèle (mtom) | 0.99848 | 0.99850 |
-| Indice Sobol S1 de `sef` (mtom) | $\approx$ 94% | $\approx$ 94% |
-| Indice Sobol ST de `sef` (mtom) | $\approx$ 94% | $\approx$ 99% |
+| CV de la MTOM | 0,60% | 0,64% |
+| R$^{2}$ test métamodèle (mtom) | 0,972 | 0,976 |
+| Indice Sobol S1 de `sef` (mtom) | $\approx$ 90% | $\approx$ 91% |
+| Indice Sobol ST de `sef` (mtom) | $\approx$ 85% | $\approx$ 87% |
 
-### Points clés
-
-**1. Très bonne précision du surrogate RBF**
-Le métamodèle RBF atteint un R$^{2}$ = **1.000** pour toutes les sorties aux deux points de fonctionnement, avec des RMSE de l'ordre de la précision machine. La mesure de validation croisée dépasse **0.997** pour toutes les variables, ce qui permet de s'appuyer dessus pour les analyses de propagation et de sensibilité.
-
-**2. Verrou technologique dominant : la masse structurale**
-À la différence du Cas d'Utilisation 2 (hydrogène liquide) où l'indice gravimétrique du réservoir cryogénique (`gi`) gouvernait la majorité de la variance de masse, le UC1 ne présente aucun verrou de stockage comparable. C'est le **facteur `sef`** qui domine très largement l'incertitude sur la MTOM, avec une contribution supérieure à **94%** dès le point initial.
-
-**3. Comportement différencié selon la sortie**
-L'analyse multi-sorties révèle une **segmentation claire** des influences :
-
-- `sef` $\to$ MTOM, TOFL, VAPP (structure et masse)
-- `cef` $\to$ FM (marge de carburant)
-- `aef` $\to$ VZ (taux de montée / traînée)
-
-**4. L'optimisation déterministe amplifie la dépendance structurale**
-L'optimisation réduit la masse moyenne de **$\approx$ 11 tonnes** (-14.7%), ce qui confirme son efficacité sur la performance nominale. En contrepartie, elle **concentre davantage** la sensibilité sur `sef` (ST : 94% $\to$ 99%), ce qui rend le design optimal plus vulnérable à toute dérive du facteur structurel.
-
-**5. Vers une optimisation robuste (Problème 3)**
-Pour le UC1, l'enjeu technologique principal n'est pas le stockage de carburant mais la **maîtrise de la masse structurale** (qualité de fabrication, marges de dimensionnement). Une optimisation robuste intégrant l'incertitude sur `sef` permettrait de trouver un compromis entre masse minimale et exposition aux dérives structurelles.
+L'optimisation déterministe allège l'avion de $\approx$ 11 t mais sature les
+contraintes : tous les CV augmentent, tandis que la masse structurale (`sef`) reste
+le verrou dominant aux deux points ($\approx$ 85-90 % de la variance de la MTOM). C'est
+cette fragilité saturée, plus que le verrou lui-même, qui motive l'optimisation
+robuste de la Partie 3.
 
 ---
 
 ## Cas d'usage 2 — Hydrogène liquide / Turbofan
 
-### Espace technologique incertain
+**Avion à hydrogène liquide avec turbofans.**
 
-Dans le cadre du Cas d'Utilisation 2 (concept à hydrogène liquide avec turbofans), nous modélisons les incertitudes sur les verrous technologiques clés liés au stockage et à l'efficacité masse/traînée de l'avion :
+> **Note de formulation.** Toute la Partie 2 s'appuie sur la formulation étendue à
+> 11 disciplines (incluant `operating_cost`), distincte du pipeline canonique `_oad.py`
+> de la Partie 1. L'optimum $X_{\mathrm{opt}}$ utilisé plus bas y est donc recalculé
+> sous cette formulation : ses valeurs de `area`/`ar` diffèrent de l'optimum
+> canonique rapporté en Partie 1, sans changer les conclusions qualitatives.
 
-1. **Paramètres de stockage d'hydrogène :**
+### 1. Espace technologique incertain
 
-   * `gi` (Indice gravimétrique du réservoir) : distribution triangulaire sur [0.35, 0.40, 0.405].
-   * `vi` (Indice volumétrique du réservoir) : distribution triangulaire sur [0.755, 0.800, 0.805].
+Dans le cadre du UC2 (concept à hydrogène liquide avec turbofans), nous modélisons les incertitudes sur les verrous technologiques clés liés au stockage cryogénique et à l'efficacité masse/traînée de l'avion. Aux deux facteurs d'échelle déjà présents au UC1 s'ajoutent ici les **deux indices du réservoir cryogénique** :
 
-2. **Facteurs d'échelle technologiques :**
-
-   * `aef` (Facteur d'échelle de traînée aérodynamique) : distribution triangulaire sur [0.99, 1.0, 1.03].
-   * `sef` (Facteur d'échelle de masse structurale) : distribution triangulaire sur [0.99, 1.0, 1.03].
+- **`gi`** (indice gravimétrique du réservoir) : distribution triangulaire sur [0.35, 0.40, 0.405]
+- **`vi`** (indice volumétrique du réservoir) : distribution triangulaire sur [0.755, 0.800, 0.805]
+- **`aef`** (facteur d'échelle de traînée aérodynamique) : distribution triangulaire sur [0.99, 1.0, 1.03]
+- **`sef`** (facteur d'échelle de masse structurale) : distribution triangulaire sur [0.99, 1.0, 1.03]
 
 ![Distribution de l'espace incertain](../images/use_case/uc2_p2_uncertain_space_distribution.png)
 
 L'échantillonnage LHS optimisé de 100 points est généré sur cet espace incertain pour entraîner le métamodèle RBF. Pour évaluer précisément l'erreur, un plan factoriel complet (Full Factorial) de 625 points (résolution maximale en dimension 4 sous la limite de 900 points) est exécuté sur les véritables disciplines physiques.
 
-
-**Lien avec le Problème 1 :**
-Les grandeurs étudiées ici (`tofl`, `vapp`, `vz`, `span`, `length`, `fm`) sont bien **l'objectif et les contraintes du problème de conception**. 
-La différence fondamentale avec le Problème 1 réside dans ce que l'on fait varier :
-* **Dans le Problème 1 :** nous optimisions la conception en faisant varier les variables de décision $x$ (`slst`, `n_pax`, `area`, `ar`) pour minimiser l'objectif sous contraintes, avec les paramètres technologiques $u$ fixés.
-* **Dans le Problème 2 :** nous figeons la conception $x$ (au point initial $X_{\mathrm{init}}$ ou optimal $X_{\mathrm{opt}}$) et nous faisons varier les paramètres technologiques incertains $u$ (`gi`, `vi`, `aef`, `sef`). Nous propageons cette incertitude pour évaluer statistiquement dans quelle mesure l'objectif et les contraintes du problème de conception sont impactés et respectés sous l'effet du hasard.
-
 ---
 
-### Analyse au Point Initial (X_init)
+### 2. Analyse au Point Initial ($X_{\mathrm{init}}$)
 
-Les paramètres de conception (variables de décision déterministes x) sont fixés à leurs valeurs nominales par défaut :
+Les variables de décision sont fixées à leurs valeurs nominales par défaut :
 
-*  Poussée maximale moteurs (`slst`) : 150 kN
-*  Nombre de passagers (`n_pax`) : 150
-*  Surface alaire (`area`) : 180 m$^{2}$
-*  Allongement de l'aile (`ar`) : 9.0
+| Variable de décision | Valeur |
+|:---|:---:|
+| Poussée maximale moteurs (`slst`) | 150 kN |
+| Nombre de passagers (`n_pax`) | 150 |
+| Surface alaire (`area`) | 180 m$^{2}$ |
+| Allongement de l'aile (`ar`) | 9,0 |
 
-#### 1. Statistiques empiriques réelles (Base de test de 625 points)
-Voici les moyennes ($\mu$) et écarts-types ($\sigma$) réels obtenus sur le plan physique de test :
+#### 2.1 Statistiques empiriques (plan factoriel, 625 points)
+
+Moyennes ($\mu$) et écarts-types ($\sigma$) réels obtenus sur le plan physique de test :
 
 | Grandeur de sortie | Moyenne empirique ($\mu$) | Écart-type ($\sigma$) | Coefficient de variation |
 | :--- | :---: | :---: | :---: |
-| **MTOM (mtom)** | 76 581.2 kg | 923.4 kg | 1.21% |
-| **Décollage (tofl)** | 1170.2 m | 25.9 m | 2.22% |
-| **Approche (vapp)** | 60.86 m/s (118.3 kt) | 0.38 m/s | 0.62% |
-| **Montée (vz)** | 6.75 m/s | 0.25 m/s | 3.77% |
-| **Envergure (span)** | 40.25 m | 0 m | 0.00% |
-| **Longueur (length)** | 39.75 m | 0 m | 0.00% |
-| **Marge carburant (fm)** | 10.02% | 2.45% | 24.52% |
+| **MTOM (mtom)** | 76 581,2 kg | 923,4 kg | 1,21% |
+| **Décollage (tofl)** | 1170,2 m | 25,9 m | 2,22% |
+| **Approche (vapp)** | 60,86 m/s (118,3 kt) | 0,38 m/s | 0,62% |
+| **Montée (vz)** | 6,75 m/s | 0,25 m/s | 3,77% |
+| **Envergure (span)** | 40,25 m | 0 m | 0,00% |
+| **Longueur (length)** | 39,75 m | 0 m | 0,00% |
+| **Marge carburant (fm)** | 10,02% | 2,45% | 24,52% |
 
-#### 2. Précision du Métamodèle RBF (N = 100 points d'apprentissage)
-Coefficients de détermination R$^{2}$ et erreur RMSE de validation sur la base de test :
+#### 2.2 Précision du Métamodèle RBF
 
+Coefficients de détermination R$^{2}$ et erreur RMSE de validation sur la base de test (N = 100 points d'apprentissage) :
 
-* **mtom** : R$^{2}$ = **0.98252** | RMSE = 122.09 kg
-* **tofl** : R$^{2}$ = **0.98200** | RMSE = 3.48 m
-* **vapp** : R$^{2}$ = **0.98279** | RMSE = 0.049 m/s
-* **vz** : R$^{2}$ = **0.98298** | RMSE = 0.033 m/s
-* **fm** : R$^{2}$ = **0.97933** | RMSE = 0.00361
-* **span** et **length** : R$^{2}$ = **1.00000** | RMSE = 0.00 (géométrie pure)
+| Variable | R$^{2}$ | RMSE |
+|:---|:---:|:---|
+| `mtom` | 0,983 | 122,09 kg |
+| `tofl` | 0,982 | 3,48 m |
+| `vapp` | 0,983 | 0,049 m/s |
+| `vz` | 0,983 | 0,033 m/s |
+| `fm` | 0,979 | 0,00361 |
+| `span`, `length` | 1,000 | 0,00 (géométrie pure) |
 
-#### 2b. Propagation Monte Carlo via le métamodèle (10 000 tirages)
+Le R$^{2}$ dépasse 0,98 pour toutes les sorties physiques, avec des RMSE faibles
+devant les écarts-types empiriques. Le surrogate est donc suffisamment précis pour
+les analyses de propagation et de sensibilité qui suivent.
 
-Une fois le métamodèle validé, on l'utilise pour propager les incertitudes par Monte Carlo (10 000 échantillons). L'intérêt est de pouvoir générer un grand nombre de tirages à coût quasi nul, ce que le modèle physique ne permet pas en temps raisonnable. Les histogrammes de `mtom` et `tofl` obtenus via le surrogate permettent de visualiser la distribution complète des sorties et de vérifier que les statistiques sont cohérentes avec celles du plan factoriel (625 pts).
+Une fois validé, le métamodèle permet de propager les incertitudes à coût quasi nul. Les histogrammes de `mtom` et `tofl` obtenus par Monte-Carlo (10 000 tirages sur le surrogate) visualisent la distribution complète des sorties et restent cohérents avec les statistiques du plan factoriel :
 
-> **Note :** Les écarts entre les stats du plan factoriel et celles de la propagation MC via surrogate restent faibles (de l'ordre de la RMSE du métamodèle), ce qui confirme la fiabilité du surrogate pour ce type d'analyse.
+![Histogrammes mtom et tofl au point initial (UC2)](../images/use_case/uc2_p2_histograms_surrogate.png)
 
-#### 3. Indices de Sobol (Totaux) pour la Masse (mtom)
-Calculés sur 10 000 échantillons à l'aide du métamodèle RBF :
-* **gi** (Indice gravimétrique réservoir) : **0.637** (63.7%)
-* **sef** (Facteur de structure) : **0.343** (34.3%)
-* **vi** (Indice volumétrique réservoir) : **0.046** (4.6%)
-* **aef** (Facteur aérodynamique) : **0.003** (0.3%)
+#### 2.3 Indices de Sobol — Analyse de sensibilité
 
-**Analyse de la sensibilité au point initial :**
-La MTOM est principalement pilotée par deux paramètres. L'indice gravimétrique du réservoir (`gi`) représente 63.7 % de la variance de la masse : c'est le verrou technologique principal de cette configuration cryogénique, car une dégradation du ratio masse hydrogène / masse réservoir alourdit directement l'avion. Le facteur de structure (`sef`) est le second contributeur (34.3 %), lié à l'incertitude sur la masse à vide de la cellule. Les facteurs `vi` et `aef` ont un impact très faible.
+Indices totaux ST pour la MTOM, calculés sur 10 000 échantillons à l'aide du métamodèle RBF :
 
+| Facteur incertain | ST mtom | Contribution |
+|:---|:---:|:---:|
+| `gi` (indice gravimétrique réservoir) | 0,637 | 63,7% |
+| `sef` (facteur de structure) | 0,343 | 34,3% |
+| `vi` (indice volumétrique réservoir) | 0,046 | 4,6% |
+| `aef` (facteur aérodynamique) | 0,003 | 0,3% |
+
+![Indices de Sobol pour MTOM au point initial (UC2)](../images/use_case/uc2_p2_sobol_indices_x_init.png)
+
+L'indice gravimétrique du réservoir (`gi`) représente 63,7 % de la variance de la
+masse : c'est le verrou technologique principal de cette configuration cryogénique,
+car une dégradation du ratio masse hydrogène / masse réservoir alourdit directement
+l'avion. Le facteur de structure (`sef`) est le second contributeur (34,3 %), lié à
+l'incertitude sur la masse à vide de la cellule. Les facteurs `vi` et `aef` ont un
+impact très faible.
 
 ---
 
-### Analyse au Point Optimal (X_opt)
+### 3. Analyse au Point Optimal ($X_{\mathrm{opt}}$)
 
 On utilise ici les variables de conception optimales trouvées par l'optimisation déterministe sous contraintes du Problème 1 (conçues pour minimiser la MTOM sur le modèle réel) :
 
-> **Note de formulation.** Comme pour le UC1, cette analyse utilise la formulation
-> étendue à 11 disciplines (avec `operating_cost`) : l'optimum y est recalculé sous
-> cette formulation, d'où des valeurs de `area`/`ar` légèrement différentes de
-> l'optimum canonique de la Partie 1, sans incidence sur les conclusions.
+| Variable de décision | Point initial | Point optimal |
+|:---|:---:|:---:|
+| Poussée maximale moteurs (`slst`) | 150 kN | 100 kN *(borne inf.)* |
+| Nombre de passagers (`n_pax`) | 150 | 120 *(borne inf.)* |
+| Surface alaire (`area`) | 180 m$^{2}$ | 111,58 m$^{2}$ |
+| Allongement de l'aile (`ar`) | 9,0 | 8,89 |
 
-* Poussée maximale moteurs (`slst`) : 100 kN (borne inférieure)
-* Nombre de passagers (`n_pax`) : 120 (borne inférieure)
-* Surface alaire (`area`) : 111.58 m$^{2}$
-* Allongement de l'aile (`ar`) : 8.89
+#### 3.1 Statistiques empiriques (plan factoriel, 625 points)
 
-#### 1. Statistiques empiriques réelles (Base de test de 625 points)
-Voici les moyennes ($\mu$) et écarts-types ($\sigma$) réels obtenus sur le plan physique de test :
+Moyennes ($\mu$) et écarts-types ($\sigma$) réels obtenus sur le plan physique de test :
 
 | Grandeur de sortie | Moyenne empirique ($\mu$) | Écart-type ($\sigma$) | Coefficient de variation |
 | :--- | :---: | :---: | :---: |
-| **MTOM (mtom)** | 64 078.1 kg | 872.9 kg | 1.36% |
-| **Décollage (tofl)** | **1914.9 m** | 49.7 m | 2.59% |
-| **Approche (vapp)** | **69.87 m/s** (135.8 kt) | 0.50 m/s | 0.71% |
-| **Montée (vz)** | **1.28 m/s** | 0.24 m/s | 18.44% |
-| **Envergure (span)** | 31.50 m | 0 m | 0.00% |
-| **Longueur (length)** | 34.75 m | 0 m | 0.00% |
-| **Marge carburant (fm)** | **-0.54%** | 2.27% | N/A ($\mu$ $\approx$ 0) |
+| **MTOM (mtom)** | 64 078,1 kg | 872,9 kg | 1,36% |
+| **Décollage (tofl)** | **1914,9 m** | 49,7 m | 2,59% |
+| **Approche (vapp)** | **69,87 m/s** (135,8 kt) | 0,50 m/s | 0,71% |
+| **Montée (vz)** | **1,28 m/s** | 0,24 m/s | 18,44% |
+| **Envergure (span)** | 31,50 m | 0 m | 0,00% |
+| **Longueur (length)** | 34,75 m | 0 m | 0,00% |
+| **Marge carburant (fm)** | **-0,54%** | 2,27% | N/A ($\mu$ $\approx$ 0) |
 
 #### Analyse physique et limites du design optimal nominal
 
-L'évaluation de l'optimum déterministe $X_{\mathrm{opt}}$ sous incertitudes révèle un problème critique : la marge de carburant moyenne (`fm`) devient négative ($\mu = -0.54\%$). 
+L'évaluation de l'optimum déterministe $X_{\mathrm{opt}}$ sous incertitudes révèle un problème critique : la marge de carburant moyenne (`fm`) devient négative ($\mu = -0,54\%$).
 
 Lors de l'optimisation déterministe du Problème 1 (sans incertitude), l'optimiseur a réduit la taille des réservoirs au minimum pour alléger l'avion. La contrainte de marge de carburant était donc active ($\text{fm} \approx 0\%$), c'est-à-dire que l'avion emportait juste la quantité de carburant nécessaire à sa mission, sans réserve.
 
-Or, avec les incertitudes technologiques, les performances moyennes se dégradent : `aef` et `sef` ont une moyenne légèrement supérieure à 1.0 (distributions triangulaires $[0.99, 1.0, 1.03]$), et `gi` peut descendre jusqu'à 0.35. En pratique, l'avion est plus lourd et génère plus de traînée que dans le cas nominal. Sa consommation augmente et dépasse la capacité du réservoir, figée à son minimum déterministe. La marge de carburant passe donc sous $0\%$ en moyenne.
+Or, avec les incertitudes technologiques, les performances moyennes se dégradent : `aef` et `sef` ont une moyenne légèrement supérieure à 1,0 (distributions triangulaires $[0.99, 1.0, 1.03]$), et `gi` peut descendre jusqu'à 0,35. En pratique, l'avion est plus lourd et génère plus de traînée que dans le cas nominal. Sa consommation augmente et dépasse la capacité du réservoir, figée à son minimum déterministe. La marge de carburant passe donc sous $0\%$ en moyenne.
 
-Plus globalement, l'analyse montre que sous l'effet des incertitudes technologiques, la quasi-totalité des exigences de performance (distance de décollage `tofl` à 1914.9 m, vitesse d'approche `vapp` à 69.87 m/s, vitesse de montée `vz` à 1.28 m/s et marge de carburant `fm` à -0.54%) dérivent hors de la zone admissible en moyenne. 
+Plus globalement, l'analyse montre que sous l'effet des incertitudes technologiques, la quasi-totalité des exigences de performance (distance de décollage `tofl` à 1914,9 m, vitesse d'approche `vapp` à 69,87 m/s, vitesse de montée `vz` à 1,28 m/s et marge de carburant `fm` à -0,54%) dérivent hors de la zone admissible en moyenne.
 
 L'optimiseur a poussé la conception aux limites des contraintes, sans laisser de marge de sécurité. En conditions réelles (avec des incertitudes de fabrication ou technologiques), cet avion n'est pas viable. D'où l'intérêt de passer à une optimisation robuste (Partie 3) pour concevoir un avion qui reste faisable sous incertitudes.
 
-#### 1b. Propagation Monte Carlo via le métamodèle (10 000 tirages)
+#### 3.2 Précision du Métamodèle RBF
 
-Comme au point initial, on utilise le métamodèle RBF pour réaliser une propagation Monte Carlo à 10 000 tirages. Les histogrammes de `mtom` et `tofl` obtenus via le surrogate permettent de visualiser les distributions complètes. Les statistiques restent cohérentes avec celles du plan factoriel, malgré la dégradation des performances au point optimal.
+Coefficients de détermination R$^{2}$ et erreur RMSE de validation sur la base de test (N = 100 points d'apprentissage) :
 
-#### 2. Précision du Métamodèle RBF (N = 100 points d'apprentissage)
-Coefficients de détermination R$^{2}$ et erreur RMSE de validation sur la base de test :
+| Variable | R$^{2}$ | RMSE |
+|:---|:---:|:---|
+| `mtom` | 0,982 | 118,41 kg |
+| `tofl` | 0,981 | 6,85 m |
+| `vapp` | 0,982 | 0,067 m/s |
+| `vz` | 0,982 | 0,032 m/s |
+| `fm` | 0,979 | 0,00326 |
+| `span`, `length` | 1,000 | 0,00 (géométrie pure) |
 
-* **mtom** : R$^{2}$ = **0.98160** | RMSE = 118.41 kg
-* **tofl** : R$^{2}$ = **0.98099** | RMSE = 6.85 m
-* **vapp** : R$^{2}$ = **0.98192** | RMSE = 0.067 m/s
-* **vz** : R$^{2}$ = **0.98227** | RMSE = 0.032 m/s
-* **fm** : R$^{2}$ = **0.97933** | RMSE = 0.00326
-* **span** et **length** : R$^{2}$ = **1.00000** | RMSE = 0.00
+La précision reste comparable à celle du point initial (R$^{2}$ > 0,98 pour toutes
+les sorties physiques), confirmant que la qualité du surrogate est indépendante du
+point de conception exploré.
 
-#### 3. Indices de Sobol (Totaux) pour la Masse (mtom)
-Calculés sur 10 000 échantillons à l'aide du métamodèle RBF :
+#### 3.3 Indices de Sobol — Analyse de sensibilité
 
-* **gi** (Indice gravimétrique réservoir) : **0.723** (72.3%)
-* **sef** (Facteur de structure) : **0.253** (25.3%)
-* **vi** (Indice volumétrique réservoir) : **0.053** (5.3%)
-* **aef** (Facteur aérodynamique) : **0.003** (0.3%)
+Indices totaux ST pour la MTOM, calculés sur 10 000 échantillons à l'aide du métamodèle RBF :
+
+| Facteur incertain | ST mtom | Contribution |
+|:---|:---:|:---:|
+| `gi` (indice gravimétrique réservoir) | 0,723 | 72,3% |
+| `sef` (facteur de structure) | 0,253 | 25,3% |
+| `vi` (indice volumétrique réservoir) | 0,053 | 5,3% |
+| `aef` (facteur aérodynamique) | 0,003 | 0,3% |
 
 ![Indices de Sobol pour MTOM a l'optimum](../images/use_case/uc2_p2_sobol_indices_x_opt.png)
 
-**Analyse de la sensibilité au point optimal :**
-Au point optimal, l'importance de `gi` passe de 63.7 % à 72.3 % de la variance totale, tandis que `sef` recule de 34.3 % à 25.3 %.
-
-Cela s'explique par le fait qu'à l'optimum, la structure a été fortement allégée (réduction de la poussée, de la surface alaire et de l'envergure). La masse structurale étant plus faible, sa contribution à la variance globale diminue. Le stockage d'hydrogène (`gi`) devient donc encore plus dominant, représentant près des trois quarts de la dispersion de la masse.
+Au point optimal, l'importance de `gi` passe de 63,7 % à 72,3 % de la variance
+totale, tandis que `sef` recule de 34,3 % à 25,3 %. À l'optimum, la structure a
+été fortement allégée (réduction de la poussée, de la surface alaire et de
+l'envergure) ; la masse structurale étant plus faible, sa contribution à la
+variance globale diminue. Le stockage d'hydrogène (`gi`) devient donc encore plus
+dominant, représentant près des trois quarts de la dispersion de la masse.
 
 ---
 
-### Matrice de dispersion de l'espace incertain
+### 4. Matrice de dispersion de l'espace incertain
 
 La matrice de dispersion ci-dessous montre la structure de l'échantillonnage LHS sur les quatre dimensions incertaines (`gi`, `vi`, `aef`, `sef`), avec les histogrammes marginaux de chaque facteur :
 
 ![Matrice de dispersion de l'espace incertain UC2](../images/use_case/uc2_p2_scatter.png)
 
-Les distributions marginales confirment des lois triangulaires pour les quatre facteurs, avec des paramètres conformes aux spécifications (mode de `gi` à 0.40, mode de `vi` à 0.80, modes de `aef` et `sef` à 1.0). Les nuages de points entre paires de variables ne montrent pas de structure particulière, ce qui confirme l'indépendance statistique entre les paramètres. Cette propriété est nécessaire pour la validité des indices de Sobol. Comme pour le UC1, cette structure d'échantillonnage ne dépend que des bornes de l'espace incertain et est identique au point initial et au point optimal.
+Les distributions marginales confirment des lois triangulaires pour les quatre facteurs, avec des paramètres conformes aux spécifications (mode de `gi` à 0,40, mode de `vi` à 0,80, modes de `aef` et `sef` à 1,0). Les nuages de points entre paires de variables ne montrent pas de structure particulière, ce qui confirme l'indépendance statistique entre les paramètres. Cette propriété est nécessaire pour la validité des indices de Sobol. Comme pour le UC1, cette structure d'échantillonnage ne dépend que des bornes de l'espace incertain et est identique au point initial et au point optimal.
+
+---
+
+### 5. Bilan UC2 (point initial vs optimal)
+
+| Critère | Point Initial | Point Optimal |
+|:---|:---:|:---:|
+| Masse moyenne $\mu$ (mtom) | 76 581 kg | 64 078 kg |
+| CV de la MTOM | 1,21% | 1,36% |
+| Marge de carburant moyenne (`fm`) | 10,02% | -0,54% |
+| R$^{2}$ métamodèle (mtom) | 0,983 | 0,982 |
+| Indice Sobol ST de `gi` (mtom) | 63,7% | 72,3% |
+
+L'optimisation déterministe allège l'avion de $\approx$ 12,5 t mais sature les
+contraintes : la marge de carburant moyenne devient négative sous incertitudes et
+la dominance du réservoir cryogénique (`gi`) s'accentue, ce qui motive
+l'optimisation robuste de la Partie 3.
 
 ---
 
 ## Synthèse de la Partie 2
 
-**Verrous technologiques différenciés selon la filière.** L'analyse de sensibilité
+**Verrous technologiques différenciés selon le cas d'usage.** L'analyse de sensibilité
 distingue nettement les deux cas d'usage : pour le kérosène (UC1), la variance de
-la MTOM est gouvernée à plus de 94 % par le facteur de **masse structurale**
+la MTOM est gouvernée à $\approx$ 85-90 % par le facteur de **masse structurale**
 (`sef`), faute de verrou de stockage ; pour l'hydrogène liquide (UC2), c'est
 l'**indice gravimétrique du réservoir** (`gi`) qui domine ($\approx$ 64 % au point initial,
-$\approx$ 72 % à l'optimum). Dans les deux cas, l'optimisation déterministe de la Partie 1,
-en allégeant la cellule, **concentre la sensibilité** sur le verrou dominant.
+$\approx$ 72 % à l'optimum). Dans les deux cas, un **verrou unique** gouverne la variance
+de la MTOM ; l'optimisation déterministe de la Partie 1 **accentue nettement** cette
+dominance pour l'hydrogène (`gi` 64 % $\to$ 72 %), tandis que pour le kérosène elle la
+laisse globalement inchangée (`sef` $\approx$ 85-90 % aux deux points).
 
-Pour l'hydrogène liquide en particulier :
-
-1. **Précision du surrogate grandement améliorée :**
-   En portant la base d'apprentissage LHS de 30 à 100 points, le R$^{2}$ de validation est passé d'environ **0.75-0.80** à plus de **0.981** sur toutes les sorties physiques critiques. Ce niveau de précision est nécessaire pour mener des analyses de robustesse fiables en ingénierie.
-
-2. **Sensibilité accrue aux performances du réservoir cryogénique :**
-   À l'optimum X_opt, la cellule de l'avion a été allégée et optimisée, ce qui réduit le poids relatif de la structure nominale. Par conséquent, la sensibilité de la MTOM vis-à-vis des incertitudes de stockage d'hydrogène liquide (`gi`) s'accroît, passant de **63.7%** à **72.3%** de la variance totale.  Le développement de réservoirs cryogéniques légers est ainsi l'enjeu technologique majeur de cette configuration.
-
-3. **Nécessité de l'optimisation sous incertitudes (MDO robuste) :**
-   Le design initial X_init respecte les exigences de performance mais au prix d'un avion trop lourd (76.6 tonnes) et avec une envergure hors-seuil. Le design optimal X_opt réduit la MTOM à 64.1 tonnes mais sature toutes les contraintes : dès qu'une incertitude apparaît, l'avion dérive hors-seuil. L'optimisation robuste (Problème 3) vise à trouver un compromis entre masse minimale et faisabilité sous incertitudes.
+Pour le kérosène, l'enjeu est la maîtrise de la masse structurale (`sef`) ; pour
+l'hydrogène, c'est le développement de réservoirs cryogéniques légers (`gi`), dont
+l'importance s'est confirmée après avoir porté la base d'apprentissage de 30 à
+100 points (R$^{2}$ passant de ~0,80 à >0,98). Dans les deux cas, l'optimum
+déterministe sature les contraintes et devient fragile sous incertitudes, ce qui
+motive l'optimisation robuste de la Partie 3.

@@ -1,24 +1,14 @@
-"""Définition partagée du problème OAD pour le projet LH2PAC.
+"""Définition partagée du problème OAD, importée par tous les scripts du projet.
 
-Ce module est la source de vérité unique du problème de conception avion globale
-(Overall Aircraft Design, OAD). Il est importé par chaque script ``uc*`` /
-``plot_uc*`` de ce répertoire.
+Source de vérité unique du problème de conception avion globale (Overall Aircraft
+Design). Le vrai modèle ``f(x, u)`` couple les fonctions analytiques de
+``gemseo_oad_training.models`` via des :class:`.AutoPyDiscipline`. La boucle de
+rétroaction sur la masse au décollage (``mass`` <-> ``total_mass`` <-> ``mission``)
+impose une analyse multidisciplinaire (MDA), construite par la formulation ``MDF``.
 
-Il ne porte volontairement PAS le préfixe ``plot_`` : la galerie de documentation
-n'exécute que les fichiers ``plot_*.py``, si bien que ce helper est affiché /
-installé mais jamais exécuté comme exemple autonome.
-
-Le « vrai » modèle ``f(x, u)`` est construit en enveloppant les fonctions
-analytiques de ``gemseo_oad_training.models`` dans des objets
-:class:`.AutoPyDiscipline` puis en les couplant. Il existe une boucle de
-rétroaction sur la masse maximale au décollage ``mtom``
-(``mass`` <-> ``total_mass`` <-> ``mission``), donc une analyse multidisciplinaire
-(MDA) est nécessaire : on utilise toujours la formulation ``MDF``, qui construit
-la MDA automatiquement.
-
-* ``x`` (paramètres de conception) : ``slst``, ``n_pax``, ``area``, ``ar``.
-* ``u`` (paramètres incertains) : ``aef``, ``cef``, ``sef`` (tous les cas
-  d'usage) plus ``gi``, ``vi`` pour les avions à hydrogène liquide.
+* ``x`` (conception) : ``slst``, ``n_pax``, ``area``, ``ar``.
+* ``u`` (incertain) : ``aef``, ``cef``, ``sef`` ; plus ``gi``, ``vi`` pour
+  l'hydrogène liquide.
 * Objectif : minimiser ``mtom``. Contraintes : ``tofl``, ``vapp``, ``vz``,
   ``span``, ``length``, ``fm``.
 """
@@ -51,19 +41,16 @@ def savefig(fig, filename: str) -> None:
 def cached(file_path: str, compute):
     """Charge un artefact picklé s'il existe, sinon le calcule et le pickle.
 
-    Mise en cache « charger-ou-calculer » partagée par les scripts lourds :
-    relancer un script réutilise les artefacts qu'il a déjà produits, si bien
-    qu'une ré-exécution (ou une reconstruction de la doc) est peu coûteuse et que
-    les valeurs rapportées restent figées. Pour forcer un nouveau calcul, il
-    suffit de supprimer le pickle correspondant et de relancer.
+    Partagée par les scripts lourds : une ré-exécution réutilise les artefacts
+    déjà produits et les valeurs rapportées restent figées. Supprimer le pickle
+    pour forcer un recalcul.
 
     Args:
-        file_path: Emplacement où l'artefact est (ou sera) picklé.
-        compute: Fonction sans argument produisant l'artefact lorsqu'il est
-            absent. Appelée uniquement en cas de cache manquant.
+        file_path: Emplacement du pickle.
+        compute: Fonction sans argument, appelée seulement si le pickle est absent.
 
     Returns:
-        L'artefact chargé ou fraîchement calculé.
+        L'artefact chargé ou calculé.
     """
     from gemseo import from_pickle, to_pickle
 
@@ -130,15 +117,6 @@ INITIAL_DESIGN = {
     "area": 180.0,
     "ar": 9.0,
 }
-
-
-def uc_from_filename(path: str) -> str:
-    """Déduit l'identifiant du cas d'usage (``"UC1"``/``"UC2"``) du nom de fichier.
-
-    ``uc1_p1_doe.py`` -> ``"UC1"`` ; ``plot_uc2_p2_uq.py`` -> ``"UC2"``.
-    Cela permet aux scripts UC1 et UC2 de partager un contenu identique.
-    """
-    return "UC" + os.path.basename(path).split("uc")[1][0]
 
 
 def make_disciplines(uc: str):
@@ -260,19 +238,13 @@ def train_and_select(train_dataset, test_dataset, output_names,
                      prefer=None):
     """Entraîne plusieurs régresseurs, les valide et garde le meilleur sur le jeu de test.
 
-    Par défaut, la sélection suit la règle du projet « commencer simple » : parmi
-    les régresseurs candidats, on garde celui dont le R2 de test moyen sur les
-    sorties est le plus élevé. Le tableau complet est renvoyé pour que le rapport
-    justifie le choix.
+    Par défaut, on garde le régresseur de R2 de test moyen le plus élevé (règle
+    « commencer simple »). Le tableau complet est renvoyé pour le rapport.
 
     Args:
-        prefer: Si fourni et présent dans ``regressors``, force ce régresseur
-            comme surrogate sélectionné (les autres sont tout de même entraînés
-            pour le tableau de comparaison). Utilisé par le problème 3, qui choisit
-            délibérément le modèle de krigeage (processus gaussien) : il est mieux
-            calibré que le RBF dans les *coins* de l'espace conjoint pauvres en
-            données, là où se situe l'optimum, ce qui réduit la sur-estimation
-            systématique du MTOM à l'optimum.
+        prefer: Si fourni, force ce régresseur (les autres restent entraînés pour
+            le tableau de comparaison). Utilisé par le problème 3 pour imposer le
+            krigeage.
 
     Returns:
         ``(selected_name, selected_surrogate, results)`` où ``results`` associe
@@ -286,17 +258,11 @@ def train_and_select(train_dataset, test_dataset, output_names,
 
     for name in regressors:
         surrogate = SurrogateDiscipline(name, train_dataset)
-        # GEMSEO émet un avertissement chaque fois que le surrogate est évalué
-        # hors de son domaine de validité (la boîte couverte par le plan
-        # d'entraînement). Avec de petits plans et des entrées triangulaires
-        # concentrées près du mode, les routines de Monte-Carlo et d'optimisation
-        # en aval sondent régulièrement juste au-delà de cette boîte -- tout en
-        # restant dans les plages physiques -- ce qui sature les journaux. On
-        # élargit la boîte de VALIDITY_DOMAIN_MARGIN autour du centre de chaque
-        # entrée pour absorber cette extrapolation proche du bord, tout en
-        # conservant l'avertissement pour les points réellement très éloignés. Les
-        # bornes élargies sont picklées avec le surrogate, si bien que les
-        # exécutions P2/P3 qui le chargent héritent du même comportement.
+        # Élargit le domaine de validité du surrogate autour de chaque entrée :
+        # avec de petits plans, le Monte-Carlo et l'optimisation en aval sondent
+        # juste au-delà de la boîte d'entraînement (tout en restant physiques) et
+        # saturent les journaux d'avertissements. Les bornes élargies sont picklées
+        # avec le surrogate.
         VALIDITY_DOMAIN_MARGIN = 2.0  # 1.0 = boîte d'origine, 2.0 = doublée autour du centre
         validity_domain = surrogate.regression_model.validity_domain
         for variable_name in tuple(validity_domain):
@@ -330,13 +296,9 @@ def plot_validation_bars(results, output_names, filename, title, cv=None, cv_lab
     """Diagramme en barres comparant le R2 de test de chaque régresseur par sortie, et l'enregistre.
 
     Args:
-        cv: Dictionnaire optionnel ``sortie -> R2 de validation croisée`` pour le
-            surrogate sélectionné. Quand il est fourni, une série de barres
-            supplémentaire est superposée pour que la figure montre que le R2 de
-            validation croisée suit le R2 de test sur un seul découpage (preuve de
-            l'absence de sur-apprentissage sur le petit plan).
-        cv_label: Libellé de légende de cette série supplémentaire (par défaut
-            « cross-val. »).
+        cv: Dictionnaire optionnel ``sortie -> R2 de validation croisée``, superposé
+            au graphe sous forme d'une série de barres supplémentaire.
+        cv_label: Libellé de légende de cette série (par défaut « cross-val. »).
     """
     import numpy as np
     from matplotlib import pyplot as plt

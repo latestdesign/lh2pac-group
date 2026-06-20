@@ -1,10 +1,9 @@
-# Rapport — Conception optimale d'un avion sous incertitudes
+# Rapport — Conception globale d'un avion sous incertitudes
 
 Optimisation multidisciplinaire, modélisation par surrogate et quantification
-des incertitudes appliquées à la conception d'un avion de 150 passagers, comparant
-les filières **kérosène** et **hydrogène liquide**.
+des incertitudes appliquées à la conception d'un avion, comparant l'utilisation du **kérosène** et de l'**hydrogène liquide**.
 
-Le rapport est organisé en trois parties — une par problème — encadrées par une
+Le rapport est organisé en trois parties encadrées par une
 introduction et une conclusion :
 
 - [Introduction](introduction.md)
@@ -12,3 +11,5 @@ introduction et une conclusion :
 - [Partie 2 — Modèle surrogate et quantification des incertitudes](part2.md)
 - [Partie 3 — Modèle surrogate et optimisation robuste](part3.md)
 - [Conclusion](conclusion.md)
+
+**Auteurs.** Paul Louka, Driss Chraibi, Yasmine Bennaceur, Sarah Procope

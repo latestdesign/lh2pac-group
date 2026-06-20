@@ -1,24 +1,18 @@
 """Problème 3 — Comparaison des méthodes d'estimation des statistiques (UQ).
 
-Étude comparant, pour l'optimisation robuste du problème 3, les trois manières
-d'estimer l'espérance ``E`` et l'écart-type ``S`` propagés à chaque itération de
-l'optimiseur :
+Compare les trois manières d'estimer l'espérance et l'écart-type propagés à chaque
+itération de l'optimiseur robuste :
 
-* ``surrogate`` : un krigeage de ``f_hat(x, u)`` est construit puis ré-échantillonné
-  (``Surrogate_Settings``) — peu coûteux par itération ;
-* ``sampling`` : Monte-Carlo direct sur le modèle multidisciplinaire
-  (``Sampling_Settings``) — N réalisations i.i.d. de u, MDA résolue pour chacune ;
-* ``taylor`` : développement de Taylor au premier ordre autour de la moyenne
-  (``TaylorPolynomial_Settings``) — pas de tirage aléatoire.
+* ``surrogate`` : krigeage de ``f_hat(x, u)`` ré-échantillonné (``Surrogate_Settings``) ;
+* ``sampling`` : Monte-Carlo direct sur le modèle multidisciplinaire (``Sampling_Settings``) ;
+* ``taylor`` : développement de Taylor au premier ordre (``TaylorPolynomial_Settings``).
 
-Ce script utilise la formulation complète à 11 disciplines (avec
-``operating_cost``) et un espace incertain à 7 variables (incluant ``fc_pwd`` et
-``bed``), distincts du pipeline canonique ``_oad`` (dont seul le helper de figures
-``_oad.savefig`` est réutilisé).
+Formulation complète à 11 disciplines (avec ``operating_cost``) et espace incertain
+à 7 variables (incluant ``fc_pwd`` et ``bed``), hors pipeline ``_oad`` (seul le
+helper de figures est réutilisé).
 
-Script lourd : le Monte-Carlo interne (et surtout la variante ``sampling`` sur le
-vrai modèle) rend chaque exécution longue ; chaque couple (cas d'usage, méthode)
-est dans un bloc ``# %%`` séparé pour pouvoir n'en lancer qu'une partie.
+Script lourd (la variante ``sampling`` sur le vrai modèle surtout) : chaque couple
+(cas d'usage, méthode) est dans un bloc ``# %%`` séparé.
 """
 
 from __future__ import annotations

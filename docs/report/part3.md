@@ -15,21 +15,21 @@ $$
 
 C'est un **proxy de robustesse fondé sur les moments**, pas une garantie
 probabiliste : avec des sorties non gaussiennes (lois triangulaires, non
-linéarités), la bande $k = 2$ ne certifie *pas* une fiabilité de 97,7 % — les
+linéarités), la bande $k = 2$ ne certifie *pas* une fiabilité de 97,7 % ; les
 fiabilités réelles sont **mesurées par Monte-Carlo** plutôt que supposées.
 
 L'espérance $\mathbb{E}$ et l'écart-type $\mathbb{S}$ doivent être estimés à chaque
 itération de l'optimiseur, ce qui exige de propager les incertitudes à travers le
 modèle. Trois approches sont possibles :
 
-- **`surrogate`** : on échantillonne un krigeage de $\hat{f}(x, u)$ — peu coûteux
+- **`surrogate`** : on échantillonne un krigeage de $\hat{f}(x, u)$, peu coûteux
   par itération ;
-- **`sampling`** : Monte-Carlo direct sur le modèle multidisciplinaire — $N$
+- **`sampling`** : Monte-Carlo direct sur le modèle multidisciplinaire, $N$
   réalisations i.i.d. de $u$, MDA résolue pour chacune ;
-- **`taylor`** : développement de Taylor au premier ordre autour de la moyenne —
+- **`taylor`** : développement de Taylor au premier ordre autour de la moyenne,
   sans tirage aléatoire.
 
-Les deux filières sont traitées : pour le **kérosène (UC1)**, on compare ces trois
+Les deux cas d'usage sont traités : pour le **kérosène (UC1)**, on compare ces trois
 méthodes d'estimation ; pour l'**hydrogène liquide (UC2)**, on déroule le pipeline
 complet (plan d'expériences conjoint, krigeage, optimisation robuste, puis
 **vérification sur le vrai modèle**). L'algorithme retenu est `NLOPT_COBYLA`
@@ -66,6 +66,8 @@ $$
 \mathbb{E}[f(x^{(k)}, u)] \approx \frac{1}{N} \sum_{j=1}^{N} f(x^{(k)}, u^{(j)}).
 $$
 
+![Convergence de l'optimisation robuste — méthode Monte-Carlo (UC1)](../images/use_case/uc1_p3_uq_sampling.png)
+
 ### c. Approche par polynôme de Taylor
 
 Plutôt que des tirages, on s'appuie sur un développement de Taylor au premier ordre
@@ -86,26 +88,26 @@ $\mathbb{S}$ découle de la racine de la variance.
 | Méthode | E[MTOM] (kg) | `slst` | `n_pax` | `area` | `ar` |
 |:---|:---:|:---:|:---:|:---:|:---:|
 | `surrogate` | 61 395 | 100 kN | 120 | 112,5 | 14,22 |
-| `sampling` (MC) | 61 489 | 100 kN | 120 | 114,9 | 13,92 |
-| `taylor` | 61 713 | 105,7 kN | 120 | 113,0 | 14,16 |
+| `sampling` (MC) | 61 489 | 100 kN | 120 | 114,9 | 13,93 |
+| `taylor` | 61 713 | 106,2 kN | 120 | 112,4 | 14,24 |
 
 Les trois méthodes convergent vers des conceptions proches (E[MTOM] à $\approx$ 0,5 %
 près), ce qui valide la cohérence des estimateurs. Leurs comportements diffèrent
 néanmoins :
 
-- l'approche **MC** offre la trajectoire la plus lisse et l'optimum le plus léger
-  ($\approx$ 74 itérations), car les 200 tirages lui donnent une bonne « vision » de la
-  dispersion à chaque pas ;
-- l'approche **Taylor** est la plus lente ($\approx$ 106 itérations) et traverse davantage
-  de phases infaisables ; elle choisit une poussée plus élevée (`slst` $\approx$ 105,7 kN)
+- l'approche **MC** converge en le moins d'itérations ($\approx$ 88) avec une trajectoire
+  lisse, car les 200 tirages lui donnent une bonne « vision » de la dispersion à chaque
+  pas ; son optimum est à peine plus lourd que celui du surrogate ;
+- l'approche **Taylor** est la plus lente ($\approx$ 180 itérations) et traverse davantage
+  de phases infaisables ; elle choisit une poussée plus élevée (`slst` $\approx$ 106,2 kN)
   et aboutit à un avion légèrement plus lourd, conséquence de l'approximation au
   premier ordre de la variance ;
-- l'approche **surrogate** est la moins coûteuse par itération et donne un résultat
-  très proche du MC, ce qui en fait le meilleur compromis coût/précision.
+- l'approche **surrogate** est la moins coûteuse par itération et donne l'optimum le
+  plus léger, très proche du MC, ce qui en fait le meilleur compromis coût/précision.
 
-*(La variante `sampling`, qui résout la MDA du vrai modèle à chaque tirage, est
-extrêmement coûteuse ; ses valeurs sont reportées ici à titre de comparaison mais
-sa courbe de convergence n'est pas régénérée dans cette exécution.)*
+*(La variante `sampling` résout la MDA du vrai modèle à chaque tirage : c'est de loin
+la plus coûteuse des trois, d'où son intérêt limité face au surrogate à précision
+comparable.)*
 
 ---
 
@@ -116,7 +118,7 @@ sa courbe de convergence n'est pas régénérée dans cette exécution.)*
 Le modèle OAD est un véritable système multidisciplinaire : les disciplines sont
 liées par une boucle de rétroaction sur la masse au décollage, résolue par une
 analyse multidisciplinaire (MDA) à **chaque** échantillon du plan d'expériences.
-Le graphe de couplage condensé le rend explicite — `mass`, `total_mass` et
+Le graphe de couplage condensé le rend explicite : `mass`, `total_mass` et
 `mission` (plus le silencieux `battery`) forment le cœur fortement couplé,
 alimenté par `geometry`, `aerodynamic` et `engine`, et alimentant à leur tour les
 contraintes de décollage, d'approche et de montée.
@@ -128,12 +130,12 @@ contraintes de décollage, d'approche et de montée.
 
 Dans l'espace conjoint à 9 dimensions, on conserve le modèle de **krigeage**
 (processus gaussien). Les modèles linéaire, RBF et krigeage atteignent tous un R$^{2}$
-global élevé pour le MTOM ($\approx$ 0,98–0,99), mais l'optimum se situe dans un *coin* de
+global élevé pour le MTOM ($\approx$ 0,98-0,99), mais l'optimum se situe dans un *coin* de
 l'espace conjoint (`slst` et `n_pax` sur leurs bornes inférieures) où un plan
-space-filling est clairsemé et où le RBF revient vers la moyenne d'entraînement —
+space-filling est clairsemé et où le RBF revient vers la moyenne d'entraînement,
 sur-estimant alors le MTOM d'environ 2 %. Le processus gaussien est bien mieux
 calibré sur les **contraintes** dans cette région (R$^{2}$ de test pour `vapp`, `vz`,
-`tofl`, `span` tous $\geq$ 0,997 contre $\approx$ 0,96–0,99 pour le RBF), ce qui permet à
+`tofl`, `span` tous $\geq$ 0,997 contre $\approx$ 0,96-0,99 pour le RBF), ce qui permet à
 l'optimiseur de localiser la bonne conception. Une **validation croisée** K-fold
 confirme l'absence de sur-apprentissage (R$^{2}$ CV = 0,991 pour le MTOM, $\geq$ 0,98 pour
 chaque sortie) ; les barres hachurées grises montrent qu'elle suit le R$^{2}$ de test
@@ -154,7 +156,7 @@ Ici la robustesse est essentielle. L'optimum robuste
 réel de **$\approx$ 63 650 kg (~63,6 t)**. En propageant les mêmes incertitudes à travers
 le **vrai** modèle à chaque conception, son MTOM espéré est de **64 329 kg** contre
 **63 968 kg** pour la conception déterministe (l'optimum de la Partie 1,
-`area` = 110,9 m$^{2}$, `ar` = 9,38) — soit un **prix de la robustesse de +361 kg
+`area` = 110,9 m$^{2}$, `ar` = 9,38), soit un **prix de la robustesse de +361 kg
 (+0,6 %)**. (`slst` et `n_pax` sont sur leurs bornes inférieures pour les *deux*
 conceptions : l'optimiseur veut une poussée minimale et le moins de passagers
 possible pour réduire la masse, donc ces deux variables sont fixées par le plancher
@@ -173,8 +175,8 @@ mais posé sur ces frontières, si bien que tout tirage défavorable de
 `gi`/`vi`/`sef` les viole. La conception robuste relève toutes les contraintes à
 **$\geq$ 98 %** (`vapp` 100 %, `vz` 99,7 %, `fm` 98,5 %, `tofl` 98,2 %) en
 **agrandissant l'aile et en augmentant son allongement** (`area` 117,9 vs 110,9 m$^{2}$,
-`ar` 9,53 vs 9,38), ce qui améliore la finesse (rapport portance/traînée) — réduit
-le carburant de mission, restaure la marge et abaisse la vitesse d'approche — pour
+`ar` 9,53 vs 9,38), ce qui améliore la finesse (rapport portance/traînée), réduit
+le carburant de mission, restaure la marge et abaisse la vitesse d'approche, pour
 le coût en masse très modeste indiqué ci-dessus. La conception hydrogène robuste
 est donc nettement préférable à la déterministe.
 
@@ -185,9 +187,11 @@ est donc nettement préférable à la déterministe.
 ## Synthèse de la Partie 3
 
 - Les **trois méthodes d'estimation** des statistiques (surrogate, MC, Taylor)
-  convergent vers des optima cohérents ($\approx$ 0,5 % d'écart sur E[MTOM]) ; l'approche
-  **surrogate** offre le meilleur compromis coût/précision, le MC la trajectoire la
-  plus lisse, et Taylor reste le plus lent et le plus conservateur.
+  convergent vers des optima cohérents : à $\approx$ 0,5 % près sur E[MTOM] pour le
+  kérosène (UC1), et le même accord se retrouve pour l'hydrogène (UC2 : 62 076 / 62 164 /
+  62 329 kg, soit $\approx$ 0,4 % d'écart) ; l'approche **surrogate** offre le meilleur
+  compromis coût/précision, le MC la trajectoire la plus lisse, et Taylor reste le plus
+  lent et le plus conservateur.
 - Pour l'hydrogène liquide, l'**optimisation robuste** est décisive : la conception
   déterministe de la Partie 1, optimale au nominal mais saturant `vapp` et `tofl`,
   ne respecte ces contraintes que **0,6 %** et **31,6 %** du temps sous

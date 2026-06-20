@@ -1,18 +1,14 @@
-"""Problème 2 — Cas d'usage 2 : propagation des incertitudes et analyse de sensibilité.
+"""Problème 2 — Cas d'usage 2 : propagation des incertitudes et sensibilité.
 
-Le problème 2 fige la conception ``x`` et étudie l'effet des incertitudes
-technologiques ``u`` sur les sorties. Pour le cas hydrogène liquide, l'espace
-incertain retient ``gi``, ``vi`` (stockage cryogénique) et ``aef``, ``sef``
-(facteurs d'échelle). On propage ces incertitudes à travers le vrai modèle, on
-ajuste un surrogate RBF de ``f(u)``, on le valide, puis on s'en sert pour une
-propagation Monte-Carlo (10 000 tirages) et une analyse de sensibilité par indices
-de Sobol.
+Conception ``x`` figée, on étudie l'effet des incertitudes ``u`` sur les sorties.
+Pour l'hydrogène liquide, l'espace incertain retient ``gi``, ``vi`` (stockage
+cryogénique) et ``aef``, ``sef`` (facteurs d'échelle). On ajuste un surrogate RBF
+de ``f(u)``, on le valide, puis on s'en sert pour une propagation Monte-Carlo
+(10 000 tirages) et une analyse de Sobol.
 
-Ce script utilise la formulation complète à 11 disciplines (avec
-``operating_cost``) et l'espace incertain à 4 variables, distincts du pipeline
-canonique ``_oad`` (dont seul le helper de figures est réutilisé). La conception
-est figée au point initial X_init ; décommenter le bloc correspondant ci-dessous
-pour l'analyse au point optimal X_opt.
+Formulation complète à 11 disciplines (avec ``operating_cost``) et espace incertain
+à 4 variables, hors pipeline ``_oad`` (seul le helper de figures est réutilisé).
+Conception figée au point initial X_init ; décommenter le bloc dédié pour X_opt.
 
 Script lourd (échantillonnage du vrai modèle, Monte-Carlo et Sobol sur surrogate).
 """

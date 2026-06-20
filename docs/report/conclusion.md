@@ -1,11 +1,9 @@
 # Conclusion
 
 Ce projet a appliqué la conception globale d'avion (OAD) à un appareil de 150
-passagers, en comparant une filière **kérosène** (UC1) et une filière **hydrogène
-liquide** (UC2) à travers trois problèmes complémentaires, tous résolus en
-remplaçant le modèle vrai — coûteux — par un surrogate validé.
-
-## Vue d'ensemble — le fil conducteur de la conception
+passagers, en comparant l'utilisation de **kérosène** (UC1) et d'**hydrogène
+liquide** (UC2) en tant que carburants à travers trois problèmes complémentaires, tous résolus en
+remplaçant le modèle vrai, coûteux, par un surrogate validé.
 
 Les trois problèmes ne sont pas indépendants : ils suivent un **même vecteur de
 conception** $x$, qu'ils transforment et éprouvent tour à tour. C'est ce fil qui
@@ -17,66 +15,37 @@ relie l'ensemble.
   x0  ─────────────────────────────▶  x*  ─────────────────────────▶  x̃
  conception                        optimum nominal                optimum robuste
  initiale                          ~63 t mais sature              ~64 t, toutes les
- (~75–77 t)                        les contraintes                fiabilités ≥ 98 %
+ (~75-77 t)                        les contraintes                fiabilités ≥ 98 %
                                           │
                                           ▼
                           P2 — quantification des incertitudes
                           (propagation + indices de Sobol)
-                          diagnostic : en x*, la variance se
-                          concentre sur un verrou unique
-                          (sef kérosène / gi hydrogène) et la
-                          marge de carburant passe sous 0 sous u
-                          → x* est probabilistiquement fragile
+                          → x* est probabilistiquement fragile,
+                            peut violer les contraintes sous u
 ```
 
-La **Partie 1** part de la conception initiale $x_0$ (avion lourd, $\approx$ 75–77 t sous
+La **Partie 1** part de la conception initiale $x_0$ (avion lourd, $\approx$ 75-77 t sous
 incertitudes) et la transforme en l'optimum déterministe $x^\star$ ($\approx$ 63 t), qui
 sature les contraintes. La **Partie 2** fige tour à tour $x_0$ puis $x^\star$ et y
-propage les incertitudes : elle révèle que l'optimisation a *concentré* la variance
-sur un unique verrou technologique et que $x^\star$, posé sur ses contraintes,
-devient fragile (marge de carburant moyenne négative). La **Partie 3** ré-optimise
+propage les incertitudes : la variance de la masse y est gouvernée par un unique
+verrou technologique (la masse structurale `sef` pour le kérosène, l'indice de
+réservoir cryogénique `gi` pour l'hydrogène). Pour l'hydrogène, l'optimisation
+*accentue* encore ce verrou (`gi` 64 % $\to$ 72 %) et rend $x^\star$, posé sur ses
+contraintes, fragile (marge de carburant moyenne négative sous $u$). La **Partie 3** ré-optimise
 en intégrant $u$ dès la formulation et produit la conception robuste $\tilde{x}$. La
 preuve se lit en **réévaluant $x_0$, $x^\star$ et $\tilde{x}$ sous les mêmes
 incertitudes sur le vrai modèle** : seul $\tilde{x}$ respecte toutes les contraintes
-à $\geq$ 98 %, là où $x^\star$ tombe à 0,6 % sur la vitesse d'approche — et ce pour un
+à $\geq$ 98 %, là où $x^\star$ tombe à 0,6 % sur la vitesse d'approche, et ce pour un
 surcoût de seulement +361 kg ($+0,6\,\%$) sur $x^\star$. La robustesse n'est donc
 pas un sur-dimensionnement coûteux mais un léger déplacement du même $x$ vers
 l'intérieur du domaine faisable.
 
-**Partie 1 — Optimisation déterministe.** L'optimisation directe sur le vrai modèle
-fournit une référence faisable ($\approx$ 63,1 t pour le kérosène, $\approx$ 63,3 t pour
-l'hydrogène), l'algorithme sans gradient `COBYLA` se révélant le plus adapté. Le
-**krigeage** est le surrogate le plus précis (R$^{2}$ de test et de validation croisée
-$\approx$ 0,99) avec un plan d'expériences modéré. Surtout, optimiser *sur* le surrogate
-produit des conceptions plus légères mais **infaisables sur le vrai modèle** (le
-kérosène viole la distance de décollage de 130 m), illustrant l'exploitation des
-erreurs résiduelles du métamodèle aux contraintes actives : toute solution doit être
-**validée sur le vrai modèle**.
-
-**Partie 2 — Quantification des incertitudes.** En figeant la conception et en
-propageant les incertitudes technologiques, l'analyse de sensibilité révèle des
-verrous différenciés : la variance de la MTOM est gouvernée par la **masse
-structurale** (`sef`, > 94 %) pour le kérosène, et par l'**indice gravimétrique du
-réservoir cryogénique** (`gi`, $\approx$ 64–72 %) pour l'hydrogène. L'optimisation
-déterministe, en allégeant la cellule, **concentre** la sensibilité sur ce verrou
-dominant et rend l'optimum nominal fragile : au point optimal hydrogène, la marge de
-carburant moyenne devient négative sous incertitudes.
-
-**Partie 3 — Optimisation robuste.** L'optimisation robuste (minimisation de
-`E[mtom]` sous contraintes de marge) répond à cette fragilité. Pour l'hydrogène
-liquide, la conception déterministe ne respecte la vitesse d'approche et la distance
-de décollage que **0,6 %** et **31,6 %** du temps sous incertitudes, tandis que la
-conception robuste rétablit **toutes** les fiabilités à $\geq$ 98 %, pour un surcoût de
-masse de seulement **+361 kg (+0,6 %)**. La comparaison des méthodes d'estimation
-(surrogate, Monte-Carlo, Taylor) confirme la cohérence des résultats, l'approche par
-surrogate offrant le meilleur compromis coût/précision.
-
-**Bilan d'ensemble.** Les deux filières atteignent des masses nominales très
+**Bilan d'ensemble.** Les deux cas d'usage atteignent des masses nominales très
 proches, mais leurs compromis de conception et leurs risques diffèrent : le kérosène
 est dimensionné par le décollage et la structure, l'hydrogène par l'approche et le
 réservoir cryogénique. Au-delà des chiffres, le projet illustre une méthodologie
 robuste : **construire un surrogate simple, le valider rigoureusement, ne s'en
-servir que pour chercher, et toujours vérifier sur le vrai modèle** — en intégrant
+servir que pour chercher, et toujours vérifier sur le vrai modèle**, en intégrant
 les incertitudes dès la conception plutôt qu'après coup.
 
 ---

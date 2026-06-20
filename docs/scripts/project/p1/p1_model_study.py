@@ -1,19 +1,12 @@
 """Problème 1 — Étude croisée métamodèle x taille du plan d'expériences.
 
-Étude de faisabilité justifiant le choix du couple (métamodèle, nombre
-d'échantillons) du problème 1. Pour chaque combinaison de régresseur
-(``LinearRegressor``, ``RBFRegressor``, ``RandomForestRegressor``) et de taille de
-plan ``N`` (30, 100, 1000), on entraîne un surrogate déterministe sur le vrai
-modèle, on optimise le MTOM dessus, puis on **vérifie l'optimum sur le vrai
-modèle** : on rapporte le MTOM surrogate, le MTOM réel, et si la solution est
-réellement faisable. Le tableau final montre que la plupart des couples donnent un
-optimum infaisable au sens du vrai modèle.
+Pour chaque couple régresseur (linéaire, RBF, forêt aléatoire) x taille de plan N
+(30, 100, 1000), entraîne un surrogate, optimise le MTOM dessus, puis vérifie
+l'optimum sur le vrai modèle. Le tableau final rapporte MTOM surrogate, MTOM réel
+et faisabilité réelle.
 
-Ce script utilise la formulation complète à 11 disciplines (avec
-``operating_cost``) ; il ne passe donc pas par le helper ``_oad``.
-
-Script lourd (échantillonnage du vrai modèle jusqu'à N=1000, plusieurs modèles).
-Les deux cas d'usage sont produits ci-dessous.
+Formulation complète à 11 disciplines (avec ``operating_cost``), sans passer par
+le helper ``_oad``. Script lourd (jusqu'à N=1000, plusieurs modèles).
 """
 
 from __future__ import annotations
@@ -42,7 +35,7 @@ from gemseo.disciplines.surrogate import SurrogateDiscipline
 from gemseo.scenarios.mdo_scenario import MDOScenario
 from gemseo.utils.discipline import update_default_input_values
 
-# Suppress warnings to keep logs clean
+# On réduit la verbosité des journaux GEMSEO.
 logging.getLogger("gemseo").setLevel(logging.ERROR)
 
 surrogates = ["LinearRegressor", "RBFRegressor", "RandomForestRegressor"]
@@ -85,16 +78,16 @@ def run(uc):
         for n in n_samples_list:
             print(f"\n--- Model: {model_name} | N = {n} ---")
 
-            # 1. Generate training data
+            # Plan d'entraînement échantillonné sur le vrai modèle.
             ds_train = get_fresh_design_space()
             training_dataset = sample_disciplines(
                 disciplines, ds_train, ["mtom","tofl","vapp","vz","span","length","fm"], algo_name="OT_OPT_LHS", n_samples=n
             )
 
-            # 2. Build surrogate
+            # Surrogate ajusté sur ces données.
             surrogate = SurrogateDiscipline(model_name, training_dataset)
 
-            # 3. Optimize on surrogate
+            # Optimisation sur le surrogate (peu coûteux).
             ds_opt = get_fresh_design_space()
             scenario_surr = MDOScenario([surrogate], "mtom", ds_opt, formulation_name="DisciplinaryOpt")
             scenario_surr.add_constraint("tofl", constraint_type="ineq", positive=False, value=convert_from('m',1900))
@@ -111,7 +104,6 @@ def run(uc):
                 f_opt_val = scenario_surr.optimization_result.f_opt
                 surr_mtom = float(np.atleast_1d(f_opt_val)[0])
 
-                # Print intermediate optimization result
                 print(f"Surrogate f_opt (mtom): {surr_mtom:.2f} kg")
 
                 slst_val = float(np.atleast_1d(x_opt['slst'])[0])
@@ -120,7 +112,7 @@ def run(uc):
                 ar_val = float(np.atleast_1d(x_opt['ar'])[0])
                 print(f"Surrogate x_opt: slst={convert_to('kN', slst_val):.1f} kN, n_pax={n_pax_val:.1f}, area={convert_to('m2', area_val):.1f} m2, ar={ar_val:.2f}")
 
-                # 4. Evaluate optimal point on true disciplines
+                # On réévalue cet optimum sur le vrai modèle couplé (MDF).
                 ds_test = get_fresh_design_space()
                 scenario_test = MDOScenario(disciplines, "mtom", ds_test, formulation_name="MDF")
                 scenario_test.add_constraint("tofl", constraint_type="ineq", positive=False, value=convert_from('m',1900))
@@ -132,11 +124,11 @@ def run(uc):
 
                 scenario_test.execute(algo_name="CustomDOE", samples=[x_opt])
 
-                # 5. Retrieve true model feasibility
+                # Faisabilité au sens du vrai modèle.
                 true_result = scenario_test.optimization_result
                 true_mtom = float(np.atleast_1d(true_result.f_opt)[0])
 
-                # Find violated constraints manually
+                # Contraintes violées : valeur standardisée strictement positive.
                 violations = []
                 is_feasible = True
                 for constr_name, constr_val in true_result.constraint_values.items():

@@ -4,7 +4,7 @@
 
 Le Problème 1 fige les incertitudes technologiques à leurs valeurs nominales et ne
 fait varier que les quatre paramètres de conception
-$x = (\texttt{slst}, \texttt{n\_pax}, \texttt{area}, \texttt{ar})$. On cherche la
+$x = (\texttt{slst}, \texttt{n_pax}, \texttt{area}, \texttt{ar})$. On cherche la
 conception qui minimise la masse maximale au décollage sous les six contraintes
 opérationnelles :
 
@@ -16,17 +16,17 @@ $$
 où $g$ regroupe les contraintes `tofl` $\leq$ 1900 m, `vapp` $\leq$ 135 kt,
 `vz` $\geq$ 300 ft/min, `span` $\leq$ 40 m, `length` $\leq$ 45 m et `fm` $\geq$ 0 %.
 
-Les fonctions vraies étant supposées coûteuses, la démarche, appliquée
+Les fonctions exactes étant supposées coûteuses à l'évaluation, la démarche, appliquée
 successivement aux deux cas d'usage, est la suivante :
 
 1. **optimiser directement sur le vrai modèle** (sans surrogate) pour disposer
    d'une conception de référence $x^\star$, en choisissant l'algorithme et le
    budget d'itérations ;
-2. **construire un surrogate** $\hat{f}(x)$ — en étudiant la taille du plan
+2. **construire un surrogate** $\hat{f}(x)$ en étudiant la taille du plan
    d'expériences et l'erreur d'approximation ;
 3. **optimiser sur le surrogate puis valider la solution sur le vrai modèle**, et
    comparer les optima ;
-4. **comparer les deux filières** kérosène et hydrogène liquide.
+4. **comparer les deux cas d'usage** kérosène et hydrogène liquide.
 
 Le modèle OAD est un système multidisciplinaire : la masse au décollage est
 solution d'une boucle de rétroaction (`mass` $\leftrightarrow$ `total_mass` $\leftrightarrow$ `mission`), résolue
@@ -67,8 +67,8 @@ Le MTOM optimal obtenu en fonction du budget d'itérations est :
 SLSQP converge très vite (sa solution est identique dès 50 itérations) mais se
 stabilise à 63 144 kg. COBYLA, plus lent, explore plus finement et atteint un MTOM
 légèrement inférieur (**63 138 kg**) à partir de 100 itérations. L'écart est faible
-($\approx$ 6 kg, 0,01 %), mais comme COBYLA n'exige pas de dérivées — coûteuses et bruitées
-par différences finies sur le vrai modèle — **on retient COBYLA pour la suite du
+($\approx$ 6 kg, 0,01 %), mais comme COBYLA n'exige pas de dérivées, coûteuses et bruitées
+par différences finies sur le vrai modèle, **on retient COBYLA pour la suite du
 projet**. La conception de référence sature les bornes inférieures de poussée
 (`slst` = 100 kN) et de passagers (`n_pax` = 120), réduction directe de la masse.
 
@@ -83,8 +83,8 @@ obtenir un surrogate fidèle (vérifié ci-dessous).
 
 ![Plan d'expériences : entrées de conception vs MTOM (UC1)](../images/use_case/uc1_p1_doe.png)
 
-Trois régresseurs sont comparés sur le plan de test — **linéaire**, **RBF**
-(fonctions de base radiales) et **krigeage** (processus gaussien) — et le meilleur
+Trois régresseurs sont comparés sur le plan de test : **linéaire**, **RBF**
+(fonctions de base radiales) et **krigeage** (processus gaussien), et le meilleur
 R$^{2}$ moyen est conservé, conformément à la règle « commencer simple ». Le krigeage
 l'emporte sur toutes les sorties :
 
@@ -106,8 +106,8 @@ suffit.
 
 ### 3. Optimisation sur le surrogate et validation sur le vrai modèle
 
-On optimise ensuite avec COBYLA sur le surrogate (peu coûteux). L'optimiseur trouve
-une conception **plus légère** que la référence directe :
+On optimise ensuite avec COBYLA sur le surrogate (peu coûteux). L'optimiseur
+converge vers une conception différente de la référence directe :
 
 | Variable | Optimum surrogate |
 |:---|:---:|
@@ -129,8 +129,8 @@ d'**exploitation du métamodèle** (« surrogate exploitation »). La conception
 directe de la section 1 (63 138 kg, faisable) est donc préférable comme référence,
 et l'optimum surrogate doit être corrigé par une marge de sécurité.
 
-Pour quantifier ce phénomène, on balaie le couple (métamodèle, taille $N$) et on
-vérifie chaque optimum sur le vrai modèle :
+Pour quantifier ce phénomène, on balaie le couple (métamodèle, taille $N$ du plan
+d'expériences) et on vérifie chaque optimum sur le vrai modèle :
 
 | Métamodèle | $N$ | MTOM surrogate (kg) | MTOM réel (kg) | Faisable (réel) | Contrainte violée |
 |:---|:---:|:---:|:---:|:---:|:---|
@@ -144,20 +144,24 @@ vérifie chaque optimum sur le vrai modèle :
 | RandomForestRegressor | 100 | 66 319 | 64 094 | Non | `tofl` (+51) |
 | RandomForestRegressor | 1000 | 65 310 | 63 502 | **Oui** | aucune |
 
-La quasi-totalité des couples donne un optimum **infaisable** sur le vrai modèle,
+La majorité des couples donne un optimum **infaisable** sur le vrai modèle,
 en violant la distance de décollage. La régression linéaire reste infaisable quel
 que soit $N$ (biais trop fort sur la courbure de `tofl`), tandis que le RBF s'en
-rapproche en augmentant $N$ (violation tombant à quelques mètres). Les rares cas
-« faisables » du Random Forest sont des artefacts de son comportement par paliers,
-qui produit un avion plus lourd et conservateur (66 767 kg à $N=30$). Cette étude
-illustre les directives du projet : **un surrogate n'est qu'une approximation, et
-toute solution optimisée dessus doit être validée sur le vrai modèle**.
+rapproche en augmentant $N$ (violation tombant à quelques mètres). Le Random Forest
+à $N=30$ produit un avion conservateur et trop lourd (66 767 kg), artefact de son
+comportement par paliers ; en revanche, à $N=1000$ il converge vers une conception
+faisable à 63 502 kg, soit seulement +364 kg au-dessus de la référence directe.
+Ce résultat reste toutefois plus lourd que l'optimum direct, et la faisabilité
+dépend du caractère conservateur du Random Forest plutôt que d'une modélisation
+précise des contraintes. Cette étude illustre les directives du projet : **un
+surrogate n'est qu'une approximation, et toute solution optimisée dessus doit être
+validée sur le vrai modèle**.
 
 ---
 
 ## Cas d'usage 2 — Hydrogène liquide / Turbofan
 
-La même démarche est reconduite pour la filière hydrogène liquide. Le réservoir
+La même démarche est reconduite pour l'hydrogène liquide. Le réservoir
 cryogénique alourdit et agrandit le fuselage, ce qui durcit les contraintes
 géométriques et de masse.
 
@@ -200,16 +204,16 @@ limite** (`vapp` $\approx$ 69,7 m/s contre 69,45 m/s, soit +0,25 m/s) et la marg
 carburant est quasi nulle (`fm` $\approx$ 0,04). L'exploitation du surrogate est ici
 beaucoup plus modérée que pour le kérosène (où `tofl` était violée de 130 m), mais
 le constat est le même : **l'optimum nominal sature les contraintes** et n'a aucune
-marge face aux incertitudes — ce qui motive l'optimisation robuste de la Partie 3.
+marge face aux incertitudes, ce qui motive l'optimisation robuste de la Partie 3.
 
-Le balayage (métamodèle, $N$) confirme que, contrairement au kérosène, la filière
+Le balayage (métamodèle, $N$) confirme que, contrairement au kérosène, la configuration
 hydrogène admet plusieurs configurations faisables (régression linéaire à tout $N$,
 RBF à $N \ge 100$), mais toujours au prix d'un MTOM plus élevé que l'optimum
 saturé :
 
 | Métamodèle | $N$ | MTOM réel (kg) | Faisable (réel) |
 |:---|:---:|:---:|:---:|
-| LinearRegressor | 30 / 100 / 1000 | $\approx$ 64 230–64 250 | Oui |
+| LinearRegressor | 30 / 100 / 1000 | $\approx$ 64 230-64 250 | Oui |
 | RBFRegressor | 100 / 1000 | 63 510 / 63 372 | Oui |
 | RandomForestRegressor | 1000 | 64 758 | Oui |
 
@@ -230,28 +234,29 @@ saturé :
 | Paramètres incertains (gelés) | 3 (`aef`, `cef`, `sef`) | 5 (+ `gi`, `vi`) |
 | Contrainte active critique | `tofl` (décollage) | `vapp` (approche) |
 
-Les deux filières convergent vers des MTOM nominaux très proches ($\approx$ 63,1–63,3 t) et
+Les deux cas d'usage convergent vers des MTOM nominaux très proches ($\approx$ 63,1-63,3 t) et
 saturent toutes deux les bornes de poussée et de passagers. La différence se joue
 sur la **géométrie de la voilure** : le kérosène privilégie une aile petite et très
 allongée (`area` $\approx$ 101 m$^{2}$, `ar` $\approx$ 15,3) pour réduire la traînée induite, alors que
 l'hydrogène, pénalisé par le volume et la masse du réservoir, retient une aile plus
-grande et moins allongée (`area` $\approx$ 111 m$^{2}$, `ar` $\approx$ 9,4). La filière hydrogène
+grande et moins allongée (`area` $\approx$ 111 m$^{2}$, `ar` $\approx$ 9,4). Le cas
+hydrogène
 introduit en outre **deux verrous technologiques supplémentaires** (`gi`, `vi`),
 qui feront l'objet des Parties 2 et 3.
 
 ## Synthèse
 
 - L'optimisation **directe sur le vrai modèle** fournit une référence faisable :
-  63 138 kg (kérosène), 63 324 kg (hydrogène). **COBYLA** est retenu — sans
+  63 138 kg (kérosène), 63 324 kg (hydrogène). **COBYLA** est retenu, sans
   gradient, robuste, et au moins aussi bon que SLSQP (nettement meilleur pour
   l'hydrogène).
-- Le **krigeage** est le surrogate le plus précis pour les deux filières (R$^{2}$ test
+- Le **krigeage** est le surrogate le plus précis pour les deux cas d'usage (R$^{2}$ test
   et validation croisée $\approx$ 0,99), avec un plan d'expériences modéré conforme à la
-  règle 3–5 $\times$ dimension.
+  règle 3-5 $\times$ dimension.
 - Optimiser **sur le surrogate** produit des conceptions plus légères mais
   **infaisables sur le vrai modèle** (kérosène : `tofl` +130 m ; hydrogène : `vapp`
   +0,25 m/s) : l'optimiseur exploite l'erreur résiduelle aux contraintes actives.
   Toute solution surrogate **doit être validée** sur le vrai modèle.
 - Les optima nominaux **saturent les contraintes** sans marge de sécurité, ce qui
-  les rend fragiles dès qu'on introduit des incertitudes — point de départ des
+  les rend fragiles dès qu'on introduit des incertitudes, point de départ des
   Parties 2 (quantification) et 3 (optimisation robuste).

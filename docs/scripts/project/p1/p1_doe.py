@@ -1,18 +1,12 @@
 """Problème 1 — Plan d'expériences déterministe (espace de conception seul).
 
-Le problème 1 fige les incertitudes technologiques à leurs valeurs nominales et
-n'étudie que les 4 paramètres de conception x = (slst, n_pax, area, ar). Cette
-étape échantillonne le vrai modèle OAD couplé sur le seul espace de conception
-(u gelé au nominal) afin d'entraîner le surrogate déterministe f_hat(x) ~ f(x, u_nom)
-des étapes suivantes. La boucle de rétroaction sur la masse au décollage est
-résolue par une analyse multidisciplinaire (MDA) à chaque échantillon ; le graphe
-de couplage condensé est exporté pour documentation.
+Échantillonne le vrai modèle couplé sur les 4 paramètres de conception
+x = (slst, n_pax, area, ar), incertitudes gelées au nominal, pour entraîner le
+surrogate déterministe f_hat(x). Exporte aussi le graphe de couplage de la MDA.
 
-Script lourd (échantillonnage du vrai modèle) : à lancer avant ``p1_surrogate``
-et ``p1_optimization``. Les deux cas d'usage (UC1 kérosène, UC2 hydrogène
-liquide) sont produits ci-dessous ; les jeux de données sont mis en cache dans
-``data/`` (supprimer un pickle pour ré-échantillonner). Le plan est tiré avec une
-graine fixe pour des résultats reproductibles.
+Script lourd : à lancer avant ``p1_surrogate`` et ``p1_optimization``. Jeux de
+données mis en cache dans ``data/`` (supprimer un pickle pour ré-échantillonner) ;
+graine fixe pour la reproductibilité.
 """
 
 from __future__ import annotations
@@ -22,9 +16,8 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-# mkdocs-gallery exécute ce fichier sans définir ``__file__`` (le répertoire
-# courant est celui du script pendant l'exécution) ; on le définit pour que les
-# helpers ci-dessous fonctionnent.
+# mkdocs-gallery exécute ce fichier sans ``__file__`` ; on le définit pour
+# résoudre les imports et chemins ci-dessous.
 if "__file__" not in globals():
     __file__ = os.path.join(os.getcwd(), "p1_doe.py")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -44,31 +37,25 @@ def run(uc):
     """Échantillonne le vrai modèle couplé sur l'espace de conception (u au nominal)."""
     design_space = _oad.get_design_space()
     dim = len(design_space.variable_names)  # 4 paramètres de conception
-    # Petit plan space-filling : on reste sobre (~ 10x la dimension), conforme à la
-    # règle "3 à 5 fois la dimension d'entrée" élargie pour des sorties non
-    # linéaires (tofl notamment). La qualité est vérifiée dans p1_surrogate.
+    # Plan space-filling à ~10x la dimension (qualité vérifiée dans p1_surrogate).
     n_train = 10 * dim
     n_test = 12 * dim
 
     disciplines = _oad.make_disciplines(uc)
-    # Problème déterministe : on gèle les paramètres incertains à leur valeur
-    # nominale, seul x varie ensuite dans le plan d'expériences.
+    # Incertitudes gelées au nominal : seul x varie dans le plan.
     _oad.set_design_point(
         disciplines,
         {k: _oad.NOMINAL_UNCERTAIN[k] for k in _oad.get_uncertain_space(uc).variable_names},
     )
 
-    # Graphe de couplage (condensé) : documente la MDA résolue à chaque échantillon
-    # (boucle de rétroaction mass <-> total_mass <-> mission sur la masse mtom).
+    # Graphe de couplage (condensé) de la MDA résolue à chaque échantillon.
     generate_coupling_graph(
         disciplines,
         file_path=os.path.join(_oad.FIG_DIR, f"{uc.lower()}_p1_coupling.png"),
         full=False,
     )
 
-    # Charger-ou-calculer : réutiliser les jeux picklés s'ils existent, sinon
-    # échantillonner (LHS, graines distinctes train/test). Supprimer un pickle pour
-    # ré-échantillonner.
+    # LHS, graines distinctes train/test (réutilise les pickles s'ils existent).
     train = _oad.cached(
         os.path.join(HERE, "data", f"{uc.lower()}_p1_train.pkl"),
         lambda: sample_disciplines(disciplines, _oad.get_design_space(), _oad.OUTPUT_NAMES,
@@ -80,7 +67,7 @@ def run(uc):
                                    algo_name="OT_OPT_LHS", n_samples=n_test, seed=1),
     )
 
-    # Graphe de criblage : chaque paramètre de conception en fonction du MTOM.
+    # Graphe de criblage : chaque paramètre de conception vs MTOM.
     mtom = train.get_view(variable_names="mtom").to_numpy().ravel()
     names = list(design_space.variable_names)
     ncols = 2
