@@ -12,4 +12,4 @@ introduction et une conclusion :
 - [Partie 3 — Modèle surrogate et optimisation robuste](part3.md)
 - [Conclusion](conclusion.md)
 
-**Auteurs.** Paul Louka, Driss Chraibi, Yasmine Bennaceur, Sarah Procope
+**Auteurs.** Paul Louka, Driss Chraibi, Yasmine Ennaceur, Sarah Procope

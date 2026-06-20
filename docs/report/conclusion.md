@@ -56,7 +56,7 @@ les incertitudes dès la conception plutôt qu'après coup.
 |:---|:---|
 | Paul Louka | Partie 3 cas d'usage 2 (pipeline robuste hydrogène), vue d'ensemble et conclusion |
 | Driss Chraibi | Partie 1 (optimisation déterministe) |
-| Yasmine Bennaceur | Partie 3 cas d'usage 1, Partie 1 |
+| Yasmine Ennaceur | Partie 3 cas d'usage 1, Partie 1 |
 | Sarah Procope | Partie 2 (quantification des incertitudes) |
 
 ## Annexe B — Utilisation de l'IA
